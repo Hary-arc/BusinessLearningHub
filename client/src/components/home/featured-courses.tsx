@@ -23,10 +23,10 @@ export function FeaturedCourses() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Our Trending Programs
+            Our Trending Program
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-4">
-            Join our renowned programs; the knowledge provided will surely be invaluable to you!
+            "Join our renowned Programs; the knowledge provided will surely be invaluable to you!"
           </p>
         </motion.div>
 

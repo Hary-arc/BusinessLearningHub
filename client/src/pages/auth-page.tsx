@@ -61,7 +61,7 @@ const registerSchema = z.object({
   confirmPassword: z
     .string()
     .min(1, "Password confirmation is required"),
-  userType: z.enum(["student", "faculty", "admin"], {
+  userType: z.enum(["student", "faculty"], {
     required_error: "User type is required",
   }),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -275,7 +275,7 @@ export default function AuthPage() {
                                   <SelectContent>
                                     <SelectItem value="student">Student</SelectItem>
                                     <SelectItem value="faculty">Faculty</SelectItem>
-                                    <SelectItem value="admin">Administrator/Affiliate</SelectItem>
+                                    <SelectItem value="student">Career Seeker</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
