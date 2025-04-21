@@ -9,8 +9,10 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
-  userType: text("user_type").notNull(), // student, faculty, admin
+  userType: text("user_type").notNull(), // student, faculty, admin, affiliate
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  stripeCustomerId: text("stripe_customer_id"),
+  stripeSubscriptionId: text("stripe_subscription_id"),
 });
 
 export type User = typeof users.$inferSelect;
@@ -37,6 +39,9 @@ export const courses = pgTable("courses", {
   reviewCount: integer("review_count").default(0),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   published: boolean("published").default(false),
+  duration: integer("duration").default(60), // duration in days
+  level: text("level").default("beginner"), // beginner, intermediate, advanced
+  featured: boolean("featured").default(false),
 });
 
 export type Course = typeof courses.$inferSelect;

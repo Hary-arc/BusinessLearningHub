@@ -9,7 +9,7 @@ import {
   DropdownMenuSeparator, 
   DropdownMenuTrigger 
 } from "@/components/ui/dropdown-menu";
-import { Menu, X, Building } from "lucide-react";
+import { Menu, X, GraduationCap } from "lucide-react";
 import { useState } from "react";
 import { cn } from "@/lib/utils";
 
@@ -54,8 +54,8 @@ export function Header() {
         <div className="flex justify-between items-center py-4">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
-              <Building className="h-8 w-8 text-primary" />
-              <span className="ml-2 text-xl font-bold text-gray-800">BusinessLearn</span>
+              <GraduationCap className="h-8 w-8 text-primary" />
+              <span className="ml-2 text-xl font-bold bg-gradient-to-r from-primary to-teal-500 text-transparent bg-clip-text">CatterpiWeb</span>
             </Link>
             <nav className="hidden md:flex ml-10 space-x-8">
               {navItems.map((item) => (
