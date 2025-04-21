@@ -5,7 +5,7 @@ import { RegisterData } from "@/hooks/use-auth";
 import { z } from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { GraduationCap } from "lucide-react";
+import { GraduationCap, CheckCircle, Users, CreditCard, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 import { Button } from "@/components/ui/button";
@@ -109,21 +109,25 @@ export default function AuthPage() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
-      <main className="flex-grow py-12 bg-gray-50">
+      <main className="flex-grow py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
-            <div>
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+            >
               <Tabs defaultValue="login" value={activeTab} onValueChange={setActiveTab}>
                 <TabsList className="grid w-full grid-cols-2 mb-8">
                   <TabsTrigger value="login">Login</TabsTrigger>
                   <TabsTrigger value="register">Register</TabsTrigger>
                 </TabsList>
                 <TabsContent value="login">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Login to your account</CardTitle>
+                  <Card className="border-green-100 shadow-md">
+                    <CardHeader className="space-y-1">
+                      <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
                       <CardDescription>
                         Enter your credentials to access your account and courses.
                       </CardDescription>
@@ -159,7 +163,7 @@ export default function AuthPage() {
                           />
                           <Button 
                             type="submit" 
-                            className="w-full mt-4"
+                            className="w-full mt-4 bg-primary hover:bg-primary/90"
                             disabled={loginMutation.isPending}
                           >
                             {loginMutation.isPending ? "Logging in..." : "Login"}
@@ -181,9 +185,9 @@ export default function AuthPage() {
                   </Card>
                 </TabsContent>
                 <TabsContent value="register">
-                  <Card>
-                    <CardHeader>
-                      <CardTitle>Create an account</CardTitle>
+                  <Card className="border-green-100 shadow-md">
+                    <CardHeader className="space-y-1">
+                      <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
                       <CardDescription>
                         Register to get access to our courses and resources.
                       </CardDescription>
@@ -280,7 +284,7 @@ export default function AuthPage() {
                           />
                           <Button 
                             type="submit" 
-                            className="w-full mt-4"
+                            className="w-full mt-4 bg-primary hover:bg-primary/90"
                             disabled={registerMutation.isPending}
                           >
                             {registerMutation.isPending ? "Registering..." : "Register"}
@@ -302,69 +306,97 @@ export default function AuthPage() {
                   </Card>
                 </TabsContent>
               </Tabs>
-            </div>
+            </motion.div>
             
-            <div className="hidden lg:block">
+            <motion.div 
+              className="hidden lg:block"
+              initial={{ opacity: 0, x: 50 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6 }}
+            >
               <div className="text-center lg:text-left">
                 <div className="flex justify-center lg:justify-start items-center mb-6">
-                  <Building className="h-10 w-10 text-primary" />
-                  <span className="ml-2 text-2xl font-bold text-gray-900">BusinessLearn</span>
+                  <GraduationCap className="h-10 w-10 text-primary" />
+                  <span className="ml-2 text-2xl font-bold bg-gradient-to-r from-primary to-teal-500 text-transparent bg-clip-text">CatterpiWeb</span>
                 </div>
                 <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-                  Empower Your Business Journey
+                  Utilize Our Best Educational Approach
                 </h2>
-                <p className="mt-4 text-lg text-gray-500">
-                  Join our platform to access premium business courses tailored for local entrepreneurs and students. Enhance your skills, grow your business, and connect with industry experts.
+                <p className="mt-4 text-lg text-gray-600">
+                  Set out on an unmatched educational adventure with CatterpiWeb. Explore our ever-evolving programs, created to offer customized curricula for a range of needs. Discover engaging educational resources and gain professional advice.
                 </p>
                 <div className="mt-8 space-y-4">
-                  <div className="flex items-center">
+                  <motion.div 
+                    className="flex items-center" 
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                  >
                     <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
+                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-br from-primary to-green-500 text-white shadow-md">
+                        <CheckCircle className="h-6 w-6" />
                       </div>
                     </div>
                     <div className="ml-4">
-                      <h3 className="text-lg font-medium text-gray-900">Practical Business Education</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Learn skills you can apply immediately to your business.
+                      <h3 className="text-lg font-medium text-gray-900">Quality Education</h3>
+                      <p className="mt-1 text-sm text-gray-600">
+                        Well-structured courses with practical applications for real-world success.
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-center">
+                  </motion.div>
+                  <motion.div 
+                    className="flex items-center"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.3 }}
+                  >
                     <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                        </svg>
+                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-br from-primary to-green-500 text-white shadow-md">
+                        <Users className="h-6 w-6" />
                       </div>
                     </div>
                     <div className="ml-4">
                       <h3 className="text-lg font-medium text-gray-900">Expert Instructors</h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        Learn from experienced professionals and business educators.
+                      <p className="mt-1 text-sm text-gray-600">
+                        Learn from experienced professionals with proven track records.
                       </p>
                     </div>
-                  </div>
-                  <div className="flex items-center">
+                  </motion.div>
+                  <motion.div 
+                    className="flex items-center"
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ duration: 0.5, delay: 0.4 }}
+                  >
                     <div className="flex-shrink-0">
-                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-primary text-white">
-                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
-                        </svg>
+                      <div className="flex items-center justify-center h-12 w-12 rounded-md bg-gradient-to-br from-primary to-green-500 text-white shadow-md">
+                        <CreditCard className="h-6 w-6" />
                       </div>
                     </div>
                     <div className="ml-4">
                       <h3 className="text-lg font-medium text-gray-900">Flexible Payment Options</h3>
-                      <p className="mt-1 text-sm text-gray-500">
+                      <p className="mt-1 text-sm text-gray-600">
                         Choose from different subscription plans that fit your budget.
                       </p>
                     </div>
-                  </div>
+                  </motion.div>
+                  
+                  <motion.div 
+                    className="mt-8 pt-6"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5, delay: 0.5 }}
+                  >
+                    <Button 
+                      className="mt-4 bg-gradient-to-r from-primary to-green-500 hover:opacity-90 text-white px-6 py-2 rounded-md shadow-md flex items-center"
+                      onClick={() => navigate("/courses")}
+                    >
+                      Explore Courses <ArrowRight className="ml-2 h-4 w-4" />
+                    </Button>
+                  </motion.div>
                 </div>
               </div>
-            </div>
+            </motion.div>
           </div>
         </div>
       </main>
