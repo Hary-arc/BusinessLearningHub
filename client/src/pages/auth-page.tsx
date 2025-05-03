@@ -303,7 +303,7 @@ export default function AuthPage() {
                                   <SelectContent>
                                     <SelectItem value="student">Student</SelectItem>
                                     <SelectItem value="faculty">Faculty</SelectItem>
-                                    <SelectItem value="student">Career Seeker</SelectItem>
+                                    <SelectItem value="career_seeker">Career Seeker</SelectItem>
                                   </SelectContent>
                                 </Select>
                                 <FormMessage />
