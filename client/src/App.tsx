@@ -16,6 +16,7 @@ import NotFound from "@/pages/not-found";
 import AboutPage from "./pages/about-page";
 import ContactPage from "./pages/contact-page";
 import CareersPage from "./pages/careers-page";
+import JobApplicationPage from "./pages/job-application-page";
 import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
@@ -31,6 +32,7 @@ function Router() {
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/careers" component={CareersPage} />
+      <Route path="/job-application" component={JobApplicationPage} />
       <Route component={NotFound} />
     </Switch>
   );

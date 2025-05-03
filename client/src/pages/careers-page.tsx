@@ -157,7 +157,9 @@ export default function CareersPage() {
                 </div>
                 <p className="text-gray-600 mb-3">{job.description}</p>
                 <p className="text-primary font-medium mb-4">{job.salary}</p>
-                <Button className="w-full">Apply Now</Button>
+                <Link href={`/job-application?jobId=${job.id}&title=${encodeURIComponent(job.title)}`}>
+                  <Button className="w-full">Apply Now</Button>
+                </Link>
               </Card>
             ))}
           </div>
