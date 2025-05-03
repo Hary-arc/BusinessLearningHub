@@ -80,13 +80,31 @@ export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
 
+  const loginForm = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const registerForm = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userType: "student",
+    },
+  });
+
   // Redirect to home page if user is already logged in
   if (user) {
     navigate("/");
     return null;
   }
-
-  const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
