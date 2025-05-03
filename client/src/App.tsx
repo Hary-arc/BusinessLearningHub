@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { AuthProvider } from "@/hooks/use-auth";
+import React, { lazy } from 'react';
 
 import HomePage from "@/pages/home-page";
 import CoursesPage from "@/pages/courses-page";
@@ -27,7 +28,12 @@ function Router() {
       <Route path="/courses/:id" component={CourseDetailPage} />
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/dashboard/student" component={StudentDashboard} requiredUserType="student" />
+      <Route path="/dashboard/student/courses" component={lazy(() => import('./pages/dashboard/student/courses'))} />
+      <Route path="/dashboard/student/certificates" component={lazy(() => import('./pages/dashboard/student/certificates'))} />
+
       <ProtectedRoute path="/dashboard/faculty" component={FacultyDashboard} requiredUserType="faculty" />
+      <Route path="/dashboard/faculty/courses" component={lazy(() => import('./pages/dashboard/faculty/courses'))} />
+
       <ProtectedRoute path="/dashboard/admin" component={AdminDashboard} requiredUserType="admin" />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
