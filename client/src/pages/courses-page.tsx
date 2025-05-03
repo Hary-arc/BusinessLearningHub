@@ -24,7 +24,7 @@ import {
 
 export default function CoursesPage() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [categoryFilter, setCategoryFilter] = useState<string>("");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
 
   const { data: courses, isLoading, error } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
@@ -35,7 +35,7 @@ export default function CoursesPage() {
   const filteredCourses = courses?.filter(course => {
     const matchesSearch = course.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
                           course.description.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesCategory = categoryFilter === "" || course.category === categoryFilter;
+    const matchesCategory = categoryFilter === "all" || course.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
 
@@ -76,7 +76,7 @@ export default function CoursesPage() {
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="">All Categories</SelectItem>
+                    <SelectItem value="all">All Categories</SelectItem>
                     {categories.map(category => (
                       <SelectItem key={category} value={category}>
                         {category}
