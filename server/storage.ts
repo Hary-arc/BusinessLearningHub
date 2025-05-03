@@ -327,11 +327,13 @@ export class MemStorage implements IStorage {
   }
 }
 
+export const storage = new MemStorage();
+
 // Add test user if it doesn't exist
 async function ensureTestUser() {
-  const testUser = await (new MemStorage()).getUserByUsername("testuser");
+  const testUser = await storage.getUserByUsername("testuser");
   if (!testUser) {
-    await (new MemStorage()).createUser({
+    await storage.createUser({
       username: "testuser",
       password: await hashPassword("Test123"), // Secure test password
       email: "test@example.com",
@@ -343,5 +345,3 @@ async function ensureTestUser() {
 
 // Call this when initializing storage
 ensureTestUser().catch(console.error);
-
-export const storage = new MemStorage();
