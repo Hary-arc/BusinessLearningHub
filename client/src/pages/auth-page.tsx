@@ -111,12 +111,6 @@ export default function AuthPage() {
   if (user) {
     return null;
   }
-    resolver: zodResolver(loginSchema),
-    defaultValues: {
-      username: "",
-      password: "",
-    },
-  });
 
   const registerForm = useForm<RegisterData>({
     resolver: zodResolver(registerSchema),
