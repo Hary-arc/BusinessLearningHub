@@ -38,8 +38,14 @@ import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
-  password: z.string().min(6, "Password must be at least 6 characters"),
+  username: z.string()
+    .min(3, "Username must be at least 3 characters")
+    .max(50, "Username must not exceed 50 characters"),
+  password: z.string()
+    .min(6, "Password must be at least 6 characters")
+    .max(100, "Password must not exceed 100 characters")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one number"),
 });
 
 type LoginData = z.infer<typeof loginSchema>;
@@ -142,8 +148,15 @@ export default function AuthPage() {
                               <FormItem>
                                 <FormLabel>Username</FormLabel>
                                 <FormControl>
-                                  <Input placeholder="Your username" {...field} />
+                                  <Input 
+                                    placeholder="Enter your username" 
+                                    {...field}
+                                    disabled={loginMutation.isPending}
+                                  />
                                 </FormControl>
+                                <p className="text-xs text-muted-foreground">
+                                  Username should be between 3 and 50 characters
+                                </p>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -155,8 +168,16 @@ export default function AuthPage() {
                               <FormItem>
                                 <FormLabel>Password</FormLabel>
                                 <FormControl>
-                                  <Input type="password" placeholder="Your password" {...field} />
+                                  <Input 
+                                    type="password" 
+                                    placeholder="Enter your password" 
+                                    {...field}
+                                    disabled={loginMutation.isPending}
+                                  />
                                 </FormControl>
+                                <p className="text-xs text-muted-foreground">
+                                  Password must contain at least 6 characters, one uppercase letter and one number
+                                </p>
                                 <FormMessage />
                               </FormItem>
                             )}
@@ -166,7 +187,14 @@ export default function AuthPage() {
                             className="w-full mt-4 bg-primary hover:bg-primary/90"
                             disabled={loginMutation.isPending}
                           >
-                            {loginMutation.isPending ? "Logging in..." : "Login"}
+                            {loginMutation.isPending ? (
+                              <>
+                                <span className="animate-spin mr-2">⌛</span>
+                                Logging in...
+                              </>
+                            ) : (
+                              "Login"
+                            )}
                           </Button>
                         </form>
                       </Form>

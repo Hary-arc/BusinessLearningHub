@@ -48,11 +48,15 @@ export function setupAuth(app: Express) {
     new LocalStrategy(async (username, password, done) => {
       try {
         const user = await storage.getUserByUsername(username);
-        if (!user || !(await comparePasswords(password, user.password))) {
-          return done(null, false);
-        } else {
-          return done(null, user);
+        if (!user) {
+          return done(null, false, { message: "Username not found" });
         }
+
+        if (!(await comparePasswords(password, user.password))) {
+          return done(null, false, { message: "Invalid password" });
+        }
+
+        return done(null, user);
       } catch (error) {
         return done(error);
       }
@@ -100,8 +104,8 @@ export function setupAuth(app: Express) {
   app.post("/api/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
       if (err) return next(err);
-      if (!user) return res.status(401).json({ message: "Invalid credentials" });
-      
+      if (!user) return res.status(401).json({ message: info?.message || "Invalid credentials" });
+
       req.login(user, (err) => {
         if (err) return next(err);
         // Remove password from the response

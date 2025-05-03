@@ -13,6 +13,8 @@ import type {
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
+import { hashPassword } from './passwordHasher'; // Assumed location for hashPassword function
+
 
 export interface IStorage {
   // User operations
@@ -21,25 +23,25 @@ export interface IStorage {
   getUserByEmail(email: string): Promise<User | undefined>;
   createUser(user: InsertUser): Promise<User>;
   getAllUsers(): Promise<User[]>;
-  
+
   // Course operations
   getAllCourses(): Promise<Course[]>;
   getCourse(id: number): Promise<Course | undefined>;
   createCourse(course: InsertCourse): Promise<Course>;
   getCoursesByFaculty(facultyId: number): Promise<Course[]>;
-  
+
   // Enrollment operations
   createEnrollment(enrollment: InsertEnrollment): Promise<Enrollment>;
   getEnrollmentsByUser(userId: number): Promise<(Enrollment & { course: Course })[]>;
-  
+
   // Subscription operations
   createSubscription(subscription: InsertSubscription): Promise<Subscription>;
   getActiveSubscriptionByUser(userId: number): Promise<Subscription | undefined>;
-  
+
   // Review operations
   createReview(review: InsertReview): Promise<Review>;
   getReviewsByCourse(courseId: number): Promise<(Review & { user: Omit<User, "password"> })[]>;
-  
+
   // Session store
   sessionStore: session.SessionStore;
 }
@@ -52,7 +54,7 @@ export class MemStorage implements IStorage {
   private enrollments: Map<number, Enrollment>;
   private subscriptions: Map<number, Subscription>;
   private reviews: Map<number, Review>;
-  
+
   sessionStore: session.SessionStore;
   currentUserId: number;
   currentCourseId: number;
@@ -66,17 +68,17 @@ export class MemStorage implements IStorage {
     this.enrollments = new Map();
     this.subscriptions = new Map();
     this.reviews = new Map();
-    
+
     this.sessionStore = new MemoryStore({
       checkPeriod: 86400000 // 24 hours
     });
-    
+
     this.currentUserId = 1;
     this.currentCourseId = 1;
     this.currentEnrollmentId = 1;
     this.currentSubscriptionId = 1;
     this.currentReviewId = 1;
-    
+
     // Seed some initial data
     this.seedData();
   }
@@ -155,7 +157,7 @@ export class MemStorage implements IStorage {
     const userEnrollments = Array.from(this.enrollments.values()).filter(
       (enrollment) => enrollment.userId === userId
     );
-    
+
     return userEnrollments.map(enrollment => {
       const course = this.courses.get(enrollment.courseId);
       if (!course) {
@@ -172,7 +174,7 @@ export class MemStorage implements IStorage {
       id,
       active: true
     };
-    
+
     // Deactivate any existing active subscriptions for this user
     for (const sub of this.subscriptions.values()) {
       if (sub.userId === insertSubscription.userId && sub.active) {
@@ -180,7 +182,7 @@ export class MemStorage implements IStorage {
         this.subscriptions.set(sub.id, sub);
       }
     }
-    
+
     this.subscriptions.set(id, subscription);
     return subscription;
   }
@@ -200,22 +202,22 @@ export class MemStorage implements IStorage {
       createdAt: now
     };
     this.reviews.set(id, review);
-    
+
     // Update course rating
     const course = this.courses.get(insertReview.courseId);
     if (course) {
       const courseReviews = Array.from(this.reviews.values()).filter(
         (r) => r.courseId === insertReview.courseId
       );
-      
+
       const totalRating = courseReviews.reduce((sum, r) => sum + r.rating, 0);
       const avgRating = Math.round((totalRating / courseReviews.length) * 10) / 10;
-      
+
       course.rating = avgRating;
       course.reviewCount = courseReviews.length;
       this.courses.set(course.id, course);
     }
-    
+
     return review;
   }
 
@@ -223,13 +225,13 @@ export class MemStorage implements IStorage {
     const courseReviews = Array.from(this.reviews.values()).filter(
       (review) => review.courseId === courseId
     );
-    
+
     return courseReviews.map(review => {
       const user = this.users.get(review.userId);
       if (!user) {
         throw new Error(`User with id ${review.userId} not found`);
       }
-      
+
       const { password, ...userWithoutPassword } = user;
       return { ...review, user: userWithoutPassword };
     });
@@ -324,5 +326,22 @@ export class MemStorage implements IStorage {
     });
   }
 }
+
+// Add test user if it doesn't exist
+async function ensureTestUser() {
+  const testUser = await (new MemStorage()).getUserByUsername("testuser");
+  if (!testUser) {
+    await (new MemStorage()).createUser({
+      username: "testuser",
+      password: await hashPassword("Test123"), // Secure test password
+      email: "test@example.com",
+      fullName: "Test User",
+      userType: "student"
+    });
+  }
+}
+
+// Call this when initializing storage
+ensureTestUser().catch(console.error);
 
 export const storage = new MemStorage();
