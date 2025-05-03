@@ -112,18 +112,6 @@ export default function AuthPage() {
     return null;
   }
 
-  const registerForm = useForm<RegisterData>({
-    resolver: zodResolver(registerSchema),
-    defaultValues: {
-      username: "",
-      fullName: "",
-      email: "",
-      password: "",
-      confirmPassword: "",
-      userType: "student",
-    },
-  });
-
   const onLoginSubmit = (data: LoginData) => {
     loginMutation.mutate(data);
   };
