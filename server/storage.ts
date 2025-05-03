@@ -274,22 +274,52 @@ export class MemStorage implements IStorage {
     });
 
     const course2 = this.createCourse({
-      title: "Financial Planning for Entrepreneurs",
-      description: "Master budgeting, cash flow management, and investment strategies to ensure your business thrives financially.",
-      imageUrl: "https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1036&q=80",
-      price: 9900,
+      title: "Machine Learning Fundamentals",
+      description: "Learn the core concepts of ML, including supervised and unsupervised learning, neural networks, and practical applications.",
+      imageUrl: "https://images.unsplash.com/photo-1527430253228-e93688616381?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+      price: 14900,
       facultyId: 2,
-      category: "Finance",
+      category: "AI & ML",
       published: true
     });
 
     const course3 = this.createCourse({
-      title: "Digital Transformation for Small Businesses",
-      description: "Implement digital tools and strategies to streamline operations, enhance customer experience, and boost profitability.",
-      imageUrl: "https://images.unsplash.com/photo-1531482615713-2afd69097998?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80",
+      title: "Cybersecurity Essentials",
+      description: "Master fundamental security concepts, threat detection, and protection strategies for modern digital systems.",
+      imageUrl: "https://images.unsplash.com/photo-1563986768609-322da13575f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
       price: 12900,
       facultyId: 3,
-      category: "Technology",
+      category: "Security",
+      published: true
+    });
+
+    const course4 = this.createCourse({
+      title: "Cloud Computing with AWS",
+      description: "Comprehensive guide to cloud architecture, deployment, and management using Amazon Web Services.",
+      imageUrl: "https://images.unsplash.com/photo-1451187580459-43490279c0fa?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+      price: 13900,
+      facultyId: 1,
+      category: "Cloud",
+      published: true
+    });
+
+    const course5 = this.createCourse({
+      title: "Digital Marketing Mastery",
+      description: "Learn effective digital marketing strategies, SEO, social media marketing, and analytics.",
+      imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+      price: 9900,
+      facultyId: 2,
+      category: "Marketing",
+      published: true
+    });
+
+    const course6 = this.createCourse({
+      title: "AI for Business Innovation",
+      description: "Explore how AI can transform business operations, customer experience, and decision-making processes.",
+      imageUrl: "https://images.unsplash.com/photo-1677442136019-21efb252c118?ixlib=rb-4.0.3&auto=format&fit=crop&w=1470&q=80",
+      price: 15900,
+      facultyId: 3,
+      category: "AI & ML",
       published: true
     });
   }

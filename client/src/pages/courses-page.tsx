@@ -48,41 +48,43 @@ export default function CoursesPage() {
       <main className="flex-grow py-12 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-10">
-            <h1 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            <h1 className="text-4xl font-extrabold text-gray-900 sm:text-5xl bg-clip-text text-transparent bg-gradient-to-r from-primary to-primary-600">
               Explore Our Courses
             </h1>
-            <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-500">
-              Find the perfect course to enhance your business knowledge and skills
+            <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600">
+              Discover world-class courses in AI, Cloud Computing, Cybersecurity and more
             </p>
           </div>
 
-          <div className="flex flex-col md:flex-row gap-4 mb-8">
-            <div className="flex-1 relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search className="h-5 w-5 text-gray-400" />
+          <div className="bg-white p-6 rounded-lg shadow-sm mb-8">
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="flex-1 relative">
+                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                  <Search className="h-5 w-5 text-gray-400" />
+                </div>
+                <Input
+                  type="text"
+                  placeholder="Search courses by name or description..."
+                  className="pl-10 bg-gray-50 border-gray-200"
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                />
               </div>
-              <Input
-                type="text"
-                placeholder="Search courses..."
-                className="pl-10"
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-              />
-            </div>
-            <div className="w-full md:w-64">
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Filter by category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="">All Categories</SelectItem>
-                  {categories.map(category => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+              <div className="w-full md:w-64">
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="bg-gray-50 border-gray-200">
+                    <SelectValue placeholder="All Categories" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="">All Categories</SelectItem>
+                    {categories.map(category => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
           </div>
 
