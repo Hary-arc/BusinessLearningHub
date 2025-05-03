@@ -15,6 +15,7 @@ import AdminDashboard from "@/pages/dashboard/admin-dashboard";
 import NotFound from "@/pages/not-found";
 import AboutPage from "./pages/about-page";
 import ContactPage from "./pages/contact-page";
+import CareersPage from "./pages/careers-page";
 import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
@@ -29,6 +30,7 @@ function Router() {
       <ProtectedRoute path="/dashboard/admin" component={AdminDashboard} requiredUserType="admin" />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
+      <Route path="/careers" component={CareersPage} />
       <Route component={NotFound} />
     </Switch>
   );

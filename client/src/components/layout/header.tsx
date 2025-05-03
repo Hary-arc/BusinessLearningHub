@@ -44,6 +44,7 @@ export function Header() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Courses", href: "/courses" },
+    { name: "Careers", href: "/careers" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
