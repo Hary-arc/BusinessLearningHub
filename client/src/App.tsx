@@ -13,6 +13,8 @@ import StudentDashboard from "@/pages/dashboard/student-dashboard";
 import FacultyDashboard from "@/pages/dashboard/faculty-dashboard";
 import AdminDashboard from "@/pages/dashboard/admin-dashboard";
 import NotFound from "@/pages/not-found";
+import AboutPage from "./pages/about-page";
+import ContactPage from "./pages/contact-page";
 import { ProtectedRoute } from "./lib/protected-route";
 
 function Router() {
@@ -25,6 +27,8 @@ function Router() {
       <ProtectedRoute path="/dashboard/student" component={StudentDashboard} requiredUserType="student" />
       <ProtectedRoute path="/dashboard/faculty" component={FacultyDashboard} requiredUserType="faculty" />
       <ProtectedRoute path="/dashboard/admin" component={AdminDashboard} requiredUserType="admin" />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/contact" component={ContactPage} />
       <Route component={NotFound} />
     </Switch>
   );

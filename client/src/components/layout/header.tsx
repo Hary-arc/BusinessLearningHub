@@ -28,7 +28,7 @@ export function Header() {
 
   const getDashboardLink = () => {
     if (!user) return "/auth";
-    
+
     switch (user.userType) {
       case "student":
         return "/dashboard/student";
@@ -74,7 +74,7 @@ export function Header() {
               ))}
             </nav>
           </div>
-          
+
           <div className="flex items-center">
             {user ? (
               <div className="hidden md:flex items-center">
@@ -129,7 +129,7 @@ export function Header() {
                 </Link>
               </div>
             )}
-            
+
             {/* Mobile menu button */}
             <div className="md:hidden flex items-center">
               <Button 
@@ -144,7 +144,7 @@ export function Header() {
           </div>
         </div>
       </div>
-      
+
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden">
@@ -239,3 +239,14 @@ export function Header() {
     </header>
   );
 }
+
+// Placeholder components -  replace with actual components as needed
+function AboutPage() {
+  return <div>About Us</div>;
+}
+
+function ContactPage() {
+  return <div>Contact Information</div>;
+}
+
+export {AboutPage, ContactPage};
