@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useAuth } from "@/hooks/use-auth";
 import { RegisterData } from "@/hooks/use-auth";
@@ -80,13 +80,37 @@ export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
 
-  // Redirect to home page if user is already logged in
+  const loginForm = useForm<LoginData>({
+    resolver: zodResolver(loginSchema),
+    defaultValues: {
+      username: "",
+      password: "",
+    },
+  });
+
+  const registerForm = useForm<RegisterData>({
+    resolver: zodResolver(registerSchema),
+    defaultValues: {
+      username: "",
+      fullName: "",
+      email: "",
+      password: "",
+      confirmPassword: "",
+      userType: "student",
+    },
+  });
+
+  useEffect(() => {
+    // Redirect to home page if user is already logged in
+    if (user) {
+      navigate("/");
+    }
+  }, [user, navigate]);
+
+  // Don't render content if user is logged in
   if (user) {
-    navigate("/");
     return null;
   }
-
-  const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
