@@ -97,6 +97,15 @@ export const insertEnrollmentSchema = createInsertSchema(enrollments).pick({
 });
 
 // Reviews model
+export const payments = pgTable("payments", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").notNull(),
+  amount: integer("amount").notNull(),
+  status: text("status").notNull(),
+  stripePaymentId: text("stripe_payment_id").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
 export const reviews = pgTable("reviews", {
   id: serial("id").primaryKey(),
   userId: integer("user_id").notNull(),

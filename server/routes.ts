@@ -159,7 +159,37 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  app.get("/api/courses/:id/reviews", async (req, res) => {
+  // Payment routes
+app.post("/api/payments/create-intent", async (req, res) => {
+  try {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    const { amount } = req.body;
+    const paymentIntent = await createPaymentIntent(amount);
+    res.json({ clientSecret: paymentIntent.client_secret });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create payment intent" });
+  }
+});
+
+app.post("/api/payments/create-subscription", async (req, res) => {
+  try {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    const { priceId } = req.body;
+    const user = req.user as Express.User;
+    const subscription = await createSubscription(user.stripeCustomerId, priceId);
+    res.json(subscription);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create subscription" });
+  }
+});
+
+app.get("/api/courses/:id/reviews", async (req, res) => {
     try {
       const courseId = parseInt(req.params.id);
       const reviews = await storage.getReviewsByCourse(courseId);
