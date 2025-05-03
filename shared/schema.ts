@@ -2,6 +2,23 @@ import { pgTable, text, serial, integer, boolean, timestamp, primaryKey } from "
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
 
+export const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+});
+
+export const registerSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(6, "Password must be at least 6 characters"),
+  fullName: z.string().min(1, "Full name is required"),
+  email: z.string().email("Invalid email address"),
+  userType: z.enum(["student", "faculty"]),
+  confirmPassword: z.string()
+}).refine((data) => data.password === data.confirmPassword, {
+  message: "Passwords don't match",
+  path: ["confirmPassword"],
+});
+
 // User model
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
