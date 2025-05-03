@@ -11,7 +11,7 @@ export function Footer() {
           <div className="space-y-8 xl:col-span-1">
             <div className="flex items-center">
               <Building className="h-8 w-8 text-white" />
-              <span className="ml-2 text-xl font-bold text-white">BusinessLearn</span>
+              <span className="ml-2 text-xl font-bold text-white">CatterpiWeb</span>
             </div>
             <p className="text-gray-300 text-base">
               Empowering local businesses and entrepreneurs through accessible, practical education.
@@ -144,7 +144,7 @@ export function Footer() {
         </div>
         <div className="mt-12 border-t border-gray-700 pt-8">
           <p className="text-base text-gray-400 xl:text-center">
-            &copy; 2023 BusinessLearn, Inc. All rights reserved.
+            &copy; 2023 CatterpiWeb, Inc. All rights reserved.
           </p>
         </div>
       </div>
