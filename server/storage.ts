@@ -13,7 +13,7 @@ import type {
 } from "@shared/schema";
 import createMemoryStore from "memorystore";
 import session from "express-session";
-import { hashPassword } from './passwordHasher'; // Assumed location for hashPassword function
+import { hashPassword } from './passwordHasher.js';
 
 
 export interface IStorage {
