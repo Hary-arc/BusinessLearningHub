@@ -35,6 +35,7 @@ function Router() {
       <Route path="/dashboard/faculty/courses" component={lazy(() => import('./pages/dashboard/faculty/courses'))} />
 
       <ProtectedRoute path="/dashboard/admin" component={AdminDashboard} requiredUserType="admin" />
+      <ProtectedRoute path="/dashboard/admin/control" component={lazy(() => import('./pages/dashboard/admin/admin-control-panel'))} requiredUserType="admin" />
       <Route path="/about" component={AboutPage} />
       <Route path="/contact" component={ContactPage} />
       <Route path="/careers" component={CareersPage} />
