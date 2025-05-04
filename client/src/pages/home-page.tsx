@@ -1,6 +1,7 @@
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { HeroSection } from "@/components/home/hero-section";
+import { CompanyLogos } from "@/components/home/company-logos";
 import { FeaturedCourses } from "@/components/home/featured-courses";
 import { SubscriptionPlans } from "@/components/home/subscription-plans";
 import { Testimonials } from "@/components/home/testimonials";
@@ -14,6 +15,7 @@ export default function HomePage() {
       <Header />
       <main className="flex-grow">
         <HeroSection />
+        <CompanyLogos />
         <FeaturedCourses />
         <SubscriptionPlans />
         <Testimonials />
