@@ -43,7 +43,7 @@ const userTypes: UserTypeInfo[] = [
   },
   {
     id: "admin",
-    title: "Administrator & Affiliates",
+    title: "Affiliates",
     description: "Manage platform settings, user access, and partnership opportunities with our comprehensive admin tools.",
     icon: <Users className="h-8 w-8" />,
     features: [

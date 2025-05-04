@@ -47,6 +47,7 @@ export function Header() {
     { name: "Careers", href: "/careers" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
+    { name: "Affiliates", href: "/affiliates" }, // Added Affiliates
   ];
 
   return (
