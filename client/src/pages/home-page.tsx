@@ -6,6 +6,7 @@ import { SubscriptionPlans } from "@/components/home/subscription-plans";
 import { Testimonials } from "@/components/home/testimonials";
 import { UserTypes } from "@/components/home/user-types";
 import { CTASection } from "@/components/home/cta-section";
+import { FAQSection } from "@/components/home/faq-section";
 
 export default function HomePage() {
   return (
@@ -17,6 +18,7 @@ export default function HomePage() {
         <SubscriptionPlans />
         <Testimonials />
         <UserTypes />
+        <FAQSection />
         <CTASection />
       </main>
       <Footer />
