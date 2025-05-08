@@ -71,7 +71,7 @@ export default function CourseDetailPage() {
     },
   });
 
-  const handleEnroll = () => {
+  const handleEnroll = async () => {
     if (!user) {
       toast({
         title: "Login required",
@@ -80,8 +80,73 @@ export default function CourseDetailPage() {
       navigate("/auth");
       return;
     }
-    
-    enrollMutation.mutate();
+
+    try {
+      // Create Razorpay order
+      const orderResponse = await fetch('/api/payments/create-order', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ amount: course.price })
+      });
+      const { orderId, keyId } = await orderResponse.json();
+
+      // Initialize payment
+      const paymentHandler = new window.Razorpay({
+        key: keyId,
+        amount: course.price,
+        currency: "INR",
+        name: "Business Learn",
+        description: `Enrollment for ${course.title}`,
+        order_id: orderId,
+        handler: async function (response: any) {
+          try {
+            // Verify payment
+            const verifyResponse = await fetch('/api/payments/verify', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                orderId: response.razorpay_order_id,
+                paymentId: response.razorpay_payment_id,
+                signature: response.razorpay_signature
+              })
+            });
+            
+            const { valid } = await verifyResponse.json();
+            if (valid) {
+              // Complete enrollment after successful payment
+              enrollMutation.mutate();
+            } else {
+              toast({
+                title: "Payment verification failed",
+                description: "Please try again or contact support",
+                variant: "destructive"
+              });
+            }
+          } catch (error) {
+            toast({
+              title: "Payment verification failed",
+              description: "Please try again or contact support",
+              variant: "destructive"
+            });
+          }
+        },
+        prefill: {
+          name: user.fullName,
+          email: user.email
+        },
+        theme: {
+          color: "#2563eb"
+        }
+      });
+      
+      paymentHandler.open();
+    } catch (error) {
+      toast({
+        title: "Payment initialization failed",
+        description: "Please try again or contact support",
+        variant: "destructive"
+      });
+    }
   };
 
   // Format price from cents to dollars

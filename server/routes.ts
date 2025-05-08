@@ -74,6 +74,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
         ...req.body,
         userId: user.id,
       });
+
+      // Verify course payment status before enrollment
+      const course = await storage.getCourse(validatedData.courseId);
+      if (!course) {
+        return res.status(404).json({ message: "Course not found" });
+      }
+
+      // Check for active subscription or course payment
+      const subscription = await storage.getActiveSubscriptionByUser(user.id);
+      if (!subscription) {
+        return res.status(402).json({ message: "Payment required. Please purchase the course or subscribe." });
+      }
       
       const enrollment = await storage.createEnrollment(validatedData);
       res.status(201).json(enrollment);
