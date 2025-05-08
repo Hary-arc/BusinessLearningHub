@@ -160,6 +160,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   // Payment routes
+app.post("/api/payments/create-order", async (req, res) => {
+  try {
+    if (!req.isAuthenticated()) {
+      return res.status(401).json({ message: "Not authenticated" });
+    }
+    
+    const { amount } = req.body;
+    const order = await createOrder(amount);
+    res.json({ 
+      orderId: order.id,
+      keyId: process.env.RAZORPAY_KEY_ID
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Failed to create order" });
+  }
+});
+
+app.post("/api/payments/verify", async (req, res) => {
+  try {
+    const { orderId, paymentId, signature } = req.body;
+    const isValid = await verifyPayment(orderId, paymentId, signature);
+    res.json({ valid: isValid });
+  } catch (error) {
+    res.status(500).json({ message: "Payment verification failed" });
+  }
+});
+
 app.post("/api/payments/create-intent", async (req, res) => {
   try {
     if (!req.isAuthenticated()) {
