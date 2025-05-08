@@ -1,5 +1,6 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import { Express } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
@@ -43,6 +44,32 @@ export function setupAuth(app: Express) {
   app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
+
+  // Google OAuth Strategy
+  passport.use(new GoogleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID || "",
+    clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
+    callbackURL: "/api/auth/google/callback"
+  }, async (accessToken, refreshToken, profile, done) => {
+    try {
+      let user = await storage.getUserByEmail(profile.emails?.[0]?.value || "");
+      
+      if (!user) {
+        // Create new user if doesn't exist
+        user = await storage.createUser({
+          username: profile.emails?.[0]?.value?.split("@")[0] || profile.id,
+          email: profile.emails?.[0]?.value || "",
+          password: "", // Empty password for Google auth
+          fullName: profile.displayName,
+          userType: "student"
+        });
+      }
+      
+      return done(null, user);
+    } catch (error) {
+      return done(error as Error);
+    }
+  }));
 
   passport.use(
     new LocalStrategy(async (username, password, done) => {
@@ -128,4 +155,16 @@ export function setupAuth(app: Express) {
     const { password, ...userWithoutPassword } = req.user as User;
     res.json(userWithoutPassword);
   });
+
+  // Google Auth Routes
+  app.get("/api/auth/google", passport.authenticate("google", {
+    scope: ["profile", "email"]
+  }));
+
+  app.get("/api/auth/google/callback", 
+    passport.authenticate("google", { 
+      failureRedirect: "/auth",
+      successRedirect: "/"
+    })
+  );
 }
