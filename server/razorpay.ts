@@ -11,11 +11,20 @@ export const razorpay = new Razorpay({
 });
 
 export async function createOrder(amount: number) {
-  return razorpay.orders.create({
-    amount: amount * 100, // Convert to smallest currency unit (paise)
-    currency: 'INR',
-    receipt: `receipt_${Date.now()}`,
-  });
+  try {
+    if (!amount || amount <= 0) {
+      throw new Error('Invalid amount specified');
+    }
+    
+    return await razorpay.orders.create({
+      amount: Math.round(amount * 100), // Convert to smallest currency unit (paise) and ensure integer
+      currency: 'INR',
+      receipt: `receipt_${Date.now()}`,
+    });
+  } catch (error: any) {
+    console.error('Razorpay order creation failed:', error);
+    throw new Error(error.message || 'Failed to create payment order');
+  }
 }
 
 export async function verifyPayment(orderId: string, paymentId: string, signature: string) {

@@ -28,7 +28,15 @@ export function PaymentHandler({ amount, onSuccess, onError }: PaymentHandlerPro
         body: JSON.stringify({ amount })
       });
       
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.message || 'Failed to create payment order');
+      }
+      
       const { orderId, keyId } = await response.json();
+      if (!orderId || !keyId) {
+        throw new Error('Invalid payment configuration received');
+      }
 
       const options = {
         key: keyId,
