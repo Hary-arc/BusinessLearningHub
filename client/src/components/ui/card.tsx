@@ -1,7 +1,6 @@
 import * as React from "react"
 
 import { cn } from "@/lib/utils"
-import { Dialog, DialogTrigger } from "@/components/ui/dialog"
 
 const Card = React.forwardRef<
   HTMLDivElement,
