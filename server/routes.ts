@@ -279,6 +279,29 @@ app.get("/api/courses/:id/reviews", async (req, res) => {
     }
   });
 
+  app.get("/api/admin/students", async (req, res) => {
+    try {
+      if (!req.isAuthenticated()) {
+        return res.status(401).json({ message: "Not authenticated" });
+      }
+      
+      const user = req.user as Express.User;
+      if (user.userType !== "admin") {
+        return res.status(403).json({ message: "Only admins can access this" });
+      }
+      
+      const db = await mongoDb.getDb("learning_platform");
+      const students = await db.collection("users")
+        .find({ userType: "student" })
+        .project({ password: 0 })
+        .toArray();
+      
+      res.json(students);
+    } catch (error) {
+      res.status(500).json({ message: "Failed to fetch students" });
+    }
+  });
+
   const httpServer = createServer(app);
   return httpServer;
 }

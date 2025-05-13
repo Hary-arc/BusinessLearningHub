@@ -41,6 +41,10 @@ export default function AdminDashboard() {
     queryKey: ["/api/admin/users"],
   });
 
+  const { data: students, isLoading: isLoadingStudents } = useQuery<Omit<User, "password">[]>({
+    queryKey: ["/api/admin/students"],
+  });
+
   const { data: courses, isLoading: isLoadingCourses } = useQuery<Course[]>({
     queryKey: ["/api/courses"],
   });
@@ -112,7 +116,56 @@ export default function AdminDashboard() {
                 title="Active Subscriptions" 
                 value={activeSubscriptions.toString()} 
                 icon={<TrendingUp className="h-8 w-8 text-orange-500" />} 
-                description="Current subscribers" 
+                description="Current subscribers"
+              />
+            </div>
+
+            <Card className="mt-8">
+              <CardHeader>
+                <CardTitle>Student Management</CardTitle>
+                <CardDescription>View and manage student data</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="rounded-md border">
+                  <Table>
+                    <TableHeader>
+                      <TableRow>
+                        <TableHead>Name</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Status</TableHead>
+                        <TableHead>Enrollments</TableHead>
+                        <TableHead>Actions</TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {isLoadingStudents ? (
+                        <TableRow>
+                          <TableCell colSpan={5}>
+                            <Skeleton className="h-4 w-full" />
+                          </TableCell>
+                        </TableRow>
+                      ) : students?.map((student) => (
+                        <TableRow key={student.id}>
+                          <TableCell>{student.fullName}</TableCell>
+                          <TableCell>{student.email}</TableCell>
+                          <TableCell>
+                            <Badge variant={student.status === "active" ? "default" : "secondary"}>
+                              {student.status || "Active"}
+                            </Badge>
+                          </TableCell>
+                          <TableCell>{student.enrollments?.length || 0}</TableCell>
+                          <TableCell>
+                            <Button variant="outline" size="sm">
+                              View Details
+                            </Button>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                </div>
+              </CardContent>
+            </Card> 
               />
             </div>
 
