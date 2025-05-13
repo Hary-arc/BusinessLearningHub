@@ -5,6 +5,8 @@ import { CheckIcon } from "lucide-react";
 
 interface UserTypeFeature {
   text: string;
+  icon?: React.ReactNode;
+  description?: string;
 }
 
 interface UserTypeInfo {
