@@ -294,8 +294,8 @@ app.get("/api/courses/:id/reviews", async (req, res) => {
       const db = await mongoDb.getDb("learning_platform");
       const students = await db.collection("users")
         .find({ userType: "student" })
-        .project({ password: 0 })
-        .toArray();
+        .project({ password: 0, _id: 0 })
+        .toArray() || [];
       
       res.json(students);
     } catch (error) {

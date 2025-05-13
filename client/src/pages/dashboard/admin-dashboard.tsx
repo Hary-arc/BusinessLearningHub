@@ -6,8 +6,6 @@ import { Footer } from "@/components/layout/footer";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { 
   Table, 
   TableBody, 
@@ -17,8 +15,9 @@ import {
   TableRow 
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { 
   BarChart, 
   Bar, 
@@ -54,7 +53,7 @@ export default function AdminDashboard() {
   const totalStudents = users?.filter(u => u.userType === "student")?.length || 0;
   const totalFaculty = users?.filter(u => u.userType === "faculty")?.length || 0;
   const totalAdmins = users?.filter(u => u.userType === "admin")?.length || 0;
-  
+
   const totalCourses = courses?.length || 0;
   const totalRevenue = 12580; // Mock data as we don't have this API endpoint
   const activeSubscriptions = 45; // Mock data
@@ -88,10 +87,10 @@ export default function AdminDashboard() {
       <Header />
       <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardHeader title="Admin Dashboard" subtitle="Manage platform, users, and content" />
-        
+
         <div className="flex flex-col lg:flex-row gap-8 mt-8">
           <DashboardSidebar userType="admin" />
-          
+
           <main className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatsCard 
@@ -165,9 +164,8 @@ export default function AdminDashboard() {
                   </Table>
                 </div>
               </CardContent>
-            </Card> 
-              />
-            </div>
+            </Card>
+          
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card>
@@ -195,7 +193,7 @@ export default function AdminDashboard() {
                   </div>
                 </CardContent>
               </Card>
-              
+
               <Card>
                 <CardHeader>
                   <CardTitle>User Distribution</CardTitle>
@@ -236,7 +234,7 @@ export default function AdminDashboard() {
                 <TabsTrigger value="courses">Courses</TabsTrigger>
                 <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="users">
                 <Card>
                   <CardHeader>
@@ -303,7 +301,7 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               </TabsContent>
-              
+
               <TabsContent value="courses">
                 <Card>
                   <CardHeader>
@@ -375,7 +373,7 @@ export default function AdminDashboard() {
                     )}
                   </CardContent>
                 </Card>
-                
+
                 <Card className="mt-6">
                   <CardHeader>
                     <CardTitle>Course Enrollments</CardTitle>
@@ -398,7 +396,7 @@ export default function AdminDashboard() {
                   </CardContent>
                 </Card>
               </TabsContent>
-              
+
               <TabsContent value="subscriptions">
                 <Card>
                   <CardHeader>
@@ -479,7 +477,7 @@ export default function AdminDashboard() {
                     </div>
                   </CardContent>
                 </Card>
-                
+
                 <Card className="mt-6">
                   <CardHeader>
                     <CardTitle>Subscription Distribution</CardTitle>
