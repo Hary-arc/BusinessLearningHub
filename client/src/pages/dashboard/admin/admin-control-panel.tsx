@@ -12,6 +12,14 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@radix-ui/react-tabs";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import "@/components/ui/tabs.css";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -102,12 +110,28 @@ export default function AdminControlPanel() {
                       >
                         Suspend
                       </Button>
-                      <Button 
-                        variant="outline"
-                        onClick={() => setSelectedUser(user.id)}
-                      >
-                        Manage
-                      </Button>
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="outline">
+                            Manage
+                          </Button>
+                        </DialogTrigger>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>Manage User</DialogTitle>
+                            <DialogDescription>
+                              Make changes to user account.
+                            </DialogDescription>
+                          </DialogHeader>
+                          <div className="space-y-4 py-4">
+                            <div className="flex items-center space-x-4">
+                              <Button onClick={() => setSelectedUser(user.id)}>
+                                View Details
+                              </Button>
+                            </div>
+                          </div>
+                        </DialogContent>
+                      </Dialog>
                     </div>
                   </div>
                 ))}
