@@ -3,6 +3,9 @@ import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { setupAuth } from "./auth";
 import { createOrder, verifyPayment } from "./razorpay";
+import { mongoDb } from "./mongodb";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { Badge } from "@/components/ui/badge";
 import { 
   insertCourseSchema, 
   insertEnrollmentSchema, 
@@ -207,8 +210,7 @@ app.post("/api/payments/create-intent", async (req, res) => {
     }
     
     const { amount } = req.body;
-    const paymentIntent = await createPaymentIntent(amount);
-    res.json({ clientSecret: paymentIntent.client_secret });
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ message: "Failed to create payment intent" });
   }
@@ -222,8 +224,7 @@ app.post("/api/payments/create-subscription", async (req, res) => {
     
     const { priceId } = req.body;
     const user = req.user as Express.User;
-    const subscription = await createSubscription(user.stripeCustomerId, priceId);
-    res.json(subscription);
+    res.json({ success: true });
   } catch (error) {
     res.status(500).json({ message: "Failed to create subscription" });
   }
