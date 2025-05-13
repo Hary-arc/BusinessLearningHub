@@ -76,7 +76,9 @@ export default function StudentDashboard() {
               <TabsList className="mb-8">
                 <TabsTrigger value="my-courses">My Courses</TabsTrigger>
                 <TabsTrigger value="subscription">Subscription</TabsTrigger>
-                <TabsTrigger value="certificates">Certificates</TabsTrigger>
+                <TabsTrigger value="certificates" asChild>
+                <Link href="/dashboard/student/certificates">Certificates</Link>
+              </TabsTrigger>
               </TabsList>
               
               <TabsContent value="my-courses">
@@ -104,7 +106,9 @@ export default function StudentDashboard() {
                 ) : enrollments?.length ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {enrollments.map(enrollment => (
-                      <EnrollmentCard key={enrollment.id} enrollment={enrollment} />
+                      <Link href={`/courses/${enrollment.course.id}`} key={enrollment.id}>
+                        <EnrollmentCard enrollment={enrollment} />
+                      </Link>
                     ))}
                   </div>
                 ) : (

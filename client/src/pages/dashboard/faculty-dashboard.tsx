@@ -121,14 +121,14 @@ export default function FacultyDashboard() {
       <Header />
       <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <DashboardHeader title="Faculty Dashboard" subtitle="Manage your courses and track student progress" />
-        
+
         <div className="flex flex-col lg:flex-row gap-8 mt-8">
           <DashboardSidebar userType="faculty" />
-          
+
           <main className="flex-1">
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8">
               <h2 className="text-xl font-bold text-gray-900">Course Management</h2>
-              
+
               <Dialog>
                 <DialogTrigger asChild>
                   <Button>
@@ -143,7 +143,7 @@ export default function FacultyDashboard() {
                       Fill in the details to create a new course. Click save when you're done.
                     </DialogDescription>
                   </DialogHeader>
-                  
+
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
                       <FormField
@@ -159,7 +159,7 @@ export default function FacultyDashboard() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="description"
@@ -173,7 +173,7 @@ export default function FacultyDashboard() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <div className="grid grid-cols-2 gap-4">
                         <FormField
                           control={form.control}
@@ -199,7 +199,7 @@ export default function FacultyDashboard() {
                             </FormItem>
                           )}
                         />
-                        
+
                         <FormField
                           control={form.control}
                           name="price"
@@ -220,7 +220,7 @@ export default function FacultyDashboard() {
                           )}
                         />
                       </div>
-                      
+
                       <FormField
                         control={form.control}
                         name="imageUrl"
@@ -237,7 +237,7 @@ export default function FacultyDashboard() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <FormField
                         control={form.control}
                         name="published"
@@ -260,7 +260,7 @@ export default function FacultyDashboard() {
                           </FormItem>
                         )}
                       />
-                      
+
                       <DialogFooter>
                         <Button type="submit" disabled={createCourseMutation.isPending}>
                           {createCourseMutation.isPending ? "Creating..." : "Create Course"}
@@ -271,7 +271,7 @@ export default function FacultyDashboard() {
                 </DialogContent>
               </Dialog>
             </div>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatsCard 
                 title="Total Courses" 
@@ -305,7 +305,7 @@ export default function FacultyDashboard() {
                 <TabsTrigger value="published">Published</TabsTrigger>
                 <TabsTrigger value="drafts">Drafts</TabsTrigger>
               </TabsList>
-              
+
               <TabsContent value="all-courses">
                 {isLoading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -354,7 +354,7 @@ export default function FacultyDashboard() {
                         </CardContent>
                         <CardFooter className="p-4 pt-0 flex justify-between">
                           <p className="font-medium text-primary">${(course.price / 100).toFixed(2)}</p>
-                          <Link href={`/courses/${course.id}`}>
+                          <Link href={`/dashboard/faculty/courses/${course.id}`}>
                             <Button variant="outline" size="sm">Edit Course</Button>
                           </Link>
                         </CardFooter>
@@ -374,7 +374,7 @@ export default function FacultyDashboard() {
                   </Card>
                 )}
               </TabsContent>
-              
+
               <TabsContent value="published">
                 {isLoading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -418,7 +418,9 @@ export default function FacultyDashboard() {
                         </CardContent>
                         <CardFooter className="p-4 pt-0 flex justify-between">
                           <p className="font-medium text-primary">${(course.price / 100).toFixed(2)}</p>
-                          <Button variant="outline" size="sm">Edit Course</Button>
+                          <Link href={`/dashboard/faculty/courses/${course.id}`}>
+                            <Button variant="outline" size="sm">Edit Course</Button>
+                          </Link>
                         </CardFooter>
                       </Card>
                     ))}
@@ -433,7 +435,7 @@ export default function FacultyDashboard() {
                   </Card>
                 )}
               </TabsContent>
-              
+
               <TabsContent value="drafts">
                 {isLoading ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
