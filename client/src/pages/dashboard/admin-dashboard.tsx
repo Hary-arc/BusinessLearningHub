@@ -6,41 +6,52 @@ import { Footer } from "@/components/layout/footer";
 import { DashboardHeader } from "@/components/dashboard/dashboard-header";
 import { DashboardSidebar } from "@/components/dashboard/dashboard-sidebar";
 import { StatsCard } from "@/components/dashboard/stats-card";
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
 } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { 
-  BarChart, 
-  Bar, 
-  XAxis, 
-  YAxis, 
-  CartesianGrid, 
-  Tooltip, 
-  ResponsiveContainer, 
-  PieChart, 
-  Pie, 
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  ResponsiveContainer,
+  PieChart,
+  Pie,
   Cell,
-  Legend 
+  Legend,
 } from "recharts";
 import { Users, BookOpen, DollarSign, TrendingUp } from "lucide-react";
 
 export default function AdminDashboard() {
   const { user } = useAuth();
 
-  const { data: users, isLoading: isLoadingUsers } = useQuery<Omit<User, "password">[]>({
+  const { data: users, isLoading: isLoadingUsers } = useQuery<
+    Omit<User, "password">[]
+  >({
     queryKey: ["/api/admin/users"],
   });
 
-  const { data: students, isLoading: isLoadingStudents } = useQuery<Omit<User, "password">[]>({
+  const { data: students, isLoading: isLoadingStudents } = useQuery<
+    Omit<User, "password">[]
+  >({
     queryKey: ["/api/admin/students"],
   });
 
@@ -50,9 +61,11 @@ export default function AdminDashboard() {
 
   // Calculate stats
   const totalUsers = users?.length || 0;
-  const totalStudents = users?.filter(u => u.userType === "student")?.length || 0;
-  const totalFaculty = users?.filter(u => u.userType === "faculty")?.length || 0;
-  const totalAdmins = users?.filter(u => u.userType === "admin")?.length || 0;
+  const totalStudents =
+    users?.filter((u) => u.userType === "student")?.length || 0;
+  const totalFaculty =
+    users?.filter((u) => u.userType === "faculty")?.length || 0;
+  const totalAdmins = users?.filter((u) => u.userType === "admin")?.length || 0;
 
   const totalCourses = courses?.length || 0;
   const totalRevenue = 12580; // Mock data as we don't have this API endpoint
@@ -86,35 +99,38 @@ export default function AdminDashboard() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DashboardHeader title="Admin Dashboard" subtitle="Manage platform, users, and content" />
+        <DashboardHeader
+          title="Admin Dashboard"
+          subtitle="Manage platform, users, and content"
+        />
 
         <div className="flex flex-col lg:flex-row gap-8 mt-8">
           <DashboardSidebar userType="admin" />
 
           <main className="flex-1">
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
-              <StatsCard 
-                title="Total Users" 
-                value={totalUsers.toString()} 
-                icon={<Users className="h-8 w-8 text-primary" />} 
-                description="Platform users" 
+              <StatsCard
+                title="Total Users"
+                value={totalUsers.toString()}
+                icon={<Users className="h-8 w-8 text-primary" />}
+                description="Platform users"
               />
-              <StatsCard 
-                title="Total Courses" 
-                value={totalCourses.toString()} 
-                icon={<BookOpen className="h-8 w-8 text-blue-500" />} 
-                description="Available courses" 
+              <StatsCard
+                title="Total Courses"
+                value={totalCourses.toString()}
+                icon={<BookOpen className="h-8 w-8 text-blue-500" />}
+                description="Available courses"
               />
-              <StatsCard 
-                title="Revenue" 
-                value={`$${(totalRevenue / 100).toFixed(2)}`} 
-                icon={<DollarSign className="h-8 w-8 text-green-600" />} 
-                description="Total earnings" 
+              <StatsCard
+                title="Revenue"
+                value={`$${(totalRevenue / 100).toFixed(2)}`}
+                icon={<DollarSign className="h-8 w-8 text-green-600" />}
+                description="Total earnings"
               />
-              <StatsCard 
-                title="Active Subscriptions" 
-                value={activeSubscriptions.toString()} 
-                icon={<TrendingUp className="h-8 w-8 text-orange-500" />} 
+              <StatsCard
+                title="Active Subscriptions"
+                value={activeSubscriptions.toString()}
+                icon={<TrendingUp className="h-8 w-8 text-orange-500" />}
                 description="Current subscribers"
               />
             </div>
@@ -143,29 +159,38 @@ export default function AdminDashboard() {
                             <Skeleton className="h-4 w-full" />
                           </TableCell>
                         </TableRow>
-                      ) : students?.map((student) => (
-                        <TableRow key={student.id}>
-                          <TableCell>{student.fullName}</TableCell>
-                          <TableCell>{student.email}</TableCell>
-                          <TableCell>
-                            <Badge variant={student.status === "active" ? "default" : "secondary"}>
-                              {student.status || "Active"}
-                            </Badge>
-                          </TableCell>
-                          <TableCell>{student.enrollments?.length || 0}</TableCell>
-                          <TableCell>
-                            <Button variant="outline" size="sm">
-                              View Details
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
+                      ) : (
+                        students?.map((student) => (
+                          <TableRow key={student.id}>
+                            <TableCell>{student.fullName}</TableCell>
+                            <TableCell>{student.email}</TableCell>
+                            <TableCell>
+                              <Badge
+                                variant={
+                                  student.status === "active"
+                                    ? "default"
+                                    : "secondary"
+                                }
+                              >
+                                {student.status || "Active"}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              {student.enrollments?.length || 0}
+                            </TableCell>
+                            <TableCell>
+                              <Button variant="outline" size="sm">
+                                View Details
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        ))
+                      )}
                     </TableBody>
                   </Table>
                 </div>
               </CardContent>
             </Card>
-          
 
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
               <Card>
@@ -178,16 +203,26 @@ export default function AdminDashboard() {
                 <CardContent>
                   <div className="h-80">
                     <ResponsiveContainer width="100%" height="100%">
-                      <BarChart data={revenueData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                      <BarChart
+                        data={revenueData}
+                        margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+                      >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
                         <YAxis />
-                        <Tooltip 
+                        <Tooltip
                           formatter={(value) => [`$${value}`, "Revenue"]}
                           labelStyle={{ color: "black" }}
-                          contentStyle={{ backgroundColor: "white", borderRadius: "8px" }}
+                          contentStyle={{
+                            backgroundColor: "white",
+                            borderRadius: "8px",
+                          }}
                         />
-                        <Bar dataKey="revenue" fill="#3b82f6" radius={[4, 4, 0, 0]} />
+                        <Bar
+                          dataKey="revenue"
+                          fill="#3b82f6"
+                          radius={[4, 4, 0, 0]}
+                        />
                       </BarChart>
                     </ResponsiveContainer>
                   </div>
@@ -213,7 +248,9 @@ export default function AdminDashboard() {
                           outerRadius={100}
                           fill="#8884d8"
                           dataKey="value"
-                          label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                          label={({ name, percent }) =>
+                            `${name} ${(percent * 100).toFixed(0)}%`
+                          }
                         >
                           {userTypeData.map((entry, index) => (
                             <Cell key={`cell-${index}`} fill={entry.color} />
@@ -266,18 +303,20 @@ export default function AdminDashboard() {
                           <TableBody>
                             {users.map((user) => (
                               <TableRow key={user.id}>
-                                <TableCell className="font-medium">{user.fullName}</TableCell>
+                                <TableCell className="font-medium">
+                                  {user.fullName}
+                                </TableCell>
                                 <TableCell>{user.username}</TableCell>
                                 <TableCell>{user.email}</TableCell>
                                 <TableCell>
-                                  <Badge 
-                                    variant="outline" 
+                                  <Badge
+                                    variant="outline"
                                     className={
-                                      user.userType === 'student' 
-                                        ? 'bg-blue-50 text-blue-700 border-blue-300' 
-                                        : user.userType === 'faculty' 
-                                        ? 'bg-green-50 text-green-700 border-green-300'
-                                        : 'bg-orange-50 text-orange-700 border-orange-300'
+                                      user.userType === "student"
+                                        ? "bg-blue-50 text-blue-700 border-blue-300"
+                                        : user.userType === "faculty"
+                                          ? "bg-green-50 text-green-700 border-green-300"
+                                          : "bg-orange-50 text-orange-700 border-orange-300"
                                     }
                                   >
                                     {user.userType}
@@ -295,7 +334,9 @@ export default function AdminDashboard() {
                       </div>
                     ) : (
                       <div className="text-center py-6">
-                        <h3 className="text-lg font-medium text-gray-900">No Users Found</h3>
+                        <h3 className="text-lg font-medium text-gray-900">
+                          No Users Found
+                        </h3>
                       </div>
                     )}
                   </CardContent>
@@ -333,24 +374,28 @@ export default function AdminDashboard() {
                           <TableBody>
                             {courses.map((course) => (
                               <TableRow key={course.id}>
-                                <TableCell className="font-medium">{course.title}</TableCell>
+                                <TableCell className="font-medium">
+                                  {course.title}
+                                </TableCell>
                                 <TableCell>{course.category}</TableCell>
-                                <TableCell>${(course.price / 100).toFixed(2)}</TableCell>
                                 <TableCell>
-                                  <Badge 
-                                    variant="outline" 
+                                  ${(course.price / 100).toFixed(2)}
+                                </TableCell>
+                                <TableCell>
+                                  <Badge
+                                    variant="outline"
                                     className={
-                                      course.published 
-                                        ? 'bg-green-50 text-green-700 border-green-300' 
-                                        : 'bg-orange-50 text-orange-700 border-orange-300'
+                                      course.published
+                                        ? "bg-green-50 text-green-700 border-green-300"
+                                        : "bg-orange-50 text-orange-700 border-orange-300"
                                     }
                                   >
-                                    {course.published ? 'Published' : 'Draft'}
+                                    {course.published ? "Published" : "Draft"}
                                   </Badge>
                                 </TableCell>
                                 <TableCell>
                                   <div className="flex items-center">
-                                    {course.rating} 
+                                    {course.rating}
                                     <span className="text-xs text-gray-500 ml-1">
                                       ({course.reviewCount})
                                     </span>
@@ -368,7 +413,9 @@ export default function AdminDashboard() {
                       </div>
                     ) : (
                       <div className="text-center py-6">
-                        <h3 className="text-lg font-medium text-gray-900">No Courses Found</h3>
+                        <h3 className="text-lg font-medium text-gray-900">
+                          No Courses Found
+                        </h3>
                       </div>
                     )}
                   </CardContent>
@@ -384,12 +431,22 @@ export default function AdminDashboard() {
                   <CardContent>
                     <div className="h-80">
                       <ResponsiveContainer width="100%" height="100%">
-                        <BarChart data={courseEnrollmentData} layout="vertical" margin={{ top: 20, right: 30, left: 40, bottom: 5 }}>
+                        <BarChart
+                          data={courseEnrollmentData}
+                          layout="vertical"
+                          margin={{ top: 20, right: 30, left: 40, bottom: 5 }}
+                        >
                           <CartesianGrid strokeDasharray="3 3" />
                           <XAxis type="number" />
                           <YAxis dataKey="name" type="category" width={100} />
-                          <Tooltip formatter={(value) => [value, "Enrollments"]} />
-                          <Bar dataKey="enrollments" fill="#10b981" radius={[0, 4, 4, 0]} />
+                          <Tooltip
+                            formatter={(value) => [value, "Enrollments"]}
+                          />
+                          <Bar
+                            dataKey="enrollments"
+                            fill="#10b981"
+                            radius={[0, 4, 4, 0]}
+                          />
                         </BarChart>
                       </ResponsiveContainer>
                     </div>
@@ -422,7 +479,9 @@ export default function AdminDashboard() {
                         <TableBody>
                           {/* Mock subscription data since we don't have the API endpoint */}
                           <TableRow>
-                            <TableCell className="font-medium">Emily Wilson</TableCell>
+                            <TableCell className="font-medium">
+                              Emily Wilson
+                            </TableCell>
                             <TableCell>Professional</TableCell>
                             <TableCell>$79.00</TableCell>
                             <TableCell>2023-04-15</TableCell>
@@ -439,7 +498,9 @@ export default function AdminDashboard() {
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell className="font-medium">David Martinez</TableCell>
+                            <TableCell className="font-medium">
+                              David Martinez
+                            </TableCell>
                             <TableCell>Enterprise</TableCell>
                             <TableCell>$199.00</TableCell>
                             <TableCell>2023-03-22</TableCell>
@@ -456,7 +517,9 @@ export default function AdminDashboard() {
                             </TableCell>
                           </TableRow>
                           <TableRow>
-                            <TableCell className="font-medium">James Robinson</TableCell>
+                            <TableCell className="font-medium">
+                              James Robinson
+                            </TableCell>
                             <TableCell>Basic</TableCell>
                             <TableCell>$29.00</TableCell>
                             <TableCell>2023-02-10</TableCell>
@@ -492,8 +555,16 @@ export default function AdminDashboard() {
                           <Pie
                             data={[
                               { name: "Basic", value: 18, color: "#3b82f6" },
-                              { name: "Professional", value: 24, color: "#10b981" },
-                              { name: "Enterprise", value: 3, color: "#f59e0b" },
+                              {
+                                name: "Professional",
+                                value: 24,
+                                color: "#10b981",
+                              },
+                              {
+                                name: "Enterprise",
+                                value: 3,
+                                color: "#f59e0b",
+                              },
                             ]}
                             cx="50%"
                             cy="50%"
@@ -501,17 +572,29 @@ export default function AdminDashboard() {
                             outerRadius={100}
                             fill="#8884d8"
                             dataKey="value"
-                            label={({name, percent}) => `${name} ${(percent * 100).toFixed(0)}%`}
+                            label={({ name, percent }) =>
+                              `${name} ${(percent * 100).toFixed(0)}%`
+                            }
                           >
                             {[
                               { name: "Basic", value: 18, color: "#3b82f6" },
-                              { name: "Professional", value: 24, color: "#10b981" },
-                              { name: "Enterprise", value: 3, color: "#f59e0b" },
+                              {
+                                name: "Professional",
+                                value: 24,
+                                color: "#10b981",
+                              },
+                              {
+                                name: "Enterprise",
+                                value: 3,
+                                color: "#f59e0b",
+                              },
                             ].map((entry, index) => (
                               <Cell key={`cell-${index}`} fill={entry.color} />
                             ))}
                           </Pie>
-                          <Tooltip formatter={(value) => [value, "Subscriptions"]} />
+                          <Tooltip
+                            formatter={(value) => [value, "Subscriptions"]}
+                          />
                           <Legend />
                         </PieChart>
                       </ResponsiveContainer>
