@@ -10,14 +10,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import ReCAPTCHA from "react-google-recaptcha";
-
 export default function AuthPage() {
   const [_, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   const [showPassword, setShowPassword] = useState(false);
-  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
@@ -46,23 +43,11 @@ export default function AuthPage() {
   }, [user, navigate]);
 
   const onLoginSubmit = (data: LoginData) => {
-    if (!captchaToken) {
-      loginForm.setError("root", { message: "Please complete the captcha" });
-      return;
-    }
-    loginMutation.mutate({ ...data, captchaToken });
+    loginMutation.mutate(data);
   };
 
   const onRegisterSubmit = (data: RegisterData) => {
-    if (!captchaToken) {
-      registerForm.setError("root", { message: "Please complete the captcha" });
-      return;
-    }
-    registerMutation.mutate({ ...data, captchaToken });
-  };
-
-  const handleCaptchaChange = (token: string | null) => {
-    setCaptchaToken(token);
+    registerMutation.mutate(data);
   };
 
   if (user) {
@@ -124,12 +109,6 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <div className="flex justify-center my-4">
-                    <ReCAPTCHA
-                      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                      onChange={handleCaptchaChange}
-                    />
-                  </div>
                   {loginForm.formState.errors.root && (
                     <p className="text-red-500 text-sm text-center">
                       {loginForm.formState.errors.root.message}

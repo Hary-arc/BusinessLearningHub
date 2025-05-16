@@ -45,11 +45,6 @@ export function setupAuth(app: Express) {
     try {
       const db = await mongoDb.getDb('learning_platform');
       
-      // Validate captcha token first
-      if (!req.body.captchaToken) {
-        return done(null, false, { message: "Captcha verification required" });
-      }
-
       // Look for user by username or email
       const user = await db.collection("users").findOne({
         $or: [
