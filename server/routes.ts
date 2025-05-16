@@ -34,6 +34,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
         })
         .toArray();
 
+      // Create admin user if not exists
+      const adminUser = await db.collection("users").findOne({ email: "guptaharshit279@gmail.com" });
+      if (!adminUser) {
+        await db.collection("users").insertOne({
+          name: "John Doe",
+          email: "guptaharshit279@gmail.com",
+          role: "admin",
+          passwordHash: "password@123",
+          enrolledCourses: [],
+          createdAt: new Date(),
+          updatedAt: new Date(),
+          __v: 0
+        });
+      }
+
       if (!courses.length) {
         // If no courses found, initialize with seed data
         const seedCourses = [{

@@ -41,21 +41,31 @@ export function setupAuth(app: Express) {
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
-      // Look for user by username or email
+      // Look for user by username, email, or name
       const user = await db.collection("users").findOne({
         $or: [
           { username: username },
-          { email: username }
+          { email: username },
+          { name: username }
         ]
       });
 
       if (!user) {
-        return done(null, false, { message: "Username not found" });
+        return done(null, false, { message: "User not found" });
       }
 
-      if (!(await comparePasswords(password, user.password))) {
+      // Handle both password and passwordHash
+      const storedPassword = user.password || user.passwordHash;
+      const isValid = user.passwordHash ? 
+        password === storedPassword : // For legacy format
+        await comparePasswords(password, storedPassword);
+
+      if (!isValid) {
         return done(null, false, { message: "Invalid password" });
       }
+
+      // Map role/userType for consistency
+      user.userType = user.userType || user.role;
 
       return done(null, user);
     } catch (error) {
