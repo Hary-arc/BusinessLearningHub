@@ -19,8 +19,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const db = await mongoDb.getDb("learning_platform");
       const courses = await db.collection("courses")
-        .find({ published: true })
-        .toArray();
+        .aggregate([
+          { $match: { published: true } },
+          { $lookup: {
+              from: "users",
+              localField: "facultyId",
+              foreignField: "_id",
+              as: "faculty"
+            }
+          },
+          { $unwind: "$faculty" },
+          { $lookup: {
+              from: "reviews",
+              localField: "_id",
+              foreignField: "courseId",
+              as: "reviews"
+            }
+          },
+          { $project: {
+              "faculty.password": 0,
+              rating: { $avg: "$reviews.rating" },
+              reviewCount: { $size: "$reviews" },
+              title: 1,
+              description: 1,
+              imageUrl: 1,
+              price: 1,
+              category: 1,
+              level: 1,
+              duration: 1,
+              featured: 1,
+              createdAt: 1
+            }
+          }
+        ]).toArray();
       res.json(courses);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch courses" });

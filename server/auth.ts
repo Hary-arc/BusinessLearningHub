@@ -4,14 +4,7 @@ import { Express } from "express";
 import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
-import { storage } from "./storage";
-import { User } from "@shared/schema";
-
-declare global {
-  namespace Express {
-    interface User extends User {}
-  }
-}
+import { mongoDb } from "./mongodb";
 
 const scryptAsync = promisify(scrypt);
 
@@ -29,79 +22,83 @@ async function comparePasswords(supplied: string, stored: string) {
 }
 
 export function setupAuth(app: Express) {
-  const sessionSettings: session.SessionOptions = {
-    secret: process.env.SESSION_SECRET || "business-learn-secret",
+  app.use(session({
+    secret: process.env.SESSION_SECRET || "learning-platform-secret",
     resave: false,
     saveUninitialized: false,
-    store: storage.sessionStore,
-    cookie: {
-      maxAge: 24 * 60 * 60 * 1000, // 24 hours
-    },
-  };
+    cookie: { secure: process.env.NODE_ENV === "production" }
+  }));
 
-  app.set("trust proxy", 1);
-  app.use(session(sessionSettings));
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.use(
-    new LocalStrategy(async (username, password, done) => {
-      try {
-        const user = await storage.getUserByUsername(username);
-        if (!user) {
-          return done(null, false, { message: "Username not found" });
-        }
-
-        if (!(await comparePasswords(password, user.password))) {
-          return done(null, false, { message: "Invalid password" });
-        }
-
-        return done(null, user);
-      } catch (error) {
-        return done(error);
-      }
-    }),
-  );
-
-  passport.serializeUser((user, done) => done(null, user.id));
-  passport.deserializeUser(async (id: number, done) => {
+  passport.use(new LocalStrategy(async (username, password, done) => {
     try {
-      const user = await storage.getUser(id);
-      // Check for special faculty admin account
-      if (user && user.email === "admin.faculty@learning.com" && user.userType === "faculty") {
-        user.userType = "admin";
+      const db = await mongoDb.getDb("learning_platform");
+      const user = await db.collection("users").findOne({ username });
+
+      if (!user) {
+        return done(null, false, { message: "Username not found" });
       }
+
+      if (!(await comparePasswords(password, user.password))) {
+        return done(null, false, { message: "Invalid password" });
+      }
+
+      return done(null, user);
+    } catch (error) {
+      return done(error);
+    }
+  }));
+
+  passport.serializeUser((user: any, done) => done(null, user._id));
+
+  passport.deserializeUser(async (id: string, done) => {
+    try {
+      const db = await mongoDb.getDb("learning_platform");
+      const user = await db.collection("users").findOne({ _id: id });
       done(null, user);
     } catch (error) {
       done(error);
     }
   });
 
-  app.post("/api/register", async (req, res, next) => {
+  app.post("/api/register", async (req, res) => {
     try {
-      const existingUser = await storage.getUserByUsername(req.body.username);
-      if (existingUser) {
-        return res.status(400).json({ message: "Username already exists" });
-      }
+      const db = await mongoDb.getDb("learning_platform");
+      const { username, email, password, fullName, userType } = req.body;
 
-      const existingEmail = await storage.getUserByEmail(req.body.email);
-      if (existingEmail) {
-        return res.status(400).json({ message: "Email already in use" });
-      }
-
-      const user = await storage.createUser({
-        ...req.body,
-        password: await hashPassword(req.body.password),
+      const existingUser = await db.collection("users").findOne({ 
+        $or: [{ username }, { email }] 
       });
+
+      if (existingUser) {
+        return res.status(400).json({ 
+          message: existingUser.username === username ? 
+            "Username already exists" : 
+            "Email already in use" 
+        });
+      }
+
+      const hashedPassword = await hashPassword(password);
+      const result = await db.collection("users").insertOne({
+        username,
+        email,
+        password: hashedPassword,
+        fullName,
+        userType,
+        createdAt: new Date()
+      });
+
+      const user = { ...req.body, _id: result.insertedId };
+      delete user.password;
 
       req.login(user, (err) => {
-        if (err) return next(err);
-        // Remove password from the response
-        const { password, ...userWithoutPassword } = user;
-        res.status(201).json(userWithoutPassword);
+        if (err) throw err;
+        res.status(201).json(user);
       });
     } catch (error) {
-      next(error);
+      res.status(500).json({ message: "Registration failed" });
     }
   });
 
@@ -112,9 +109,8 @@ export function setupAuth(app: Express) {
 
       req.login(user, (err) => {
         if (err) return next(err);
-        // Remove password from the response
         const { password, ...userWithoutPassword } = user;
-        res.status(200).json(userWithoutPassword);
+        res.json(userWithoutPassword);
       });
     })(req, res, next);
   });
@@ -129,7 +125,7 @@ export function setupAuth(app: Express) {
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Not authenticated" });
     // Remove password from the response
-    const { password, ...userWithoutPassword } = req.user as User;
+    const { password, ...userWithoutPassword } = (req.user as any);
     res.json(userWithoutPassword);
   });
 }
