@@ -18,8 +18,42 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/courses", async (req, res) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
-      const courses = await db.collection('courses').find({ published: true }).toArray();
-      res.json(courses);
+      const courses = await db.collection('courses')
+        .find({ published: true })
+        .project({
+          id: 1,
+          title: 1,
+          description: 1,
+          imageUrl: 1,
+          price: 1,
+          facultyId: 1,
+          category: 1,
+          rating: { $ifNull: ["$rating", 0] },
+          reviewCount: { $ifNull: ["$reviewCount", 0] },
+          published: 1
+        })
+        .toArray();
+      
+      if (!courses.length) {
+        // If no courses found, initialize with seed data
+        const seedCourses = [{
+          id: 1,
+          title: "Introduction to Web Development",
+          description: "Learn the basics of web development",
+          imageUrl: "https://images.unsplash.com/photo-1593720219276-0b1eacd0aef4",
+          price: 9900,
+          facultyId: 1,
+          category: "Web Development",
+          rating: 0,
+          reviewCount: 0,
+          published: true
+        }];
+        
+        await db.collection('courses').insertMany(seedCourses);
+        res.json(seedCourses);
+      } else {
+        res.json(courses);
+      }
     } catch (error) {
       console.error('Error fetching courses:', error);
       res.status(500).json({ error: 'Failed to load courses' });
