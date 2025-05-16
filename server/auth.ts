@@ -24,9 +24,15 @@ async function comparePasswords(supplied: string, stored: string) {
 export function setupAuth(app: Express) {
   app.use(session({
     secret: process.env.SESSION_SECRET || "learning-platform-secret",
-    resave: false,
+    resave: true,
     saveUninitialized: false,
-    cookie: { secure: process.env.NODE_ENV === "production" }
+    rolling: true,
+    cookie: { 
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+      httpOnly: true,
+      sameSite: 'lax'
+    }
   }));
 
   app.use(passport.initialize());
