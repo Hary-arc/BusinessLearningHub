@@ -42,8 +42,13 @@ export default function AuthPage() {
     }
   }, [user, navigate]);
 
-  const onLoginSubmit = (data: LoginData) => {
-    loginMutation.mutate(data);
+  const onLoginSubmit = async (data: LoginData) => {
+    try {
+      await loginMutation.mutateAsync(data);
+      navigate("/");
+    } catch (error: any) {
+      loginForm.setError("root", { message: error.message });
+    }
   };
 
   const onRegisterSubmit = (data: RegisterData) => {
@@ -72,12 +77,12 @@ export default function AuthPage() {
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <FormField
                     control={loginForm.control}
-                    name="username"
+                    name="identifier"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Username or Email</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter username" {...field} />
+                          <Input placeholder="Enter username or email" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
