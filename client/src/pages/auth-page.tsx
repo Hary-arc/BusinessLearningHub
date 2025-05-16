@@ -114,7 +114,7 @@ export default function AuthPage() {
                       {loginForm.formState.errors.root.message}
                     </p>
                   )}
-                  <Button type="submit" className="w-full" disabled={loginMutation.isPending || !captchaToken}>
+                  <Button type="submit" className="w-full" disabled={loginMutation.isPending }>
                     {loginMutation.isPending ? "Logging in..." : "Login"}
                   </Button>
                 </form>
@@ -210,18 +210,13 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                    <div className="flex justify-center my-4">
-                      <ReCAPTCHA
-                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
-                        onChange={handleCaptchaChange}
-                      />
-                    </div>
+                    
                     {registerForm.formState.errors.root && (
                       <p className="text-red-500 text-sm text-center">
                         {registerForm.formState.errors.root.message}
                       </p>
                     )}
-                  <Button type="submit" className="w-full" disabled={registerMutation.isPending || !captchaToken}>
+                  <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
                     {registerMutation.isPending ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
