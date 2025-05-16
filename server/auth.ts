@@ -38,20 +38,28 @@ export function setupAuth(app: Express) {
   app.use(passport.initialize());
   app.use(passport.session());
 
-  passport.use(new LocalStrategy(async (username, password, done) => {
+  passport.use(new LocalStrategy({
+    usernameField: 'identifier',
+    passwordField: 'password'
+  }, async (identifier, password, done) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
-      // Look for user by username, email, or name
+      
+      // Validate captcha token first
+      if (!req.body.captchaToken) {
+        return done(null, false, { message: "Captcha verification required" });
+      }
+
+      // Look for user by username or email
       const user = await db.collection("users").findOne({
         $or: [
-          { username: username },
-          { email: username },
-          { name: username }
+          { username: identifier },
+          { email: identifier.toLowerCase() }
         ]
       });
 
       if (!user) {
-        return done(null, false, { message: "User not found" });
+        return done(null, false, { message: "Invalid email/username or password" });
       }
 
       // Handle both password and passwordHash

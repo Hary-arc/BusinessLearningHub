@@ -10,17 +10,19 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import ReCAPTCHA from "react-google-recaptcha";
 
 export default function AuthPage() {
   const [_, navigate] = useLocation();
   const { user, loginMutation, registerMutation } = useAuth();
   const [activeTab, setActiveTab] = useState<string>("login");
   const [showPassword, setShowPassword] = useState(false);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const loginForm = useForm<LoginData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      identifier: "", // Can be email or username
       password: "",
     },
   });
@@ -44,11 +46,23 @@ export default function AuthPage() {
   }, [user, navigate]);
 
   const onLoginSubmit = (data: LoginData) => {
-    loginMutation.mutate(data);
+    if (!captchaToken) {
+      loginForm.setError("root", { message: "Please complete the captcha" });
+      return;
+    }
+    loginMutation.mutate({ ...data, captchaToken });
   };
 
   const onRegisterSubmit = (data: RegisterData) => {
-    registerMutation.mutate(data);
+    if (!captchaToken) {
+      registerForm.setError("root", { message: "Please complete the captcha" });
+      return;
+    }
+    registerMutation.mutate({ ...data, captchaToken });
+  };
+
+  const handleCaptchaChange = (token: string | null) => {
+    setCaptchaToken(token);
   };
 
   if (user) {
@@ -73,12 +87,12 @@ export default function AuthPage() {
                 <form onSubmit={loginForm.handleSubmit(onLoginSubmit)} className="space-y-4">
                   <FormField
                     control={loginForm.control}
-                    name="username"
+                    name="identifier"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Username</FormLabel>
+                        <FormLabel>Email or Username</FormLabel>
                         <FormControl>
-                          <Input placeholder="Enter username" {...field} />
+                          <Input placeholder="Enter email or username" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -110,7 +124,18 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                  <div className="flex justify-center my-4">
+                    <ReCAPTCHA
+                      sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                      onChange={handleCaptchaChange}
+                    />
+                  </div>
+                  {loginForm.formState.errors.root && (
+                    <p className="text-red-500 text-sm text-center">
+                      {loginForm.formState.errors.root.message}
+                    </p>
+                  )}
+                  <Button type="submit" className="w-full" disabled={loginMutation.isPending || !captchaToken}>
                     {loginMutation.isPending ? "Logging in..." : "Login"}
                   </Button>
                 </form>
@@ -206,7 +231,18 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                  <Button type="submit" className="w-full" disabled={registerMutation.isPending}>
+                    <div className="flex justify-center my-4">
+                      <ReCAPTCHA
+                        sitekey={import.meta.env.VITE_RECAPTCHA_SITE_KEY}
+                        onChange={handleCaptchaChange}
+                      />
+                    </div>
+                    {registerForm.formState.errors.root && (
+                      <p className="text-red-500 text-sm text-center">
+                        {registerForm.formState.errors.root.message}
+                      </p>
+                    )}
+                  <Button type="submit" className="w-full" disabled={registerMutation.isPending || !captchaToken}>
                     {registerMutation.isPending ? "Creating Account..." : "Create Account"}
                   </Button>
                 </form>
