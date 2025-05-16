@@ -33,7 +33,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           published: 1
         })
         .toArray();
-      
+
       if (!courses.length) {
         // If no courses found, initialize with seed data
         const seedCourses = [{
@@ -48,7 +48,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
           reviewCount: 0,
           published: true
         }];
-        
+
         await db.collection('courses').insertMany(seedCourses);
         res.json(seedCourses);
       } else {
@@ -319,7 +319,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "faculty.admin")) {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
@@ -340,7 +340,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (user.userType !== "admin") {
+      if (!user || (user.userType !== "admin" && user.userType !== "faculty.admin")) {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
