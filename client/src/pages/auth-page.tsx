@@ -114,9 +114,20 @@ export default function AuthPage() {
                       {loginForm.formState.errors.root.message}
                     </p>
                   )}
-                  <Button type="submit" className="w-full" disabled={loginMutation.isPending }>
-                    {loginMutation.isPending ? "Logging in..." : "Login"}
-                  </Button>
+                  <div className="space-y-4">
+                    <Button type="submit" className="w-full" disabled={loginMutation.isPending}>
+                      {loginMutation.isPending ? "Logging in..." : "Login"}
+                    </Button>
+                    <div className="text-center">
+                      <Button
+                        variant="link"
+                        className="text-sm text-muted-foreground hover:text-primary"
+                        onClick={() => navigate("/forgot-password")}
+                      >
+                        Forgot Password?
+                      </Button>
+                    </div>
+                  </div>
                 </form>
               </Form>
             </TabsContent>
@@ -210,7 +221,7 @@ export default function AuthPage() {
                       </FormItem>
                     )}
                   />
-                    
+
                     {registerForm.formState.errors.root && (
                       <p className="text-red-500 text-sm text-center">
                         {registerForm.formState.errors.root.message}

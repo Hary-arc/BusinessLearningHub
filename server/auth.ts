@@ -44,12 +44,12 @@ export function setupAuth(app: Express) {
   }, async (username, password, done) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
-      
+
       // Look for user by username or email
       const user = await db.collection("users").findOne({
         $or: [
-          { username: identifier },
-          { email: identifier.toLowerCase() }
+          { username: username },
+          { email: username.toLowerCase() }
         ]
       });
 
@@ -149,8 +149,63 @@ export function setupAuth(app: Express) {
 
   app.get("/api/user", (req, res) => {
     if (!req.isAuthenticated()) return res.status(401).json({ message: "Not authenticated" });
-    // Remove password from the response
     const { password, ...userWithoutPassword } = (req.user as any);
     res.json(userWithoutPassword);
+  });
+
+  app.post("/api/forgot-password", async (req, res) => {
+    try {
+      const { email } = req.body;
+      const db = await mongoDb.getDb("learning_platform");
+      const user = await db.collection("users").findOne({ email });
+
+      if (!user) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      // Generate reset token
+      const resetToken = randomBytes(32).toString('hex');
+      const resetExpiry = new Date(Date.now() + 3600000); // 1 hour
+
+      await db.collection("users").updateOne(
+        { email },
+        { $set: { resetToken, resetExpiry } }
+      );
+
+      // In production, send email with reset link
+      // For now, just return success
+      res.json({ message: "Password reset instructions sent" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to process request" });
+    }
+  });
+
+  app.post("/api/reset-password", async (req, res) => {
+    try {
+      const { token, password } = req.body;
+      const db = await mongoDb.getDb("learning_platform");
+
+      const user = await db.collection("users").findOne({
+        resetToken: token,
+        resetExpiry: { $gt: new Date() }
+      });
+
+      if (!user) {
+        return res.status(400).json({ message: "Invalid or expired reset token" });
+      }
+
+      const hashedPassword = await hashPassword(password);
+      await db.collection("users").updateOne(
+        { resetToken: token },
+        { 
+          $set: { password: hashedPassword },
+          $unset: { resetToken: "", resetExpiry: "" }
+        }
+      );
+
+      res.json({ message: "Password reset successful" });
+    } catch (error) {
+      res.status(500).json({ message: "Failed to reset password" });
+    }
   });
 }
