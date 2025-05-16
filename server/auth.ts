@@ -39,9 +39,9 @@ export function setupAuth(app: Express) {
   app.use(passport.session());
 
   passport.use(new LocalStrategy({
-    usernameField: 'identifier',
+    usernameField: 'username',
     passwordField: 'password'
-  }, async (identifier, password, done) => {
+  }, async (username, password, done) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
       

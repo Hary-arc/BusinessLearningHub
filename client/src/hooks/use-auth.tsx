@@ -23,6 +23,11 @@ type LoginData = {
   password: string;
 };
 
+type LoginResponse = {
+  user: Omit<User, "password">;
+  token: string;
+};
+
 const registerSchema = insertUserSchema.extend({
   confirmPassword: z.string(),
 }).refine((data) => data.password === data.confirmPassword, {
@@ -48,7 +53,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginData) => {
       const res = await apiRequest("POST", "/api/login", credentials);
-      return await res.json();
+      if (!res.ok) {
+        const error = await res.json();
+        throw new Error(error.message || 'Login failed');
+      }
+      const data = await res.json();
+      return data;
     },
     onSuccess: (user: Omit<User, "password">) => {
       queryClient.setQueryData(["/api/user"], user);
