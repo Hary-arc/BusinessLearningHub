@@ -13,10 +13,11 @@ interface CourseCardProps {
 
 export function CourseCard({ course }: CourseCardProps) {
   // Fetch the faculty member data
-  const { data: faculty } = useQuery<User>({
+  const { data: faculty, isError } = useQuery<User>({
     queryKey: [`/api/users/${course.facultyId}`],
     enabled: !!course.facultyId,
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5,
+    retry: 2, // 5 minutes
     // This may fail if the API doesn't exist yet, we're not handling the error case here
     queryFn: async () => {
       const res = await fetch(`/api/users/${course.facultyId}`);

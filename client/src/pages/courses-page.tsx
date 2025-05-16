@@ -117,9 +117,11 @@ export default function CoursesPage() {
               ))}
             </div>
           ) : error ? (
-            <div className="text-center text-red-500 p-8 bg-white rounded-lg shadow">
-              <p className="text-xl">Failed to load courses</p>
-              <p className="mt-2">Please try again later or contact support</p>
+            <div className="text-center p-8 bg-white rounded-lg shadow">
+              <p className="text-xl text-red-500 mb-4">Failed to load courses</p>
+              <Button onClick={() => window.location.reload()} variant="outline">
+                Try Again
+              </Button>
             </div>
           ) : filteredCourses?.length === 0 ? (
             <div className="text-center text-gray-500 p-8 bg-white rounded-lg shadow">

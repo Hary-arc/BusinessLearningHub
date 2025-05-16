@@ -17,44 +17,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Courses API
   app.get("/api/courses", async (req, res) => {
     try {
-      const db = await mongoDb.getDb("learning_platform");
-      const courses = await db.collection("courses")
-        .aggregate([
-          { $match: { published: true } },
-          { $lookup: {
-              from: "users",
-              localField: "facultyId",
-              foreignField: "_id",
-              as: "faculty"
-            }
-          },
-          { $unwind: "$faculty" },
-          { $lookup: {
-              from: "reviews",
-              localField: "_id",
-              foreignField: "courseId",
-              as: "reviews"
-            }
-          },
-          { $project: {
-              "faculty.password": 0,
-              rating: { $avg: "$reviews.rating" },
-              reviewCount: { $size: "$reviews" },
-              title: 1,
-              description: 1,
-              imageUrl: 1,
-              price: 1,
-              category: 1,
-              level: 1,
-              duration: 1,
-              featured: 1,
-              createdAt: 1
-            }
-          }
-        ]).toArray();
+      const db = await mongoDb.getDb('learning_platform');
+      const courses = await db.collection('courses').find({ published: true }).toArray();
       res.json(courses);
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch courses" });
+      console.error('Error fetching courses:', error);
+      res.status(500).json({ error: 'Failed to load courses' });
     }
   });
 
@@ -228,7 +196,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const { amount } = req.body;
       res.json({ success: true });
     } catch (error) {
@@ -241,7 +209,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const { priceId } = req.body;
       const user = req.user as Express.User;
       res.json({ success: true });
@@ -256,13 +224,13 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const user = req.user as Express.User;
       const validatedData = insertSubscriptionSchema.parse({
         ...req.body,
         userId: user.id,
       });
-      
+
       const db = await mongoDb.getDb("learning_platform");
       const result = await db.collection("subscriptions").insertOne(validatedData);
       res.status(201).json({ ...validatedData, _id: result.insertedId });
@@ -279,7 +247,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const user = req.user as Express.User;
       const db = await mongoDb.getDb("learning_platform");
       const subscription = await db.collection("subscriptions").findOne({ userId: user.id, active: true });
@@ -295,12 +263,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const user = req.user as Express.User;
       if (user.userType !== "faculty" && user.userType !== "admin") {
         return res.status(403).json({ message: "Only faculty and admins can access this" });
       }
-      
+
       const db = await mongoDb.getDb("learning_platform");
       const courses = await db.collection("courses").find({ facultyId: user.id }).toArray();
       res.json(courses);
@@ -315,12 +283,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const user = req.user as Express.User;
       if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
-      
+
       const db = await mongoDb.getDb("learning_platform");
       const users = await db.collection("users").find().toArray();
       // Remove passwords from the response
@@ -336,18 +304,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!req.isAuthenticated()) {
         return res.status(401).json({ message: "Not authenticated" });
       }
-      
+
       const user = req.user as Express.User;
       if (user.userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
-      
+
       const db = await mongoDb.getDb("learning_platform");
       const students = await db.collection("users")
         .find({ userType: "student" })
         .project({ password: 0 })
         .toArray();
-      
+
       res.json(students);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch students" });
