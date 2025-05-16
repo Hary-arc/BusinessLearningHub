@@ -44,10 +44,16 @@ export default function AuthPage() {
 
   const onLoginSubmit = async (data: LoginData) => {
     try {
-      await loginMutation.mutateAsync(data);
+      const { identifier, password } = data;
+      await loginMutation.mutateAsync({ 
+        username: identifier, 
+        password 
+      });
       navigate("/");
     } catch (error: any) {
-      loginForm.setError("root", { message: error.message });
+      loginForm.setError("root", { 
+        message: error.message || "Invalid credentials" 
+      });
     }
   };
 
