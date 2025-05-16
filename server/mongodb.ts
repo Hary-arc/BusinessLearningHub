@@ -2,7 +2,7 @@
 import { MongoClient, ServerApiVersion } from 'mongodb';
 
 // Note: Use environment variables for sensitive data in production
-const uri = "mongodb+srv://guptaharshit279:<h4oA1MEWPJxi7VEt>@cluster0.q2jyy1w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
+const uri = "mongodb+srv://guptaharshit279:h4oA1MEWPJxi7VEt@cluster0.q2jyy1w.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0";
 
 class MongoDBConnection {
   private static instance: MongoDBConnection;
