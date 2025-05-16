@@ -1,0 +1,75 @@
+[vite] connecting...
+[vite] connected.
+Warning: A component is changing an uncontrolled input to be controlled. This is likely caused by the value changing from undefined to a defined value, which should not happen. Decide between using a controlled or uncontrolled input element for the lifetime of the component. More info: https://reactjs.org/link/controlled-components
+    at input
+    at _c (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/input.tsx:20:11)
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=3c8f4d55:79:13
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=3c8f4d55:56:13
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:130:9
+    at div
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:72:6
+    at Controller (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=3c8f4d55:298:35)
+    at FormField (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:33:6)
+    at form
+    at FormProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=3c8f4d55:102:11)
+    at div
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=3c8f4d55:42:13
+    at Presence (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=3c8f4d55:24:11)
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=3c8f4d55:174:13
+    at _c5 (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/tabs.tsx:72:12)
+    at div
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=3c8f4d55:42:13
+    at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=3c8f4d55:52:7
+    at div
+    at _c9 (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:20:11)
+    at div
+    at AuthPage (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/pages/auth-page.tsx:32:25)
+    at Route (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:323:16)
+    at Switch (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:379:17)
+    at Router
+    at AuthProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/hooks/use-auth.tsx:34:32)
+    at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+    at TooltipProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=3c8f4d55:62:5)
+    at QueryClientProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3c8f4d55:2805:3)
+    at App
+at input
+at _c (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/input.tsx:20:11)
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=3c8f4d55:79:13
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-2K77HOHX.js?v=3c8f4d55:56:13
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:130:9
+at div
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:72:6
+at Controller (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=3c8f4d55:298:35)
+at FormField (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/form.tsx:33:6)
+at form
+at FormProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-4BFJKWC4.js?v=3c8f4d55:102:11)
+at div
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=3c8f4d55:42:13
+at Presence (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-LUE5KDWX.js?v=3c8f4d55:24:11)
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=3c8f4d55:174:13
+at _c5 (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/tabs.tsx:72:12)
+at div
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-AXMZZQ2X.js?v=3c8f4d55:42:13
+at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tabs.js?v=3c8f4d55:52:7
+at div
+at _c9 (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:114:12)
+at div
+at _c (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:20:11)
+at div
+at AuthPage (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/pages/auth-page.tsx:32:25)
+at Route (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:323:16)
+at Switch (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:379:17)
+at Router
+at AuthProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/hooks/use-auth.tsx:34:32)
+at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+at TooltipProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=3c8f4d55:62:5)
+at QueryClientProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3c8f4d55:2805:3)
+at App
+at t.value (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
