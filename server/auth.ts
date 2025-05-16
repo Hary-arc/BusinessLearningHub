@@ -40,8 +40,14 @@ export function setupAuth(app: Express) {
 
   passport.use(new LocalStrategy(async (username, password, done) => {
     try {
-      const db = await mongoDb.getDb("learning_platform");
-      const user = await db.collection("users").findOne({ username });
+      const db = await mongoDb.getDb('learning_platform');
+      // Look for user by username or email
+      const user = await db.collection("users").findOne({
+        $or: [
+          { username: username },
+          { email: username }
+        ]
+      });
 
       if (!user) {
         return done(null, false, { message: "Username not found" });
