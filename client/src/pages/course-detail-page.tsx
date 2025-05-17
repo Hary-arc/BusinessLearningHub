@@ -6,7 +6,15 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { Star, Clock, FileText, Globe, Award, Play, CheckCircle } from "lucide-react";
+import {
+  Star,
+  Clock,
+  FileText,
+  Globe,
+  Award,
+  Play,
+  CheckCircle,
+} from "lucide-react";
 import {
   Accordion,
   AccordionContent,
@@ -30,11 +38,13 @@ export default function CourseDetailPage() {
     enabled: !!courseId,
   });
 
-  const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
+  const { data: reviews, isLoading: isLoadingReviews } = useQuery<
+    (Review & { user: any })[]
+  >({
     queryKey: [`/api/courses/${courseId}/reviews`],
     enabled: !!courseId,
   });
-  
+
   const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
     queryKey: [`/api/user/enrollments/${courseId}`],
     enabled: !!courseId && !!user,
@@ -56,7 +66,9 @@ export default function CourseDetailPage() {
       return res.json();
     },
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: [`/api/user/enrollments/${courseId}`] });
+      queryClient.invalidateQueries({
+        queryKey: [`/api/user/enrollments/${courseId}`],
+      });
       toast({
         title: "Enrolled successfully",
         description: "You have successfully enrolled in this course.",
@@ -83,10 +95,10 @@ export default function CourseDetailPage() {
 
     try {
       // Create Razorpay order
-      const orderResponse = await fetch('/api/payments/create-order', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ amount: course.price })
+      const orderResponse = await fetch("/api/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ amount: course.price }),
       });
       const { orderId, keyId } = await orderResponse.json();
 
@@ -101,16 +113,16 @@ export default function CourseDetailPage() {
         handler: async function (response: any) {
           try {
             // Verify payment
-            const verifyResponse = await fetch('/api/payments/verify', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+            const verifyResponse = await fetch("/api/payments/verify", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
               body: JSON.stringify({
                 orderId: response.razorpay_order_id,
                 paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature
-              })
+                signature: response.razorpay_signature,
+              }),
             });
-            
+
             const { valid } = await verifyResponse.json();
             if (valid) {
               // Complete enrollment after successful payment
@@ -119,32 +131,32 @@ export default function CourseDetailPage() {
               toast({
                 title: "Payment verification failed",
                 description: "Please try again or contact support",
-                variant: "destructive"
+                variant: "destructive",
               });
             }
           } catch (error) {
             toast({
               title: "Payment verification failed",
               description: "Please try again or contact support",
-              variant: "destructive"
+              variant: "destructive",
             });
           }
         },
         prefill: {
           name: user.fullName,
-          email: user.email
+          email: user.email,
         },
         theme: {
-          color: "#2563eb"
-        }
+          color: "#2563eb",
+        },
       });
-      
+
       paymentHandler.open();
     } catch (error) {
       toast({
         title: "Payment initialization failed",
         description: "Please try again or contact support",
-        variant: "destructive"
+        variant: "destructive",
       });
     }
   };
@@ -182,8 +194,12 @@ export default function CourseDetailPage() {
         <Header />
         <main className="flex-grow py-12 bg-gray-50">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl font-extrabold text-gray-900">Course not found</h1>
-            <p className="mt-4 text-gray-500">The course you're looking for doesn't exist or has been removed.</p>
+            <h1 className="text-3xl font-extrabold text-gray-900">
+              Course not found
+            </h1>
+            <p className="mt-4 text-gray-500">
+              The course you're looking for doesn't exist or has been removed.
+            </p>
             <Button className="mt-8" onClick={() => navigate("/courses")}>
               Browse Courses
             </Button>
@@ -202,18 +218,20 @@ export default function CourseDetailPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Course Details */}
             <div className="lg:col-span-2">
-              <img 
-                src={course.imageUrl} 
+              <img
+                src={course.imageUrl}
                 alt={course.title}
                 className="w-full h-auto rounded-lg shadow-lg object-cover"
                 style={{ maxHeight: "400px" }}
               />
-              
+
               <div className="mt-6">
                 <Badge className="bg-primary-100 text-primary hover:bg-primary-200">
                   {course.category}
                 </Badge>
-                <h1 className="text-3xl font-bold text-gray-900 mt-2">{course.title}</h1>
+                <h1 className="text-3xl font-bold text-gray-900 mt-2">
+                  {course.title}
+                </h1>
                 <div className="flex items-center mt-2">
                   <div className="flex items-center">
                     {[...Array(5)].map((_, i) => (
@@ -231,22 +249,30 @@ export default function CourseDetailPage() {
                     {course.rating} ({course.reviewCount} reviews)
                   </span>
                 </div>
-                
+
                 <div className="mt-6 prose max-w-none">
-                  <h2 className="text-xl font-semibold text-gray-900">Description</h2>
+                  <h2 className="text-xl font-semibold text-gray-900">
+                    Description
+                  </h2>
                   <p className="text-gray-700">{course.description}</p>
                 </div>
-                
+
                 <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">What You'll Learn</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                    What You'll Learn
+                  </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     <div className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>Effective marketing strategies for small businesses</span>
+                      <span>
+                        Effective marketing strategies for small businesses
+                      </span>
                     </div>
                     <div className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>Cost-effective customer acquisition techniques</span>
+                      <span>
+                        Cost-effective customer acquisition techniques
+                      </span>
                     </div>
                     <div className="flex items-start">
                       <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
@@ -258,10 +284,16 @@ export default function CourseDetailPage() {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Course Content</h2>
-                  <Accordion type="single" collapsible className="border rounded-md">
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                    Course Content
+                  </h2>
+                  <Accordion
+                    type="single"
+                    collapsible
+                    className="border rounded-md"
+                  >
                     <AccordionItem value="item-1">
                       <AccordionTrigger className="px-4">
                         Module 1: Introduction to Business Marketing
@@ -273,14 +305,20 @@ export default function CourseDetailPage() {
                               <Play className="h-4 w-4 mr-2 text-primary" />
                               <span>Understanding Your Target Market</span>
                             </div>
-                            <span className="text-sm text-gray-500">15 min</span>
+                            <span className="text-sm text-gray-500">
+                              15 min
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>Competitive Analysis for Small Businesses</span>
+                              <span>
+                                Competitive Analysis for Small Businesses
+                              </span>
                             </div>
-                            <span className="text-sm text-gray-500">20 min</span>
+                            <span className="text-sm text-gray-500">
+                              20 min
+                            </span>
                           </div>
                         </div>
                       </AccordionContent>
@@ -294,25 +332,33 @@ export default function CourseDetailPage() {
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>Social Media Strategies for Local Businesses</span>
+                              <span>
+                                Social Media Strategies for Local Businesses
+                              </span>
                             </div>
-                            <span className="text-sm text-gray-500">25 min</span>
+                            <span className="text-sm text-gray-500">
+                              25 min
+                            </span>
                           </div>
                           <div className="flex items-center justify-between">
                             <div className="flex items-center">
                               <Play className="h-4 w-4 mr-2 text-primary" />
                               <span>Local SEO Fundamentals</span>
                             </div>
-                            <span className="text-sm text-gray-500">18 min</span>
+                            <span className="text-sm text-gray-500">
+                              18 min
+                            </span>
                           </div>
                         </div>
                       </AccordionContent>
                     </AccordionItem>
                   </Accordion>
                 </div>
-                
+
                 <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">Reviews</h2>
+                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
+                    Reviews
+                  </h2>
                   {isLoadingReviews ? (
                     <div className="space-y-4">
                       {[1, 2].map((i) => (
@@ -336,11 +382,16 @@ export default function CourseDetailPage() {
                             <Avatar className="h-10 w-10">
                               <AvatarImage src="" alt={review.user.fullName} />
                               <AvatarFallback className="bg-primary-50 text-primary">
-                                {review.user.fullName.split(' ').map(n => n[0]).join('')}
+                                {review.user.fullName
+                                  .split(" ")
+                                  .map((n) => n[0])
+                                  .join("")}
                               </AvatarFallback>
                             </Avatar>
                             <div className="ml-3">
-                              <div className="font-medium">{review.user.fullName}</div>
+                              <div className="font-medium">
+                                {review.user.fullName}
+                              </div>
                               <div className="flex mt-1">
                                 {[...Array(5)].map((_, i) => (
                                   <Star
@@ -360,17 +411,21 @@ export default function CourseDetailPage() {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-gray-500">No reviews yet for this course.</p>
+                    <p className="text-gray-500">
+                      No reviews yet for this course.
+                    </p>
                   )}
                 </div>
               </div>
             </div>
-            
+
             {/* Course Sidebar */}
             <div>
               <div className="bg-white rounded-lg shadow-lg p-6 sticky top-6">
-                <div className="text-3xl font-bold text-gray-900">{formattedPrice}</div>
-                
+                <div className="text-3xl font-bold text-gray-900">
+                  {formattedPrice}
+                </div>
+
                 <div className="mt-6">
                   {enrollment || enrollMutation.isSuccess ? (
                     <Button className="w-full" variant="secondary" disabled>
@@ -378,16 +433,18 @@ export default function CourseDetailPage() {
                       Enrolled
                     </Button>
                   ) : (
-                    <Button 
-                      className="w-full" 
+                    <Button
+                      className="w-full"
                       onClick={handleEnroll}
                       disabled={enrollMutation.isPending}
                     >
-                      {enrollMutation.isPending ? "Processing..." : "Enroll Now"}
+                      {enrollMutation.isPending
+                        ? "Processing..."
+                        : "Enroll Now"}
                     </Button>
                   )}
                 </div>
-                
+
                 <div className="mt-6 space-y-4">
                   <div className="flex items-center">
                     <Clock className="h-5 w-5 text-gray-400 mr-3" />
@@ -406,20 +463,28 @@ export default function CourseDetailPage() {
                     <span>Certificate of completion</span>
                   </div>
                 </div>
-                
+
                 <div className="mt-6 pt-6 border-t border-gray-200">
                   <div className="flex items-center">
                     <Avatar className="h-12 w-12">
                       <AvatarImage src="" alt="Instructor" />
-                      <AvatarFallback className="bg-primary-50 text-primary">IS</AvatarFallback>
+                      <AvatarFallback className="bg-primary-50 text-primary">
+                        IS
+                      </AvatarFallback>
                     </Avatar>
                     <div className="ml-3">
-                      <div className="text-sm font-medium text-gray-900">Instructor</div>
-                      <div className="text-sm text-gray-500">Marketing Faculty</div>
+                      <div className="text-sm font-medium text-gray-900">
+                        Instructor
+                      </div>
+                      <div className="text-sm text-gray-500">
+                        Marketing Faculty
+                      </div>
                     </div>
                   </div>
                   <p className="mt-4 text-sm text-gray-600">
-                    Expert in business marketing with over 10 years of experience helping small businesses grow their customer base.
+                    Expert in business marketing with over 10 years of
+                    experience helping small businesses grow their customer
+                    base.
                   </p>
                 </div>
               </div>
