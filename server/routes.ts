@@ -96,12 +96,21 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/courses/:id", async (req, res) => {
     try {
       const db = await mongoDb.getDb("learning_platform");
+      const courseId = parseInt(req.params.id);
+      
       const course = await db.collection("courses")
-        .findOne({ id: parseInt(req.params.id) });
+        .findOne({ id: courseId });
+        
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
-      res.json(course);
+
+      const lessons = await db.collection("lessons")
+        .find({ courseId })
+        .sort({ order: 1 })
+        .toArray();
+
+      res.json({ ...course, lessons });
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch course" });
     }

@@ -218,6 +218,24 @@ export default function CourseDetailPage() {
     );
   }
 
+  // Dummy data for lessons
+  const lessons = [
+    {
+      id: 1,
+      title: "Module 1: Introduction to Business Marketing",
+      content: "Understanding Your Target Market",
+      duration: 15,
+      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    },
+    {
+      id: 2,
+      title: "Module 2: Digital Marketing Essentials",
+      content: "Social Media Strategies for Local Businesses",
+      duration: 25,
+      videoUrl: null,
+    },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
@@ -302,64 +320,34 @@ export default function CourseDetailPage() {
                     collapsible
                     className="border rounded-md"
                   >
-                    <AccordionItem value="item-1">
-                      <AccordionTrigger className="px-4">
-                        Module 1: Introduction to Business Marketing
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>Understanding Your Target Market</span>
-                            </div>
-                            <span className="text-sm text-gray-500">
-                              15 min
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>
-                                Competitive Analysis for Small Businesses
+                    {lessons.map((lesson) => (
+                      <AccordionItem key={lesson.id} value={`lesson-${lesson.id}`}>
+                        <AccordionTrigger className="px-4">
+                          {lesson.title}
+                        </AccordionTrigger>
+                        <AccordionContent className="px-4">
+                          <div className="space-y-2">
+                            <div className="flex items-center justify-between">
+                              <div className="flex items-center">
+                                <Play className="h-4 w-4 mr-2 text-primary" />
+                                <span>{lesson.content}</span>
+                              </div>
+                              <span className="text-sm text-gray-500">
+                                {lesson.duration} min
                               </span>
                             </div>
-                            <span className="text-sm text-gray-500">
-                              20 min
-                            </span>
+                            {lesson.videoUrl && (
+                              <div className="mt-2">
+                                <Button variant="outline" size="sm">
+                                  <Play className="h-4 w-4 mr-2" />
+                                  Watch Video
+                                </Button>
+                              </div>
+                            )}
                           </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
-                    <AccordionItem value="item-2">
-                      <AccordionTrigger className="px-4">
-                        Module 2: Digital Marketing Essentials
-                      </AccordionTrigger>
-                      <AccordionContent className="px-4">
-                        <div className="space-y-2">
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>
-                                Social Media Strategies for Local Businesses
-                              </span>
-                            </div>
-                            <span className="text-sm text-gray-500">
-                              25 min
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between">
-                            <div className="flex items-center">
-                              <Play className="h-4 w-4 mr-2 text-primary" />
-                              <span>Local SEO Fundamentals</span>
-                            </div>
-                            <span className="text-sm text-gray-500">
-                              18 min
-                            </span>
-                          </div>
-                        </div>
-                      </AccordionContent>
-                    </AccordionItem>
+                        </AccordionContent>
+                      </AccordionItem>
+                    ))}
                   </Accordion>
                 </div>
 

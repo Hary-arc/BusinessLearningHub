@@ -141,3 +141,27 @@ export const insertReviewSchema = createInsertSchema(reviews).pick({
   rating: true,
   comment: true,
 });
+
+// Lessons model
+export const lessons = pgTable("lessons", {
+  id: serial("id").primaryKey(),
+  courseId: integer("course_id").notNull(),
+  title: text("title").notNull(),
+  content: text("content").notNull(),
+  videoUrl: text("video_url"),
+  duration: integer("duration").notNull(), // in minutes
+  order: integer("order").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export type Lesson = typeof lessons.$inferSelect;
+export type InsertLesson = typeof lessons.$inferInsert;
+
+export const insertLessonSchema = createInsertSchema(lessons).pick({
+  courseId: true,
+  title: true,
+  content: true,
+  videoUrl: true,
+  duration: true,
+  order: true,
+});
