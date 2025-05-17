@@ -27,7 +27,7 @@ export const users = pgTable("users", {
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
   userType: text("user_type").notNull().default("student"),
-  passwordHash: text("password_hash").notNull(),
+  password: text("password").notNull(),
   enrolledCourses: text("enrolled_courses").array(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   lastLogin: timestamp("last_login"),
