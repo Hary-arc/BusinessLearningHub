@@ -18,35 +18,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
   app.get("/api/courses", async (req, res) => {
     try {
       const db = await mongoDb.getDb('learning_platform');
-      const courses = await db.collection('courses')
-        .find({ isPublished: true })
-        .lookup({
-          from: 'users',
-          localField: 'instructorId',
-          foreignField: '_id',
-          as: 'instructor'
-        })
-        .unwind('$instructor')
-        .project({
-          _id: 1,
-          title: 1,
-          description: 1,
-          imageUrl: 1,
-          price: 1,
-          currency: 1,
-          category: 1,
-          instructorId: {
-            _id: '$instructor._id',
-            name: '$instructor.name',
-            email: '$instructor.email'
-          },
-          rating: { $ifNull: ["$rating", 0] },
-          reviewCount: { $ifNull: ["$reviewCount", 0] },
-          level: 1,
-          duration: 1,
-          isPublished: 1
-        })
-        .toArray();
+      const courses = await db.collection('courses').aggregate([
+        { $match: { isPublished: true } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'instructorId',
+            foreignField: '_id',
+            as: 'instructor'
+          }
+        },
+        { $unwind: '$instructor' },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            description: 1,
+            imageUrl: 1,
+            price: 1,
+            currency: 1,
+            category: 1,
+            instructorId: {
+              _id: '$instructor._id',
+              name: '$instructor.name',
+              email: '$instructor.email'
+            },
+            rating: { $ifNull: ['$rating', 0] },
+            reviewCount: { $ifNull: ['$reviewCount', 0] },
+            level: 1,
+            duration: 1,
+            isPublished: 1
+          }
+        }
+      ]).toArray();
 
       // Create admin user if not exists
       const adminUser = await db.collection("users").findOne({ email: "guptaharshit279@gmail.com" });

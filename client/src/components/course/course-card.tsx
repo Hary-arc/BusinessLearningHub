@@ -1,11 +1,8 @@
 import { Link } from "wouter";
-import { Course } from "@shared/schema";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Star } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useQuery } from "@tanstack/react-query";
-import { User } from "@shared/schema";
 
 interface CourseCardProps {
   course: {
@@ -30,25 +27,6 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
-    // This may fail if the API doesn't exist yet, we're not handling the error case here
-    queryFn: async () => {
-      const res = await fetch(`/api/users/${course.facultyId}`);
-      if (!res.ok) {
-        // Return a mock faculty for demo purposes
-        return {
-          id: course.facultyId,
-          fullName: course.facultyId === 1 
-            ? "Robert Smith" 
-            : course.facultyId === 2 
-            ? "Sarah Johnson" 
-            : "Michael Chen",
-          userType: "faculty",
-        } as User;
-      }
-      return res.json();
-    }
-  });
-
   const formattedPrice = `${course.currency} ${course.price.toFixed(2)}`;
   const instructorName = course.instructorId?.name || "Instructor";
   const initials = instructorName
@@ -76,7 +54,7 @@ export function CourseCard({ course }: CourseCardProps) {
             {course.rating} ({course.reviewCount})
           </span>
         </div>
-        <Link href={`/courses/${course.id}`} className="block mt-2">
+        <Link href={`/courses/${course._id}`} className="block mt-2">
           <h3 className="text-xl font-semibold text-gray-900">{course.title}</h3>
           <p className="mt-3 text-base text-gray-500">{course.description}</p>
         </Link>
@@ -85,7 +63,7 @@ export function CourseCard({ course }: CourseCardProps) {
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center">
             <Avatar className="h-10 w-10">
-              <AvatarImage src="" alt={facultyName} />
+              <AvatarImage src="" alt={instructorName} />
               <AvatarFallback className="bg-primary-50 text-primary">
                 {initials}
               </AvatarFallback>
