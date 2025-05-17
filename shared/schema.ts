@@ -28,8 +28,8 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   userType: text("user_type").notNull(), // student, faculty, career_seeker
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  stripeCustomerId: text("stripe_customer_id"),
-  stripeSubscriptionId: text("stripe_subscription_id"),
+  razorpayCustomerId: text("razorpay_customer_id"),
+  razorpaySubscriptionId: text("razorpay_subscription_id"),
 });
 
 export type User = typeof users.$inferSelect;
@@ -119,7 +119,9 @@ export const payments = pgTable("payments", {
   userId: integer("user_id").notNull(),
   amount: integer("amount").notNull(),
   status: text("status").notNull(),
-  stripePaymentId: text("stripe_payment_id").notNull(),
+  razorpayPaymentId: text("razorpay_payment_id").notNull(),
+  razorpayOrderId: text("razorpay_order_id").notNull(),
+  razorpaySignature: text("razorpay_signature"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
