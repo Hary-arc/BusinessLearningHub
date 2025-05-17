@@ -39,12 +39,11 @@ export default function StudentDashboard() {
     <div className="min-h-screen flex flex-col bg-gray-50">
       <Header />
       <div className="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <DashboardHeader title="Student Dashboard" subtitle="Track your learning progress and manage your courses" />
-        
-        <div className="flex flex-col lg:flex-row gap-8 mt-8">
+        <div className="flex flex-col lg:flex-row gap-8">
           <DashboardSidebar userType="student" />
           
           <main className="flex-1">
+            <Outlet />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatsCard 
                 title="Enrolled Courses" 
