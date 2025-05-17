@@ -15,6 +15,7 @@ import { BookOpen, Clock, Award, GraduationCap, BarChart3 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import { Link } from "wouter";
+import { Outlet } from "wouter";
 
 export default function StudentDashboard() {
   const { user } = useAuth();
@@ -51,25 +52,25 @@ export default function StudentDashboard() {
                 value={totalCourses.toString()} 
                 icon={<BookOpen className="h-8 w-8 text-primary" />} 
                 description="Total courses enrolled" 
-              />
+                />
               <StatsCard 
                 title="In Progress" 
                 value={inProgressCourses.toString()} 
                 icon={<Clock className="h-8 w-8 text-orange-500" />} 
                 description="Courses being taken" 
-              />
+                />
               <StatsCard 
                 title="Completed" 
                 value={completedCourses.toString()} 
                 icon={<Award className="h-8 w-8 text-green-600" />} 
                 description="Finished courses" 
-              />
+                />
               <StatsCard 
                 title="Average Progress" 
                 value={`${averageProgress}%`} 
                 icon={<BarChart3 className="h-8 w-8 text-blue-500" />} 
                 description="Across all courses" 
-              />
+                />
             </div>
 
             <Tabs defaultValue="my-courses" className="w-full">
