@@ -8,16 +8,28 @@ import { useQuery } from "@tanstack/react-query";
 import { User } from "@shared/schema";
 
 interface CourseCardProps {
-  course: Course;
+  course: {
+    _id: string;
+    title: string;
+    description: string;
+    imageUrl: string;
+    instructorId: {
+      _id: string;
+      name: string;
+      email: string;
+    };
+    category: string;
+    price: number;
+    rating: number;
+    reviewCount: number;
+    level: string;
+    duration: number;
+    isPublished: boolean;
+    currency: string;
+  };
 }
 
 export function CourseCard({ course }: CourseCardProps) {
-  // Fetch the faculty member data
-  const { data: faculty, isError } = useQuery<User>({
-    queryKey: [`/api/users/${course.facultyId}`],
-    enabled: !!course.facultyId,
-    staleTime: 1000 * 60 * 5,
-    retry: 2, // 5 minutes
     // This may fail if the API doesn't exist yet, we're not handling the error case here
     queryFn: async () => {
       const res = await fetch(`/api/users/${course.facultyId}`);
@@ -37,15 +49,9 @@ export function CourseCard({ course }: CourseCardProps) {
     }
   });
 
-  // Format price from cents to dollars
-  const formattedPrice = `$${(course.price / 100).toFixed(2)}`;
-  
-  // Calculate faculty name and role
-  const facultyName = faculty?.fullName || "Faculty Member";
-  const facultyRole = faculty?.userType === "faculty" ? "Faculty" : "Instructor";
-  
-  // Generate initials for avatar fallback
-  const initials = facultyName
+  const formattedPrice = `${course.currency} ${course.price.toFixed(2)}`;
+  const instructorName = course.instructorId?.name || "Instructor";
+  const initials = instructorName
     .split(' ')
     .map(name => name[0])
     .join('')
@@ -85,8 +91,8 @@ export function CourseCard({ course }: CourseCardProps) {
               </AvatarFallback>
             </Avatar>
             <div className="ml-3">
-              <p className="text-sm font-medium text-gray-900">{facultyName}</p>
-              <p className="text-xs text-gray-500">{facultyRole}</p>
+              <p className="text-sm font-medium text-gray-900">{instructorName}</p>
+              <p className="text-xs text-gray-500">Instructor</p>
             </div>
           </div>
           <span className="text-primary font-bold">{formattedPrice}</span>

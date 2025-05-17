@@ -19,18 +19,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const db = await mongoDb.getDb('learning_platform');
       const courses = await db.collection('courses')
-        .find({ published: true })
+        .find({ isPublished: true })
+        .lookup({
+          from: 'users',
+          localField: 'instructorId',
+          foreignField: '_id',
+          as: 'instructor'
+        })
+        .unwind('$instructor')
         .project({
-          id: 1,
+          _id: 1,
           title: 1,
           description: 1,
           imageUrl: 1,
           price: 1,
-          facultyId: 1,
+          currency: 1,
           category: 1,
+          instructorId: {
+            _id: '$instructor._id',
+            name: '$instructor.name',
+            email: '$instructor.email'
+          },
           rating: { $ifNull: ["$rating", 0] },
           reviewCount: { $ifNull: ["$reviewCount", 0] },
-          published: 1
+          level: 1,
+          duration: 1,
+          isPublished: 1
         })
         .toArray();
 
