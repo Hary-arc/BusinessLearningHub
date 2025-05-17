@@ -105,7 +105,7 @@ export function setupAuth(app: Express) {
     }
   }));
 
-  passport.serializeUser((user: any, done) => done(null, user._id));
+  passport.serializeUser((user: any, done) => done(null, user._id.toString()));
 
   passport.deserializeUser(async (id: string, done) => {
     try {

@@ -1,4 +1,5 @@
 import { createContext, ReactNode, useContext } from "react";
+import { useLocation } from "wouter";
 import {
   useQuery,
   useMutation,
@@ -40,6 +41,7 @@ export type RegisterData = z.infer<typeof registerSchema>;
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const [, navigate] = useLocation();
   const { toast } = useToast();
   const {
     data: user,
