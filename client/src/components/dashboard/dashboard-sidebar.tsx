@@ -29,12 +29,14 @@ export function DashboardSidebar({ userType }: DashboardSidebarProps) {
   const navigationItems = {
     student: [
       { icon: Home, label: "Dashboard", href: "/dashboard/student" },
-      { icon: BookOpen, label: "My Courses", href: "/dashboard/student/courses" },
-      { icon: Award, label: "Certificates", href: "/dashboard/student/certificates" },
-      { icon: CreditCard, label: "Subscription", href: "/dashboard/student/subscription" },
+      { icon: BookOpen, label: "Courses", href: "/dashboard/student/courses" },
+      { icon: Layout, label: "Programs", href: "/dashboard/student/programs" },
+      { icon: Users, label: "Batches", href: "/dashboard/student/batches" },
+      { icon: Award, label: "Certified Participants", href: "/dashboard/student/certified" },
+      { icon: FileText, label: "Jobs", href: "/dashboard/student/jobs" },
+      { icon: BarChart, label: "Statistics", href: "/dashboard/student/statistics" },
       { icon: Bell, label: "Notifications", href: "/dashboard/student/notifications" },
-      { icon: User, label: "Profile", href: "/dashboard/student/profile" },
-      { icon: Settings, label: "Settings", href: "/dashboard/student/settings" },
+      { icon: FileText, label: "Quizzes", href: "/dashboard/student/quizzes" },
     ],
     faculty: [
       { icon: Home, label: "Dashboard", href: "/dashboard/faculty" },
