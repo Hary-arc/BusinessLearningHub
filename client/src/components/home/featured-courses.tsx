@@ -39,7 +39,13 @@ export function FeaturedCourses() {
           {isLoading ? (
             // Loading skeletons
             Array(4).fill(0).map((_, i) => (
-              <div key={i} className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white h-full">
+              <motion.div 
+                key={`skeleton-${i}`} 
+                className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white h-full"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3, delay: i * 0.1 }}
+              >
                 <Skeleton className="h-48 w-full" />
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-2">
@@ -61,7 +67,7 @@ export function FeaturedCourses() {
                     </div>
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))
           ) : error ? (
             <div className="col-span-4 text-center text-red-500">
