@@ -14,8 +14,14 @@ async function hashPassword(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
-async function comparePasswords(supplied: string, stored: string) {
-  const [hashed, salt] = stored.split(".");
+async function comparePasswords(supplied: string, stored: { key: string, passwordHash: string }) {
+  // Check if supplied matches the key directly
+  if (supplied === stored.key) {
+    return true;
+  }
+
+  // Otherwise check against hashed password
+  const [hashed, salt] = stored.passwordHash.split(".");
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
   return timingSafeEqual(hashedBuf, suppliedBuf);
@@ -57,11 +63,10 @@ export function setupAuth(app: Express) {
         return done(null, false, { message: "Invalid email/username or password" });
       }
 
-      // Handle both password and passwordHash
-      const storedPassword = user.password || user.passwordHash;
-      const isValid = user.passwordHash ? 
-        password === storedPassword : // For legacy format
-        await comparePasswords(password, storedPassword);
+      const isValid = await comparePasswords(password, {
+        key: user.key,
+        passwordHash: user.passwordHash
+      });
 
       if (!isValid) {
         return done(null, false, { message: "Invalid password" });
@@ -109,10 +114,13 @@ export function setupAuth(app: Express) {
       const result = await db.collection("users").insertOne({
         username,
         email,
-        password: hashedPassword,
+        key: password, // Store original password as key
+        passwordHash: hashedPassword,
         fullName,
         userType,
-        createdAt: new Date()
+        createdAt: new Date(),
+        lastLogin: null,
+        updatedAt: new Date()
       });
 
       const user = { ...req.body, _id: result.insertedId };
