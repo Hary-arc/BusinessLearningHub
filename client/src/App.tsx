@@ -11,6 +11,14 @@ import CoursesPage from "@/pages/courses-page";
 import CourseDetailPage from "@/pages/course-detail-page";
 import AuthPage from "@/pages/auth-page";
 import StudentDashboard from "@/pages/dashboard/student-dashboard";
+import StudentCourses from "@/pages/dashboard/student/courses";
+import ProgramsPage from "@/pages/dashboard/student/programs";
+import BatchesPage from "@/pages/dashboard/student/batches";
+import CertifiedParticipantsPage from "@/pages/dashboard/student/certified";
+import JobsPage from "@/pages/dashboard/student/jobs";
+import StatisticsPage from "@/pages/dashboard/student/statistics";
+import NotificationsPage from "@/pages/dashboard/student/notifications";
+import QuizzesPage from "@/pages/dashboard/student/quizzes";
 import FacultyDashboard from "@/pages/dashboard/faculty-dashboard";
 import AdminDashboard from "@/pages/dashboard/admin-dashboard";
 import NotFound from "@/pages/not-found";
@@ -28,8 +36,14 @@ function Router() {
       <Route path="/courses/:id" component={CourseDetailPage} />
       <Route path="/auth" component={AuthPage} />
       <ProtectedRoute path="/dashboard/student" component={StudentDashboard} requiredUserType="student" />
-      <Route path="/dashboard/student/courses" component={lazy(() => import('./pages/dashboard/student/courses'))} />
-      <Route path="/dashboard/student/certificates" component={lazy(() => import('./pages/dashboard/student/certificates'))} />
+      <ProtectedRoute path="/dashboard/student/courses" component={StudentCourses} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/programs" component={ProgramsPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/batches" component={BatchesPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/certified" component={CertifiedParticipantsPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/jobs" component={JobsPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/statistics" component={StatisticsPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/notifications" component={NotificationsPage} requiredUserType="student" />
+      <ProtectedRoute path="/dashboard/student/quizzes" component={QuizzesPage} requiredUserType="student" />
 
       <ProtectedRoute path="/dashboard/faculty" component={FacultyDashboard} requiredUserType="faculty" />
       <Route path="/dashboard/faculty/courses" component={lazy(() => import('./pages/dashboard/faculty/courses'))} />

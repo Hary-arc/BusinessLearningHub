@@ -87,19 +87,19 @@ export function DashboardSidebar({ userType }: DashboardSidebarProps) {
           <nav className="space-y-1">
             {items.map((item) => (
               
-                <div 
+                <Link 
                   key={item.href}
+                  href={item.href}
                   className={cn(
                     "flex items-center px-3 py-2 text-sm font-medium rounded-md cursor-pointer",
                     location === item.href
                       ? "text-primary bg-primary-50"
                       : "text-gray-700 hover:text-primary hover:bg-gray-50"
                   )}
-                  onClick={() => window.location.href = item.href}
                 >
                   <item.icon className="mr-3 h-5 w-5 flex-shrink-0" />
                   {item.label}
-                </div>
+                </Link>
               
             ))}
           </nav>
