@@ -43,9 +43,9 @@ export default function StudentDashboard() {
         <DashboardHeader title="Student Dashboard" subtitle="Track your learning progress and manage your courses" />
         <div className="flex flex-col lg:flex-row gap-8">
           <DashboardSidebar userType="student" />
-
+          
           <main className="flex-1">
-            <Outlet />
+         
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
               <StatsCard 
                 title="Enrolled Courses" 
@@ -81,7 +81,7 @@ export default function StudentDashboard() {
                 <Link href="/dashboard/student/certificates">Certificates</Link>
               </TabsTrigger>
               </TabsList>
-
+              
               <TabsContent value="my-courses">
                 <div className="mb-4 flex flex-col sm:flex-row sm:items-center sm:justify-between">
                   <h2 className="text-xl font-bold text-gray-900">My Courses</h2>
@@ -89,7 +89,7 @@ export default function StudentDashboard() {
                     <Button variant="outline" size="sm">Browse More Courses</Button>
                   </Link>
                 </div>
-
+                
                 {isLoadingEnrollments ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {[1, 2].map((i) => (
@@ -125,7 +125,7 @@ export default function StudentDashboard() {
                   </Card>
                 )}
               </TabsContent>
-
+              
               <TabsContent value="subscription">
                 <Card>
                   <CardHeader>
@@ -177,7 +177,7 @@ export default function StudentDashboard() {
                   </CardContent>
                 </Card>
               </TabsContent>
-
+              
               <TabsContent value="certificates">
                 <Card>
                   <CardHeader>
