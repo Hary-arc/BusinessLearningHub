@@ -23,7 +23,7 @@ export default function CourseDetailPage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-  const courseId = parseInt(id);
+  const courseId = id;
 
   const { data: course, isLoading: isLoadingCourse } = useQuery<Course>({
     queryKey: [`/api/courses/${courseId}`],
