@@ -14,17 +14,24 @@ async function hashPassword(password: string) {
   return `${buf.toString("hex")}.${salt}`;
 }
 
-async function comparePasswords(supplied: string, stored: { key: string, passwordHash: string }) {
-  // Check if supplied matches the key directly
+async function comparePasswords(supplied: string, stored: { key: string, passwordHash: string, keyAttempts?: number }) {
+  // Check if supplied matches the key and attempts are within limit
   if (supplied === stored.key) {
-    return true;
+    const attempts = stored.keyAttempts || 0;
+    if (attempts < 3) {
+      return { isValid: true, usingKey: true, remainingAttempts: 2 - attempts };
+    }
+    return { isValid: false, usingKey: true, remainingAttempts: 0 };
   }
 
   // Otherwise check against hashed password
   const [hashed, salt] = stored.passwordHash.split(".");
   const hashedBuf = Buffer.from(hashed, "hex");
   const suppliedBuf = (await scryptAsync(supplied, salt, 64)) as Buffer;
-  return timingSafeEqual(hashedBuf, suppliedBuf);
+  return { 
+    isValid: timingSafeEqual(hashedBuf, suppliedBuf),
+    usingKey: false
+  };
 }
 
 export function setupAuth(app: Express) {
@@ -63,13 +70,30 @@ export function setupAuth(app: Express) {
         return done(null, false, { message: "Invalid email/username or password" });
       }
 
-      const isValid = await comparePasswords(password, {
+      const authResult = await comparePasswords(password, {
         key: user.key,
-        passwordHash: user.passwordHash
+        passwordHash: user.passwordHash,
+        keyAttempts: user.keyAttempts || 0
       });
 
-      if (!isValid) {
-        return done(null, false, { message: "Invalid password" });
+      if (!authResult.isValid) {
+        return done(null, false, { message: "Invalid credentials" });
+      }
+
+      if (authResult.usingKey) {
+        // Update key attempts count
+        await db.collection("users").updateOne(
+          { _id: user._id },
+          { $inc: { keyAttempts: 1 } }
+        );
+
+        if (authResult.remainingAttempts > 0) {
+          return done(null, { 
+            ...user, 
+            remainingKeyAttempts: authResult.remainingAttempts,
+            forcePasswordChange: true 
+          });
+        }
       }
 
       // Map role/userType for consistency

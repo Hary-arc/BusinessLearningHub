@@ -69,12 +69,25 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await res.json();
       return data;
     },
-    onSuccess: (user: Omit<User, "password">) => {
+    onSuccess: (user: Omit<User, "password"> & { remainingKeyAttempts?: number, forcePasswordChange?: boolean }) => {
       queryClient.setQueryData(["/api/user"], user);
-      toast({
-        title: "Login successful",
-        description: `Welcome back, ${user.fullName}!`,
-      });
+      
+      if (user.remainingKeyAttempts !== undefined) {
+        toast({
+          title: "Login successful using key",
+          description: `Warning: ${user.remainingKeyAttempts} key login attempts remaining. Please change your password.`,
+          variant: "warning",
+        });
+        
+        if (user.forcePasswordChange) {
+          navigate("/change-password");
+        }
+      } else {
+        toast({
+          title: "Login successful",
+          description: `Welcome back, ${user.fullName}!`,
+        });
+      }
     },
     onError: (error: Error) => {
       toast({
