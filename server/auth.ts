@@ -5,6 +5,18 @@ import session from "express-session";
 import { scrypt, randomBytes, timingSafeEqual } from "crypto";
 import { promisify } from "util";
 import { mongoDb } from "./mongodb";
+import { ObjectId } from "mongodb";
+
+interface UserDocument {
+  _id: ObjectId;
+  username: string;
+  email: string;
+  key: string;
+  passwordHash: string;
+  keyAttempts?: number;
+  fullName: string;
+  userType: string;
+}
 
 const scryptAsync = promisify(scrypt);
 
@@ -110,8 +122,11 @@ export function setupAuth(app: Express) {
   passport.deserializeUser(async (id: string, done) => {
     try {
       const db = await mongoDb.getDb("learning_platform");
-      const user = await db.collection("users").findOne({ _id: id });
-      done(null, user);
+      const user = await db.collection("users").findOne({ _id: new ObjectId(id) });
+      if (!user) {
+        return done(null, false);
+      }
+      done(null, user as UserDocument);
     } catch (error) {
       done(error);
     }
