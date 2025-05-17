@@ -35,15 +35,19 @@ function Router() {
       <Route path="/courses" component={CoursesPage} />
       <Route path="/courses/:id" component={CourseDetailPage} />
       <Route path="/auth" component={AuthPage} />
-       <ProtectedRoute path="/dashboard/student" component={StudentDashboard} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/courses" component={StudentCourses} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/programs" component={ProgramsPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/batches" component={BatchesPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/certified" component={CertifiedParticipantsPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/jobs" component={JobsPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/statistics" component={StatisticsPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/notifications" component={NotificationsPage} requiredUserType="student" />
-        <ProtectedRoute path="/dashboard/student/quizzes" component={QuizzesPage} requiredUserType="student" />
+      <Route path="/dashboard/student">
+        <ProtectedRoute component={StudentDashboard} requiredUserType="student">
+          <Route path="/" component={StudentCourses} />
+          <Route path="/courses" component={StudentCourses} />
+          <Route path="/programs" component={ProgramsPage} />
+          <Route path="/batches" component={BatchesPage} />
+          <Route path="/certified" component={CertifiedParticipantsPage} />
+          <Route path="/jobs" component={JobsPage} />
+          <Route path="/statistics" component={StatisticsPage} />
+          <Route path="/notifications" component={NotificationsPage} />
+          <Route path="/quizzes" component={QuizzesPage} />
+        </ProtectedRoute>
+      </Route>
 
       <ProtectedRoute path="/dashboard/faculty" component={FacultyDashboard} requiredUserType="faculty" />
       <Route path="/dashboard/faculty/courses" component={lazy(() => import('./pages/dashboard/faculty/courses'))} />
