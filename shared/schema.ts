@@ -23,11 +23,15 @@ export const registerSchema = z.object({
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
-  password: text("password").notNull(),
+  key: text("key").notNull(),
   fullName: text("full_name").notNull(),
   email: text("email").notNull().unique(),
-  userType: text("user_type").notNull(), // student, faculty, career_seeker
+  userType: text("user_type").notNull().default("student"),
+  passwordHash: text("password_hash").notNull(),
+  enrolledCourses: text("enrolled_courses").array(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
+  lastLogin: timestamp("last_login"),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
   razorpayCustomerId: text("razorpay_customer_id"),
   razorpaySubscriptionId: text("razorpay_subscription_id"),
 });
