@@ -31,13 +31,13 @@ export default function CourseDetailPage() {
   const [, navigate] = useLocation();
   const { user } = useAuth();
   const { toast } = useToast();
-
+  const courseId = id;
   const { data: course, isLoading: isLoadingCourse } = useQuery<Course>({
     queryKey: [`/api/courses/${id}`],
     queryFn: async () => {
       const response = await fetch(`/api/courses/${id}`);
       if (!response.ok) {
-        throw new Error('Failed to fetch course');
+        throw new Error("Failed to fetch course");
       }
       return response.json();
     },
@@ -168,7 +168,9 @@ export default function CourseDetailPage() {
   };
 
   // Format price from cents to dollars
-  const formattedPrice = course ? `${course.currency} ${course.price.toFixed(2)}` : "";
+  const formattedPrice = course
+    ? `${course.currency} ${course.price.toFixed(2)}`
+    : "";
 
   if (isLoadingCourse) {
     return (
