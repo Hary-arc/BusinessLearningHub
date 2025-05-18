@@ -1,0 +1,145 @@
+🔍 Problem Summary
+Your frontend is making a request to /api/courses/:id, but the backend expects ObjectId format for course _id. However:
+
+In some DB lookups, you're matching on id (string/number).
+
+In others, you're matching on _id (Mongo ObjectId).
+
+This inconsistency can cause your course detail route to fail with 404 or data mismatches.
+
+✅ Fixes & Recommendations
+1. ✅ Ensure All Course Documents Use _id: ObjectId
+In your seed data (fallback data in /api/courses), you’re inserting documents like:
+
+ts
+Copy
+Edit
+const seedCourses = [{
+  id: 1,
+  title: "Introduction to Web Development",
+  ...
+  published: true
+}];
+👉 Fix: Mongo will not generate _id automatically if you manually define id. But your /api/courses/:id route depends on _id.
+
+Replace id: 1 with MongoDB's native _id generation:
+
+ts
+Copy
+Edit
+const { ObjectId } = require("mongodb");
+
+const seedCourses = [{
+  _id: new ObjectId(),
+  title: "Introduction to Web Development",
+  ...
+  isPublished: true
+}];
+And remove id field unless you absolutely need both.
+
+2. ✅ Fix Inconsistent courseId Matching
+In several places, you use courseId.toString() or match against id. This causes trouble when mixing ObjectIds and strings.
+
+For example, in enrollments:
+
+ts
+Copy
+Edit
+.findOne({ id: validatedData.courseId });
+But the frontend sends courseId as an _id (ObjectId string) from Mongo. So this match fails.
+
+👉 Fix: Normalize all course references to use _id (and ObjectId).
+
+Change:
+
+ts
+Copy
+Edit
+.findOne({ id: validatedData.courseId });
+To:
+
+ts
+Copy
+Edit
+.findOne({ _id: new ObjectId(validatedData.courseId) });
+Do the same in all lookup, find, and insert calls for consistency.
+
+3. ✅ Make Sure Lessons Use courseId: ObjectId as well
+In /api/courses/:id, you fetch lessons like this:
+
+ts
+Copy
+Edit
+.find({ courseId: courseId.toString() })
+This assumes courseId is a string, but you should ideally store it as an ObjectId in the lesson documents.
+
+Fix:
+
+Update the lesson schema to store courseId: ObjectId.
+
+Change the query to:
+
+ts
+Copy
+Edit
+.find({ courseId })
+4. ✅ Update /api/courses/:id/reviews Route
+You're parsing courseId as parseInt(req.params.id), which assumes a number-based ID:
+
+ts
+Copy
+Edit
+const courseId = parseInt(req.params.id);
+This won’t work if you're using Mongo ObjectIds.
+
+👉 Fix:
+
+ts
+Copy
+Edit
+const { ObjectId } = require('mongodb');
+const courseId = new ObjectId(req.params.id);
+Also ensure your reviews are stored with courseId: ObjectId.
+
+5. 🧪 Add Logging and Better Error Handling
+In your /api/courses/:id route, wrap important sections in logs:
+
+ts
+Copy
+Edit
+console.log("Looking for course with ID", courseId);
+And for failures:
+
+ts
+Copy
+Edit
+console.error("Failed to fetch lessons:", err);
+🛠 Optional Improvements
+🔐 req.isAuthenticated() may not always exist
+This method comes from passport.js. If you're using a custom auth system, this might throw.
+
+If it's failing silently, protect it:
+
+ts
+Copy
+Edit
+if (!req.isAuthenticated || !req.isAuthenticated()) {
+  return res.status(401).json({ message: "Not authenticated" });
+}
+Or write a middleware like:
+
+ts
+Copy
+Edit
+function requireAuth(req, res, next) {
+  if (!req.isAuthenticated?.()) return res.status(401).json({ message: 'Unauthorized' });
+  next();
+}
+✅ Action Plan Summary
+Issue	Fix
+id vs _id mismatch	Always use _id (Mongo ObjectId)
+courseId mismatched types	Convert all to ObjectId
+parseInt(req.params.id) on ObjectId	Use new ObjectId(req.params.id)
+Missing lessons due to string match	Store lesson courseId as ObjectId
+Hardcoded seed data id field	Replace with _id: new ObjectId()
+Debugging	Add logs in key routes

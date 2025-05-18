@@ -34,11 +34,12 @@ export default function CourseDetailPage() {
   const courseId = id;
 
   const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
-    queryKey: [`courses/${courseId}`],
+    queryKey: [`courses?courseId=${courseId}`],
     queryFn: async () => {
       try {
         console.log("Fetching course details for ID:", courseId);
-        const response = await fetch(`/api/courses/${courseId}`, {
+        const response = await //fetch(`/api/courses/${courseId}/`, {
+          fetch(`/api/courses?courseId=${courseId}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
