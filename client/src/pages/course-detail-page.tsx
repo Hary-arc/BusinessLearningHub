@@ -32,7 +32,7 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const courseId = id;
-  const { data: courseData, isLoading: isLoadingCourse } = useQuery<{course: Course, lessons: any[]}>({
+  const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
     queryKey: [`/api/courses/${id}`],
     queryFn: async () => {
       const response = await fetch(`/api/courses/${id}`);
@@ -44,7 +44,7 @@ export default function CourseDetailPage() {
     enabled: !!id,
   });
 
-  const course = courseData?.course;
+  const course = courseData;
   const lessons = courseData?.lessons || [];
 
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<
@@ -307,8 +307,8 @@ export default function CourseDetailPage() {
                     collapsible
                     className="border rounded-md"
                   >
-                    {lessons.map((lesson) => (
-                      <AccordionItem key={lesson._id} value={`lesson-${lesson._id}`}>
+                    {Array.isArray(lessons) && lessons.map((lesson) => (
+                      <AccordionItem key={lesson._id || lesson.id} value={`lesson-${lesson._id || lesson.id}`}>
                         <AccordionTrigger className="px-4">
                           {lesson.title}
                         </AccordionTrigger>
