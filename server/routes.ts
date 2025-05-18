@@ -88,7 +88,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Course not found" });
       }
 
-      const course = await db.collection("courses").aggregate([
+      const course2 = await db.collection("courses").aggregate([
         { 
           $match: { 
             _id: courseId,
@@ -143,7 +143,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ]).next();
 
-      if (!course) {
+      if (!course2) {
         return res.status(404).json({ message: "Course not found or not published" });
       }
 
@@ -166,10 +166,10 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       console.log("[API] Successfully fetched course and lessons:", { 
-        courseId: course._id,
+        courseId: course2._id,
         lessonCount: lessons.length 
       });
-      res.json({ ...course, lessons });
+      res.json({ ...course2, lessons });
     } catch (error) {
       console.error('[API] Course fetch error:', error);
       console.error('[API] Stack trace:', (error as Error).stack);
