@@ -75,7 +75,13 @@ export default function CourseDetailPage() {
     queryFn: async () => {
       const response = await fetch(`/api/courses/${courseId}/reviews`);
       if (!response.ok) {
-        throw new Error(await response.text());
+        const errText = await response.text();
+        try {
+          const json = JSON.parse(errText);
+          throw new Error(json.message || "Failed to fetch reviews");
+        } catch {
+          throw new Error(errText || "Failed to fetch reviews");
+        }
       }
       return response.json();
     },
@@ -99,7 +105,11 @@ export default function CourseDetailPage() {
   const enrollMutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/enrollments", { courseId });
-      return res.json();
+      const data = await res.json();
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to enroll");
+      }
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
@@ -168,10 +178,22 @@ export default function CourseDetailPage() {
   const course = courseData;
   const lessons = courseData?.lessons || [];
 
+  const handleEnroll = () => {
+    if (!user) {
+      toast({
+        title: "Please login to enroll",
+        description: "You need to be logged in to enroll in courses",
+        variant: "destructive",
+      });
+      return;
+    }
+    enrollMutation.mutate();
+  };
+
   // Format price from cents to dollars
-  const formattedPrice = course
-    ? `${course.currency} ${course.price.toFixed(2)}`
-    : "";
+  const formattedPrice = course?.price != null
+    ? `${course.currency} ${(course.price / 100).toFixed(2)}`
+    : "Free";
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -258,7 +280,10 @@ export default function CourseDetailPage() {
                     className="border rounded-md"
                   >
                     {Array.isArray(lessons) && lessons.map((lesson) => (
-                      <AccordionItem key={lesson._id || lesson.id} value={`lesson-${lesson._id || lesson.id}`}>
+                      <AccordionItem 
+                        key={lesson._id || lesson.id || Math.random().toString()} 
+                        value={`lesson-${lesson._id || lesson.id || Math.random().toString()}`}
+                      >
                         <AccordionTrigger className="px-4">
                           {lesson.title}
                         </AccordionTrigger>
