@@ -59,11 +59,13 @@ export default function CourseDetailPage() {
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
     queryKey: [`/api/courses/${courseId}/reviews`],
     queryFn: async () => {
-      const res = await fetch(`/api/courses/${courseId}/reviews`);
-      if (!res.ok) return [];
-      return res.json();
+      const response = await fetch(`/api/courses/${courseId}/reviews`);
+      if (!response.ok) {
+        throw new Error(await response.text());
+      }
+      return response.json();
     },
-    enabled: !!courseId
+    enabled: !!courseId,
   });
 
   const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
