@@ -17,7 +17,7 @@ export function HeroSection() {
               <span className="block bg-gradient-to-r from-primary to-teal-500 text-transparent bg-clip-text">Future With CatterpiWeb</span>
             </h1>
             <p className="mt-3 text-base text-gray-600 sm:mt-5 sm:text-lg md:mt-5 md:text-xl">
-              We offer modern training that can help you improve your abilities and open doors to exciting new possibilities. It's time to start feeding your success.
+              77% of our learners report career benefits, including new jobs, promotions, and valuable skills. Join today and invest in your future success.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link href="/courses">

@@ -23,14 +23,14 @@ interface PlanInfo {
 
 const plans: PlanInfo[] = [
   {
-    id: "basic",
-    name: "Basic",
-    description: "Best for business students just starting out.",
-    price: 29,
+    id: "single",
+    name: "Single Learning Program",
+    description: "Learn a single topic or skill and earn a credential",
+    price: 4191,
     features: [
-      { text: "Access to 5 courses" },
-      { text: "Basic course materials" },
-      { text: "Email support" }
+      { text: "Access all courses within the learning program" },
+      { text: "Earn a certificate upon completion" },
+      { text: "Basic email support" }
     ]
   },
   {

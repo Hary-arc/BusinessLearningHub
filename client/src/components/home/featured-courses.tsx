@@ -23,11 +23,18 @@ export function FeaturedCourses() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Our Trending Program
+            Career Skills That Work
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-4">
-            "Join our renowned Programs; the knowledge provided will surely be invaluable to you!"
+            Master the skills you need to advance your career with expert-led courses
           </p>
+          <div className="mt-6">
+            <Link href="/courses">
+              <Button variant="outline" className="bg-white hover:bg-gray-50">
+                Start 7-day Free Trial
+              </Button>
+            </Link>
+          </div>
         </motion.div>
 
         <motion.div 

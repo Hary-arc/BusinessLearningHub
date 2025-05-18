@@ -44,10 +44,11 @@ export function Header() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Courses", href: "/courses" },
+    { name: "Pricing", href: "/pricing" },
     { name: "Careers", href: "/careers" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
-    { name: "Affiliates", href: "/affiliates" }, // Added Affiliates
+    { name: "Affiliates", href: "/affiliates" },
   ];
 
   return (
