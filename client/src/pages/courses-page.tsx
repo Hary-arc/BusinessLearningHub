@@ -132,28 +132,7 @@ export default function CoursesPage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredCourses?.map(course => (
-                <CourseCard 
-                  key={course._id} 
-                  course={{
-                    _id: course.id.toString(),
-                    title: course.title,
-                    description: course.description,
-                    imageUrl: course.imageUrl,
-                    instructorId: {
-                      _id: course.facultyId?.toString() || "unknown",
-                      name: "Instructor",
-                      email: "instructor@example.com"
-                    },
-                    category: course.category,
-                    price: course.price,
-                    rating: course.rating || 0,
-                    reviewCount: course.reviewCount || 0,
-                    level: course.level || "Beginner",
-                    duration: course.duration || 0,
-                    isPublished: course.published || false,
-                    currency: "USD"
-                  }} 
-                />
+              <CourseCard key={course.id} course={course} />
               ))}
             </div>
           )}
