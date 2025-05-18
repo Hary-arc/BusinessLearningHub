@@ -52,41 +52,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ]).toArray();
 
-      // Create admin user if not exists
-      const adminUser = await db.collection("users").findOne({ email: "guptaharshit279@gmail.com" });
-      if (!adminUser) {
-        await db.collection("users").insertOne({
-          name: "John Doe",
-          email: "guptaharshit279@gmail.com",
-          role: "admin",
-          passwordHash: "password@123",
-          enrolledCourses: [],
-          createdAt: new Date(),
-          updatedAt: new Date(),
-          __v: 0
-        });
-      }
+      
 
-      if (!courses.length) {
-        // If no courses found, initialize with seed data
-        const seedCourses = [{
-          id: 1,
-          title: "Introduction to Web Development",
-          description: "Learn the basics of web development",
-          imageUrl: "https://images.unsplash.com/photo-1593720219276-0b1eacd0aef4",
-          price: 9900,
-          facultyId: 1,
-          category: "Web Development",
-          rating: 0,
-          reviewCount: 0,
-          published: true
-        }];
-
-        await db.collection('courses').insertMany(seedCourses);
-        res.json(seedCourses);
-      } else {
-        res.json(courses);
-      }
+      res.json(courses);
     } catch (error) {
       console.error('Error fetching courses:', error);
       res.status(500).json({ error: 'Failed to load courses' });
