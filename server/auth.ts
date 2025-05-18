@@ -99,7 +99,7 @@ export function setupAuth(app: Express) {
           { $inc: { keyAttempts: 1 } }
         );
 
-        if (authResult.remainingAttempts > 0) {
+        if (authResult.remainingAttempts !== undefined && authResult.remainingAttempts > 0) {
           return done(null, { 
             ...user, 
             remainingKeyAttempts: authResult.remainingAttempts,
@@ -175,7 +175,7 @@ export function setupAuth(app: Express) {
   });
 
   app.post("/api/login", (req, res, next) => {
-    passport.authenticate("local", (err, user, info) => {
+    passport.authenticate("local", (err: Error | null, user: any, info: any) => {
       if (err) return next(err);
       if (!user) return res.status(401).json({ message: info?.message || "Invalid credentials" });
 

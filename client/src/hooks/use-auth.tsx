@@ -78,7 +78,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         toast({
           title: "Login successful using key",
           description: `Warning: ${user.remainingKeyAttempts} key login attempts remaining. Please change your password.`,
-          variant: "warning",
+          variant: "default",
         });
         
         if (user.forcePasswordChange) {

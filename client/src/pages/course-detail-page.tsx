@@ -104,7 +104,7 @@ export default function CourseDetailPage() {
       const orderResponse = await fetch("/api/payments/create-order", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: course.price }),
+        body: JSON.stringify({ amount: course?.price }),
       });
       const { orderId, keyId } = await orderResponse.json();
 
