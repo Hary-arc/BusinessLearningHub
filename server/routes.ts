@@ -71,7 +71,6 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("[API] GET /api/courses/:id - Request params:", req.params);
       const db = await mongoDb.getDb("learning_platform");
-      const ObjectId = mongoDb.ObjectId;
 
       let courseId;
       try {
@@ -83,7 +82,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const course = await db.collection("courses").findOne({ _id: courseId });
-      
+
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
