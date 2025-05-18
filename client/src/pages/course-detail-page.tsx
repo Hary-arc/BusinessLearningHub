@@ -32,27 +32,66 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const courseId = id;
+
   const { data: courseData, isLoading: isLoadingCourse, isError, error } = useQuery<Course & { lessons: any[] }>({
     queryKey: [`/api/courses/${id}`],
     queryFn: async () => {
-      console.log("Fetching course details for ID:", id);
-      const response = await fetch(`/api/courses/${id}`);
-      if (!response.ok) {
-        console.error("API Error:", response.status, response.statusText);
-        throw new Error("Failed to fetch course");
+      try {
+        console.log("Fetching course details for ID:", id);
+        const response = await fetch(`/api/courses/${id}`);
+        const data = await response.json();
+        
+        if (!response.ok) {
+          throw new Error(data.message || "Failed to fetch course");
+        }
+        
+        console.log("Course data received:", data);
+        return data;
+      } catch (err) {
+        console.error("Error fetching course:", err);
+        throw err;
       }
-      const data = await response.json();
-      console.log("Course data received:", data);
-      return data;
     },
     enabled: !!id,
-    retry: 2,
-    onError: (err) => {
-      console.error("Error fetching course:", err);
-    }
+    retry: 1,
+    retryDelay: 1000
   });
 
-  if (isError) {
+  const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
+    queryKey: [`/api/courses/${courseId}/reviews`],
+    enabled: !!courseId,
+  });
+
+  const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
+    queryKey: [`/api/user/enrollments/${courseId}`],
+    enabled: !!courseId && !!user
+  });
+
+  if (isLoadingCourse) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow py-12 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+              <div className="lg:col-span-2">
+                <Skeleton className="h-64 w-full rounded-lg" />
+                <Skeleton className="h-10 w-3/4 mt-4" />
+                <Skeleton className="h-6 w-1/3 mt-2" />
+                <Skeleton className="h-24 w-full mt-4" />
+              </div>
+              <div>
+                <Skeleton className="h-96 w-full rounded-lg" />
+              </div>
+            </div>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
+
+  if (isError || !courseData) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -64,8 +103,8 @@ export default function CourseDetailPage() {
             <p className="mt-4 text-gray-500">
               {error instanceof Error ? error.message : "Failed to load course details"}
             </p>
-            <Button className="mt-8" onClick={() => window.location.reload()}>
-              Try Again
+            <Button className="mt-8" onClick={() => navigate("/courses")}>
+              Back to Courses
             </Button>
           </div>
         </main>
