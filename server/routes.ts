@@ -106,16 +106,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const course = await db.collection("courses").aggregate([
-        { $match: { _id: courseId } },
+        { 
+          $match: { 
+            _id: courseId,
+            isPublished: true 
+          } 
+        },
         {
           $lookup: {
             from: 'users',
-            localField: 'instructorId',
-            foreignField: '_id',
+            let: { instructorId: '$instructorId' },
+            pipeline: [
+              { 
+                $match: {
+                  $expr: { $eq: ['$_id', '$$instructorId'] }
+                }
+              }
+            ],
             as: 'instructor'
           }
         },
-        { $unwind: '$instructor' },
+        { 
+          $unwind: { 
+            path: '$instructor',
+            preserveNullAndEmptyArrays: true
+          } 
+        },
         {
           $project: {
             _id: 1,
@@ -128,31 +144,44 @@ export async function registerRoutes(app: Express): Promise<Server> {
             tags: 1,
             level: 1,
             duration: 1,
-            rating: 1,
-            reviewCount: 1,
+            rating: { $ifNull: ['$rating', 0] },
+            reviewCount: { $ifNull: ['$reviewCount', 0] },
             isPublished: 1,
             featured: 1,
             createdAt: 1,
             updatedAt: 1,
+            enrollmentCount: { $ifNull: ['$enrollmentCount', 0] },
             instructorId: {
-              _id: '$instructor._id',
-              name: '$instructor.name',
-              email: '$instructor.email'
+              _id: { $ifNull: ['$instructor._id', null] },
+              name: { $ifNull: ['$instructor.name', 'Unknown Instructor'] },
+              email: { $ifNull: ['$instructor.email', null] }
             }
           }
         }
       ]).next();
 
       if (!course) {
-        return res.status(404).json({ message: "Course not found" });
+        return res.status(404).json({ message: "Course not found or not published" });
       }
 
       const lessons = await db.collection("lessons")
-        .find({ courseId: courseId.toString() })
+        .find({ 
+          courseId: courseId.toString(),
+          isActive: { $ne: false }
+        })
         .sort({ order: 1 })
+        .project({
+          _id: 1,
+          title: 1,
+          description: 1,
+          duration: 1,
+          order: 1,
+          videoUrl: 1
+        })
         .toArray();
 
       res.setHeader('Content-Type', 'application/json');
+      res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
       return res.json({ ...course, lessons });
     } catch (error) {
       console.error('Course fetch error:', error);

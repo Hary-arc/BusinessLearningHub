@@ -34,19 +34,23 @@ export default function CourseDetailPage() {
   const courseId = id;
 
   const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
-    queryKey: [`/api/courses/${courseId}`],
+    queryKey: [`courses/${courseId}`],
     queryFn: async () => {
       try {
         console.log("Fetching course details for ID:", courseId);
         const response = await fetch(`/api/courses/${courseId}`, {
+          method: 'GET',
+          credentials: 'include',
           headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache'
           },
         });
         
         if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+          const errorData = await response.json().catch(() => ({ message: 'Network error' }));
+          throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
@@ -57,12 +61,13 @@ export default function CourseDetailPage() {
         return data;
       } catch (err) {
         console.error("Error fetching course:", err);
-        throw new Error(err instanceof Error ? err.message : 'Failed to fetch course');
+        throw err;
       }
     },
     enabled: !!courseId,
-    retry: 1,
-    retryDelay: 1000
+    retry: 2,
+    retryDelay: 1000,
+    staleTime: 30000
   });
 
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
