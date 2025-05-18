@@ -97,7 +97,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       const db = await mongoDb.getDb("learning_platform");
       const { ObjectId } = require('mongodb');
-      
+
       let courseId;
       try {
         courseId = new ObjectId(req.params.id);
@@ -414,6 +414,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
+      
       if (user.userType !== "faculty" && user.userType !== "admin") {
         return res.status(403).json({ message: "Only faculty and admins can access this" });
       }
