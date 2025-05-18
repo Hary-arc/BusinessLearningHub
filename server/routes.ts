@@ -3,6 +3,7 @@ import { createServer, type Server } from "http";
 import { mongoDb } from "./mongodb";
 import { setupAuth } from "./auth";
 import { createOrder, verifyPayment } from "./razorpay";
+import { ObjectId } from "mongodb";
 import { 
   insertCourseSchema, 
   insertEnrollmentSchema, 
@@ -158,11 +159,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-      return console.log("[API] Successfully fetched course and lessons:", { 
+      console.log("[API] Successfully fetched course and lessons:", { 
         courseId: course?._id,
         lessonCount: lessons?.length 
       });
-      res.json({ ...course, lessons });
+      return res.json({ ...course, lessons });
     } catch (error) {
       console.error('[API] Course fetch error:', error);
       console.error('[API] Stack trace:', (error as Error).stack);
@@ -213,7 +214,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const db = await mongoDb.getDb("learning_platform");
       const course = await db.collection("courses")
-        .findOne({ id: validatedData.courseId });
+        .findOne({ _id: new ObjectId(validatedData.courseId) });
 
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
@@ -272,7 +273,9 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reviews API
   app.get("/api/courses/:id/reviews", async (req, res) => {
     try {
-      const courseId = parseInt(req.params.id);
+      //const courseId = parseInt(req.params.id);
+
+      const courseId = new ObjectId(req.params.id);
       const db = await mongoDb.getDb("learning_platform");
       const reviews = await db.collection("reviews")
         .aggregate([

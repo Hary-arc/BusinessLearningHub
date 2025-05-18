@@ -34,13 +34,13 @@ export default function CourseDetailPage() {
   const courseId = id;
 
   const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
-    queryKey: [`courses?courseId=${courseId}`],
+    queryKey: [`/api/courses/${courseId}`],
     queryFn: async () => {
       try {
         console.log("[Frontend] Initiating course fetch for ID:", courseId);
         console.log("[Frontend] Current URL params:", window.location.pathname);
-        const response = await //fetch(`/api/courses/${courseId}/`, {
-          fetch(`/api/courses?courseId=${courseId}`, {
+        const response = await fetch(`/api/courses/${courseId}`, {
+          //fetch(`/api/courses/${courseId}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -49,13 +49,15 @@ export default function CourseDetailPage() {
             'Cache-Control': 'no-cache'
           },
         });
-        
+        console.log("Response status:", response.status);
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ message: 'Network error' }));
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log("Course Data:", data);
+        
         if (!data) {
           throw new Error('No data received');
         }
