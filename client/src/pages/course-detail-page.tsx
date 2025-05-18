@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { Course, Review } from "@shared/schema";
@@ -14,6 +15,9 @@ import {
   Award,
   Play,
   CheckCircle,
+  Users,
+  BookOpen,
+  BarChart,
 } from "lucide-react";
 import {
   Accordion,
@@ -21,6 +25,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAuth } from "@/hooks/use-auth";
 import { apiRequest, queryClient } from "@/lib/queryClient";
@@ -37,10 +42,7 @@ export default function CourseDetailPage() {
     queryKey: [`/api/courses/${courseId}`],
     queryFn: async () => {
       try {
-        console.log("[Frontend] Initiating course fetch for ID:", courseId);
-        console.log("[Frontend] Current URL params:", window.location.pathname);
         const response = await fetch(`/api/courses/${courseId}`, {
-          //fetch(`/api/courses/${courseId}`, {
           method: 'GET',
           credentials: 'include',
           headers: {
@@ -49,19 +51,13 @@ export default function CourseDetailPage() {
             'Cache-Control': 'no-cache'
           },
         });
-        console.log("Response status:", response.status);
+        
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ message: 'Network error' }));
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
-        console.log("Course Data:", data);
-        
-        if (!data) {
-          throw new Error('No data received');
-        }
-        
         return data;
       } catch (err) {
         console.error("Error fetching course:", err);
@@ -78,15 +74,7 @@ export default function CourseDetailPage() {
     queryKey: [`/api/courses/${courseId}/reviews`],
     queryFn: async () => {
       const response = await fetch(`/api/courses/${courseId}/reviews`);
-      if (!response.ok) {
-        const errText = await response.text();
-        try {
-          const json = JSON.parse(errText);
-          throw new Error(json.message || "Failed to fetch reviews");
-        } catch {
-          throw new Error(errText || "Failed to fetch reviews");
-        }
-      }
+      if (!response.ok) throw new Error("Failed to fetch reviews");
       return response.json();
     },
     enabled: !!courseId,
@@ -109,18 +97,18 @@ export default function CourseDetailPage() {
   const enrollMutation = useMutation({
     mutationFn: async () => {
       const res = await apiRequest("POST", "/api/enrollments", { courseId });
-      const data = await res.json();
       if (!res.ok) {
+        const data = await res.json();
         throw new Error(data.message || "Failed to enroll");
       }
-      return data;
+      return res.json();
     },
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: [`/api/user/enrollments/${courseId}`],
       });
       toast({
-        title: "Enrolled successfully",
+        title: "Success!",
         description: "You have successfully enrolled in this course.",
       });
     },
@@ -137,7 +125,7 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-grow py-12 bg-gray-50">
+        <main className="flex-grow py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
               <div className="lg:col-span-2">
@@ -161,7 +149,7 @@ export default function CourseDetailPage() {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
-        <main className="flex-grow py-12 bg-gray-50">
+        <main className="flex-grow py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h1 className="text-3xl font-extrabold text-gray-900">
               Course not found
@@ -181,12 +169,15 @@ export default function CourseDetailPage() {
 
   const course = courseData;
   const lessons = courseData?.lessons || [];
+  const formattedPrice = course?.price != null
+    ? `${course.currency} ${(course.price / 100).toFixed(2)}`
+    : "Free";
 
   const handleEnroll = () => {
     if (!user) {
       toast({
-        title: "Please login to enroll",
-        description: "You need to be logged in to enroll in courses",
+        title: "Authentication required",
+        description: "Please log in to enroll in this course",
         variant: "destructive",
       });
       return;
@@ -194,264 +185,268 @@ export default function CourseDetailPage() {
     enrollMutation.mutate();
   };
 
-  // Format price from cents to dollars
-  const formattedPrice = course?.price != null
-    ? `${course.currency} ${(course.price / 100).toFixed(2)}`
-    : "Free";
-
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-      <main className="flex-grow py-12 bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Course Details */}
-            <div className="lg:col-span-2">
-              <img
-                src={course.imageUrl}
-                alt={course.title}
-                className="w-full h-auto rounded-lg shadow-lg object-cover"
-                style={{ maxHeight: "400px" }}
-              />
-
-              <div className="mt-6">
-                <Badge className="bg-primary-100 text-primary hover:bg-primary-200">
-                  {course.category}
-                </Badge>
-                <h1 className="text-3xl font-bold text-gray-900 mt-2">
-                  {course.title}
-                </h1>
-                <div className="flex items-center mt-2">
-                  <div className="flex items-center">
-                    {[...Array(5)].map((_, i) => (
-                      <Star
-                        key={i}
-                        className={`h-5 w-5 ${
-                          i < Math.floor(course.rating || 0)
-                            ? "text-yellow-400 fill-current"
-                            : "text-gray-300"
-                        }`}
-                      />
-                    ))}
-                  </div>
-                  <span className="ml-2 text-sm text-gray-600">
-                    {course.rating} ({course.reviewCount} reviews)
-                  </span>
+      
+      {/* Hero Section */}
+      <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+            <div>
+              <Badge className="mb-4">{course.category}</Badge>
+              <h1 className="text-4xl font-bold text-gray-900 mb-4">
+                {course.title}
+              </h1>
+              <p className="text-lg text-gray-600 mb-6">
+                {course.description}
+              </p>
+              <div className="flex items-center gap-6 text-sm text-gray-600">
+                <div className="flex items-center">
+                  <Users className="h-5 w-5 text-primary mr-2" />
+                  {course.enrollmentCount || 0} students
                 </div>
-
-                <div className="mt-6 prose max-w-none">
-                  <h2 className="text-xl font-semibold text-gray-900">
-                    Description
-                  </h2>
-                  <p className="text-gray-700">{course.description}</p>
+                <div className="flex items-center">
+                  <Clock className="h-5 w-5 text-primary mr-2" />
+                  {course.duration}h total
                 </div>
-
-                <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    What You'll Learn
-                  </h2>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>
-                        Effective marketing strategies for small businesses
-                      </span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>
-                        Cost-effective customer acquisition techniques
-                      </span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>Building a sustainable local customer base</span>
-                    </div>
-                    <div className="flex items-start">
-                      <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
-                      <span>Measuring marketing ROI for local businesses</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    Course Content
-                  </h2>
-                  <Accordion
-                    type="single"
-                    collapsible
-                    className="border rounded-md"
-                  >
-                    {Array.isArray(lessons) && lessons.map((lesson) => (
-                      <AccordionItem 
-                        key={lesson._id || lesson.id || Math.random().toString()} 
-                        value={`lesson-${lesson._id || lesson.id || Math.random().toString()}`}
-                      >
-                        <AccordionTrigger className="px-4">
-                          {lesson.title}
-                        </AccordionTrigger>
-                        <AccordionContent className="px-4">
-                          <div className="space-y-2">
-                            <div className="flex items-center justify-between">
-                              <div className="flex items-center">
-                                <Play className="h-4 w-4 mr-2 text-primary" />
-                                <span>{lesson.content}</span>
-                              </div>
-                              <span className="text-sm text-gray-500">
-                                {lesson.duration} min
-                              </span>
-                            </div>
-                            {lesson.videoUrl && (
-                              <div className="mt-2">
-                                <Button 
-                                  variant="outline" 
-                                  size="sm" 
-                                  onClick={() => window.open(lesson.videoUrl, '_blank')}
-                                >
-                                  <Play className="h-4 w-4 mr-2" />
-                                  Watch Video
-                                </Button>
-                              </div>
-                            )}
-                          </div>
-                        </AccordionContent>
-                      </AccordionItem>
-                    ))}
-                  </Accordion>
-                </div>
-
-                <div className="mt-8">
-                  <h2 className="text-xl font-semibold text-gray-900 mb-4">
-                    Reviews
-                  </h2>
-                  {isLoadingReviews ? (
-                    <div className="space-y-4">
-                      {[1, 2].map((i) => (
-                        <div key={i} className="border rounded-lg p-4">
-                          <div className="flex items-center">
-                            <Skeleton className="h-10 w-10 rounded-full" />
-                            <div className="ml-3">
-                              <Skeleton className="h-4 w-32" />
-                              <Skeleton className="h-3 w-20 mt-1" />
-                            </div>
-                          </div>
-                          <Skeleton className="h-16 w-full mt-3" />
-                        </div>
-                      ))}
-                    </div>
-                  ) : reviews?.length ? (
-                    <div className="space-y-4">
-                      {reviews.map((review) => (
-                        <div key={review.id} className="border rounded-lg p-4">
-                          <div className="flex items-center">
-                            <Avatar className="h-10 w-10">
-                              <AvatarImage src="" alt={review.user.fullName} />
-                              <AvatarFallback className="bg-primary-50 text-primary">
-                                {review.user.fullName
-                                  .split(" ")
-                                  .map((n: string) => n[0])
-                                  .join("")}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="ml-3">
-                              <div className="font-medium">
-                                {review.user.fullName}
-                              </div>
-                              <div className="flex mt-1">
-                                {[...Array(5)].map((_, i) => (
-                                  <Star
-                                    key={i}
-                                    className={`h-4 w-4 ${
-                                      i < review.rating
-                                        ? "text-yellow-400 fill-current"
-                                        : "text-gray-300"
-                                    }`}
-                                  />
-                                ))}
-                              </div>
-                            </div>
-                          </div>
-                          <p className="mt-3 text-gray-700">{review.comment}</p>
-                        </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-gray-500">
-                      No reviews yet for this course.
-                    </p>
-                  )}
+                <div className="flex items-center">
+                  <BookOpen className="h-5 w-5 text-primary mr-2" />
+                  {lessons.length} lessons
                 </div>
               </div>
             </div>
+            <div className="relative">
+              <img
+                src={course.imageUrl}
+                alt={course.title}
+                className="rounded-lg shadow-xl w-full object-cover"
+                style={{ maxHeight: "400px" }}
+              />
+              <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
+                <Button size="lg" className="gap-2">
+                  <Play className="h-5 w-5" />
+                  Preview Course
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Course Sidebar */}
-            <div>
-              <div className="bg-white rounded-lg shadow-lg p-6 sticky top-6">
-                <div className="text-3xl font-bold text-gray-900">
+      <main className="flex-grow py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            {/* Main Content */}
+            <div className="lg:col-span-2">
+              {/* What You'll Learn */}
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4">What You'll Learn</h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {[
+                    "Master core concepts and principles",
+                    "Build real-world projects",
+                    "Gain practical experience",
+                    "Learn industry best practices",
+                    "Get personalized feedback",
+                    "Earn a verified certificate",
+                  ].map((item, index) => (
+                    <div key={index} className="flex items-start">
+                      <CheckCircle className="h-5 w-5 text-primary mt-1 mr-2 flex-shrink-0" />
+                      <span>{item}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* Course Content */}
+              <div className="bg-white rounded-lg shadow-sm p-6 mb-8">
+                <h2 className="text-xl font-semibold mb-4">Course Content</h2>
+                <div className="mb-4 flex items-center justify-between text-sm text-gray-600">
+                  <span>{lessons.length} lessons</span>
+                  <span>{course.duration} hours total</span>
+                </div>
+                <Accordion type="single" collapsible className="border rounded-md">
+                  {lessons.map((lesson, index) => (
+                    <AccordionItem
+                      key={lesson._id || `lesson-${index}`}
+                      value={lesson._id || `lesson-${index}`}
+                    >
+                      <AccordionTrigger className="px-4 hover:no-underline">
+                        <div className="flex items-center">
+                          <span className="mr-4 text-gray-400">
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
+                          {lesson.title}
+                        </div>
+                      </AccordionTrigger>
+                      <AccordionContent className="px-4">
+                        <div className="space-y-2">
+                          <p className="text-gray-600">{lesson.description}</p>
+                          <div className="flex items-center justify-between text-sm">
+                            <div className="flex items-center text-primary">
+                              <Play className="h-4 w-4 mr-2" />
+                              <span>{lesson.duration} min</span>
+                            </div>
+                            {lesson.videoUrl && (
+                              <Button variant="outline" size="sm">
+                                Preview
+                              </Button>
+                            )}
+                          </div>
+                        </div>
+                      </AccordionContent>
+                    </AccordionItem>
+                  ))}
+                </Accordion>
+              </div>
+
+              {/* Reviews */}
+              <div className="bg-white rounded-lg shadow-sm p-6">
+                <div className="flex items-center justify-between mb-6">
+                  <h2 className="text-xl font-semibold">Student Reviews</h2>
+                  <div className="flex items-center">
+                    <div className="flex">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          className={`h-5 w-5 ${
+                            i < Math.floor(course.rating || 0)
+                              ? "text-yellow-400 fill-current"
+                              : "text-gray-300"
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="ml-2 text-gray-600">
+                      {course.rating} ({course.reviewCount} reviews)
+                    </span>
+                  </div>
+                </div>
+
+                {isLoadingReviews ? (
+                  <div className="space-y-4">
+                    {[1, 2].map((i) => (
+                      <div key={i} className="border rounded-lg p-4">
+                        <div className="flex items-center">
+                          <Skeleton className="h-10 w-10 rounded-full" />
+                          <div className="ml-3">
+                            <Skeleton className="h-4 w-32" />
+                            <Skeleton className="h-3 w-20 mt-1" />
+                          </div>
+                        </div>
+                        <Skeleton className="h-16 w-full mt-3" />
+                      </div>
+                    ))}
+                  </div>
+                ) : reviews?.length ? (
+                  <div className="space-y-6">
+                    {reviews.map((review) => (
+                      <div key={review.id} className="border rounded-lg p-4">
+                        <div className="flex items-center mb-3">
+                          <Avatar>
+                            <AvatarImage src="" alt={review.user.fullName} />
+                            <AvatarFallback className="bg-primary/10 text-primary">
+                              {review.user.fullName
+                                .split(" ")
+                                .map((n) => n[0])
+                                .join("")}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="ml-3">
+                            <div className="font-medium">{review.user.fullName}</div>
+                            <div className="flex mt-1">
+                              {[...Array(5)].map((_, i) => (
+                                <Star
+                                  key={i}
+                                  className={`h-4 w-4 ${
+                                    i < review.rating
+                                      ? "text-yellow-400 fill-current"
+                                      : "text-gray-300"
+                                  }`}
+                                />
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                        <p className="text-gray-600">{review.comment}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-gray-500 text-center py-8">
+                    No reviews yet for this course.
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <div className="bg-white rounded-lg shadow-sm p-6 sticky top-6">
+                <div className="text-3xl font-bold text-gray-900 mb-6">
                   {formattedPrice}
                 </div>
 
-                <div className="mt-6">
-                  {enrollment || enrollMutation.isSuccess ? (
-                    <Button className="w-full" variant="secondary" disabled>
-                      <CheckCircle className="mr-2 h-4 w-4" />
-                      Enrolled
-                    </Button>
-                  ) : (
-                    <Button
-                      className="w-full"
-                      onClick={handleEnroll}
-                      disabled={enrollMutation.isPending}
-                    >
-                      {enrollMutation.isPending
-                        ? "Processing..."
-                        : "Enroll Now"}
-                    </Button>
-                  )}
+                {enrollment || enrollMutation.isSuccess ? (
+                  <Button className="w-full mb-6" variant="secondary" disabled>
+                    <CheckCircle className="mr-2 h-4 w-4" />
+                    Enrolled
+                  </Button>
+                ) : (
+                  <Button
+                    className="w-full mb-6"
+                    onClick={handleEnroll}
+                    disabled={enrollMutation.isPending}
+                  >
+                    {enrollMutation.isPending ? "Processing..." : "Enroll Now"}
+                  </Button>
+                )}
+
+                <div className="space-y-4 border-t pt-6">
+                  <h3 className="font-semibold">This course includes:</h3>
+                  <div className="space-y-3 text-sm">
+                    <div className="flex items-center">
+                      <Globe className="h-5 w-5 text-gray-400 mr-3" />
+                      <span>Full lifetime access</span>
+                    </div>
+                    <div className="flex items-center">
+                      <FileText className="h-5 w-5 text-gray-400 mr-3" />
+                      <span>Downloadable resources</span>
+                    </div>
+                    <div className="flex items-center">
+                      <Award className="h-5 w-5 text-gray-400 mr-3" />
+                      <span>Certificate of completion</span>
+                    </div>
+                    <div className="flex items-center">
+                      <BarChart className="h-5 w-5 text-gray-400 mr-3" />
+                      <span>Progress tracking</span>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="mt-6 space-y-4">
-                  <div className="flex items-center">
-                    <Clock className="h-5 w-5 text-gray-400 mr-3" />
-                    <span>10 hours of content</span>
-                  </div>
-                  <div className="flex items-center">
-                    <FileText className="h-5 w-5 text-gray-400 mr-3" />
-                    <span>25 lessons</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Globe className="h-5 w-5 text-gray-400 mr-3" />
-                    <span>Full lifetime access</span>
-                  </div>
-                  <div className="flex items-center">
-                    <Award className="h-5 w-5 text-gray-400 mr-3" />
-                    <span>Certificate of completion</span>
-                  </div>
-                </div>
-
-                <div className="mt-6 pt-6 border-t border-gray-200">
+                <div className="mt-6 pt-6 border-t">
+                  <h3 className="font-semibold mb-4">Instructor</h3>
                   <div className="flex items-center">
                     <Avatar className="h-12 w-12">
-                      <AvatarImage src="" alt="Instructor" />
-                      <AvatarFallback className="bg-primary-50 text-primary">
-                        IS
+                      <AvatarImage
+                        src={course.instructorId?.imageUrl || ""}
+                        alt={course.instructorId?.name}
+                      />
+                      <AvatarFallback className="bg-primary/10 text-primary">
+                        {course.instructorId?.name
+                          ?.split(" ")
+                          .map((n) => n[0])
+                          .join("")}
                       </AvatarFallback>
                     </Avatar>
                     <div className="ml-3">
-                      <div className="text-sm font-medium text-gray-900">
-                        Instructor
-                      </div>
+                      <div className="font-medium">{course.instructorId?.name}</div>
                       <div className="text-sm text-gray-500">
-                        Marketing Faculty
+                        {course.instructorId?.title || "Course Instructor"}
                       </div>
                     </div>
                   </div>
-                  <p className="mt-4 text-sm text-gray-600">
-                    Expert in business marketing with over 10 years of
-                    experience helping small businesses grow their customer
-                    base.
-                  </p>
                 </div>
               </div>
             </div>
