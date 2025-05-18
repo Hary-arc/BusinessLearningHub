@@ -1,0 +1,129 @@
+✅ INITIAL CHECKLIST
+1. Missing Function Reference: handleEnroll
+👀 Problem: handleEnroll is referenced in the JSX but not defined.
+
+tsx
+Copy
+Edit
+<Button
+  className="w-full"
+  onClick={handleEnroll} // ❌ Undefined
+  disabled={enrollMutation.isPending}
+>
+🛠️ Fix: Define the function like this above the return:
+
+tsx
+Copy
+Edit
+const handleEnroll = () => {
+  if (!user) {
+    toast({
+      title: "Please login to enroll",
+      variant: "destructive",
+    });
+    return;
+  }
+  enrollMutation.mutate();
+};
+2. Potentially Unsafe Access: course.price.toFixed(2)
+👀 Problem: If course.price is undefined or not a number, this line could throw an error.
+
+tsx
+Copy
+Edit
+const formattedPrice = course
+  ? `${course.currency} ${course.price.toFixed(2)}`
+  : "";
+🛠️ Fix (safe formatting):
+
+tsx
+Copy
+Edit
+const formattedPrice = course?.price != null
+  ? `${course.currency} ${(course.price / 100).toFixed(2)}`
+  : "Free";
+Also consider converting cents to dollars (if backend stores price in cents).
+
+3. Review Key Access Error
+👀 Problem: review.id might be undefined if your backend returns _id.
+
+🛠️ Fix:
+
+tsx
+Copy
+Edit
+<div key={review.id || review._id} className="border rounded-lg p-4">
+4. Missing await in enrollMutation
+👀 Not directly wrong, but mutationFn doesn’t await res.json() which could cause race conditions if you depend on it immediately.
+
+🛠️ Fix:
+
+ts
+Copy
+Edit
+mutationFn: async () => {
+  const res = await apiRequest("POST", "/api/enrollments", { courseId });
+  const data = await res.json();
+  return data;
+}
+5. Error Handling in reviews Query
+👀 A minor but common issue:
+
+ts
+Copy
+Edit
+if (!response.ok) {
+  throw new Error(await response.text());
+}
+🛠️ More robust error parsing:
+
+ts
+Copy
+Edit
+if (!response.ok) {
+  const errText = await response.text();
+  try {
+    const json = JSON.parse(errText);
+    throw new Error(json.message || "Failed to fetch reviews.");
+  } catch {
+    throw new Error(errText);
+  }
+}
+6. Check: Lessons Loop Key
+If lesson._id is undefined, this can trigger a React key warning.
+
+tsx
+Copy
+Edit
+<AccordionItem key={lesson._id || lesson.id}>
+🛠️ Ensure your lesson model has either id or _id uniquely defined. If neither, this loop will break on React rerender.
+
+7. Verify useParams Behavior
+Make sure that the route where this component is mounted has :id in its path:
+
+tsx
+Copy
+Edit
+<Route path="/courses/:id" component={CourseDetailPage} />
+Otherwise useParams<{ id: string }>() will return undefined.
+
+8. Data Contract Validation (Optional but Pro-level)
+You import types like Course, Review from @shared/schema. It’s good practice to validate fetched data against these types using a runtime validator like zod or superstruct if your app grows — but this is more a recommendation than a fix.
+
+✅ FIXED VERSION SNIPPET (For Key Issue)
+Here’s how to fix the major issue:
+
+tsx
+Copy
+Edit
+// Add inside your component
+const handleEnroll = () => {
+  if (!user) {
+    toast({
+      title: "Please login to enroll",
+      variant: "destructive",
+    });
+    return;
+  }
+  enrollMutation.mutate();
+};
