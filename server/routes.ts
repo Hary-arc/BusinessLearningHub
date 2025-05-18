@@ -104,10 +104,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
       } catch (error) {
         return res.status(400).json({ message: "Invalid course ID format" });
       }
-      
-      const course = await db.collection("courses")
-        .findOne({ _id: courseId });
-        
+
+      const course = await db.collection("courses").aggregate([
+        { $match: { _id: courseId } },
+        {
+          $lookup: {
+            from: 'users',
+            localField: 'instructorId',
+            foreignField: '_id',
+            as: 'instructor'
+          }
+        },
+        { $unwind: '$instructor' },
+        {
+          $project: {
+            _id: 1,
+            title: 1,
+            description: 1,
+            imageUrl: 1,
+            price: 1,
+            currency: 1,
+            category: 1,
+            tags: 1,
+            level: 1,
+            duration: 1,
+            rating: 1,
+            reviewCount: 1,
+            isPublished: 1,
+            featured: 1,
+            createdAt: 1,
+            updatedAt: 1,
+            instructorId: {
+              _id: '$instructor._id',
+              name: '$instructor.name',
+              email: '$instructor.email'
+            }
+          }
+        }
+      ]).next();
+
       if (!course) {
         return res.status(404).json({ message: "Course not found" });
       }
