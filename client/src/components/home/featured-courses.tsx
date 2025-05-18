@@ -1,3 +1,4 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Course } from "@shared/schema";
 import { Link } from "wouter";
@@ -44,7 +45,6 @@ export function FeaturedCourses() {
           transition={{ duration: 0.6, delay: 0.2, staggerChildren: 0.1 }}
         >
           {isLoading ? (
-            // Loading skeletons
             Array(4).fill(0).map((_, i) => (
               <motion.div 
                 key={`skeleton-${i}`} 

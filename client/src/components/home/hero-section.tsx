@@ -1,6 +1,7 @@
+
+import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { motion } from "framer-motion";
 
 export function HeroSection() {
   return (
@@ -26,37 +27,37 @@ export function HeroSection() {
                 </Button>
               </Link>
               <Link href="/auth">
-                <Button variant="outline" className="w-full sm:w-auto text-base md:text-lg px-8 py-3 md:py-4 md:px-10 text-primary border-primary hover:bg-primary-50 hover:text-primary-dark">
-                  Register Now
+                <Button variant="outline" className="w-full sm:w-auto text-base md:text-lg px-8 py-3 md:py-4 md:px-10">
+                  Get Started
                 </Button>
               </Link>
             </div>
-            <div className="mt-8 flex items-center space-x-6">
+            <div className="mt-8 grid grid-cols-3 gap-4">
               <div className="flex items-center">
                 <motion.div 
-                  className="p-2 rounded-full bg-green-100" 
-                  whileHover={{ scale: 1.1 }}
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </motion.div>
-                <span className="ml-2 text-sm font-medium">Get Skilled</span>
-              </div>
-              <div className="flex items-center">
-                <motion.div 
-                  className="p-2 rounded-full bg-green-100" 
+                  className="p-2 rounded-full bg-primary/10" 
                   whileHover={{ scale: 1.1 }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                   </svg>
                 </motion.div>
+                <span className="ml-2 text-sm font-medium">Learn Skills</span>
+              </div>
+              <div className="flex items-center">
+                <motion.div 
+                  className="p-2 rounded-full bg-primary/10" 
+                  whileHover={{ scale: 1.1 }}
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </motion.div>
                 <span className="ml-2 text-sm font-medium">Get Experienced</span>
               </div>
               <div className="flex items-center">
                 <motion.div 
-                  className="p-2 rounded-full bg-green-100" 
+                  className="p-2 rounded-full bg-primary/10" 
                   whileHover={{ scale: 1.1 }}
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
