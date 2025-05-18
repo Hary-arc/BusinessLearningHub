@@ -33,100 +33,41 @@ export default function CourseDetailPage() {
   const { toast } = useToast();
   const courseId = id;
 
-  const { data: courseData, isLoading: isLoadingCourse, isError, error } = useQuery<Course & { lessons: any[] }>({
-    queryKey: [`/api/courses/${id}`],
+  const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
+    queryKey: [`/api/courses/${courseId}`],
     queryFn: async () => {
       try {
-        console.log("Fetching course details for ID:", id);
-        const response = await fetch(`/api/courses/${id}`);
+        console.log("Fetching course details for ID:", courseId);
+        const response = await fetch(`/api/courses/${courseId}`);
         const data = await response.json();
-        
+
         if (!response.ok) {
           throw new Error(data.message || "Failed to fetch course");
         }
-        
-        console.log("Course data received:", data);
+
         return data;
       } catch (err) {
         console.error("Error fetching course:", err);
         throw err;
       }
     },
-    enabled: !!id,
+    enabled: !!courseId,
     retry: 1,
     retryDelay: 1000
   });
 
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
     queryKey: [`/api/courses/${courseId}/reviews`],
-    enabled: !!courseId,
+    queryFn: async () => {
+      const res = await fetch(`/api/courses/${courseId}/reviews`);
+      if (!res.ok) return [];
+      return res.json();
+    },
+    enabled: !!courseId
   });
 
   const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
     queryKey: [`/api/user/enrollments/${courseId}`],
-    enabled: !!courseId && !!user
-  });
-
-  if (isLoadingCourse) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-grow py-12 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-              <div className="lg:col-span-2">
-                <Skeleton className="h-64 w-full rounded-lg" />
-                <Skeleton className="h-10 w-3/4 mt-4" />
-                <Skeleton className="h-6 w-1/3 mt-2" />
-                <Skeleton className="h-24 w-full mt-4" />
-              </div>
-              <div>
-                <Skeleton className="h-96 w-full rounded-lg" />
-              </div>
-            </div>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  if (isError || !courseData) {
-    return (
-      <div className="min-h-screen flex flex-col">
-        <Header />
-        <main className="flex-grow py-12 bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <h1 className="text-3xl font-extrabold text-gray-900">
-              Error Loading Course
-            </h1>
-            <p className="mt-4 text-gray-500">
-              {error instanceof Error ? error.message : "Failed to load course details"}
-            </p>
-            <Button className="mt-8" onClick={() => navigate("/courses")}>
-              Back to Courses
-            </Button>
-          </div>
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
-  const course = courseData;
-  const lessons = courseData?.lessons || [];
-
-  const { data: reviews, isLoading: isLoadingReviews } = useQuery<
-    (Review & { user: any })[]
-  >({
-    queryKey: [`/api/courses/${courseId}/reviews`],
-    enabled: !!courseId,
-  });
-
-  const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
-    queryKey: [`/api/user/enrollments/${courseId}`],
-    enabled: !!courseId && !!user,
-    // This API endpoint might not exist, but we're checking for enrollment status
     queryFn: async () => {
       try {
         const res = await fetch(`/api/user/enrollments/${courseId}`);
@@ -136,6 +77,7 @@ export default function CourseDetailPage() {
         return null;
       }
     },
+    enabled: !!courseId && !!user
   });
 
   const enrollMutation = useMutation({
@@ -161,89 +103,6 @@ export default function CourseDetailPage() {
     },
   });
 
-  const handleEnroll = async () => {
-    if (!user) {
-      toast({
-        title: "Login required",
-        description: "Please log in to enroll in this course",
-      });
-      navigate("/auth");
-      return;
-    }
-
-    try {
-      // Create Razorpay order
-      const orderResponse = await fetch("/api/payments/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ amount: course?.price }),
-      });
-      const { orderId, keyId } = await orderResponse.json();
-
-      // Initialize payment
-      const paymentHandler = new window.Razorpay({
-        key: keyId,
-        amount: course?.price,
-        currency: "INR",
-        name: "Business Learn",
-        description: `Enrollment for ${course?.title}`,
-        order_id: orderId,
-        handler: async function (response: any) {
-          try {
-            // Verify payment
-            const verifyResponse = await fetch("/api/payments/verify", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                orderId: response.razorpay_order_id,
-                paymentId: response.razorpay_payment_id,
-                signature: response.razorpay_signature,
-              }),
-            });
-
-            const { valid } = await verifyResponse.json();
-            if (valid) {
-              // Complete enrollment after successful payment
-              enrollMutation.mutate();
-            } else {
-              toast({
-                title: "Payment verification failed",
-                description: "Please try again or contact support",
-                variant: "destructive",
-              });
-            }
-          } catch (error) {
-            toast({
-              title: "Payment verification failed",
-              description: "Please try again or contact support",
-              variant: "destructive",
-            });
-          }
-        },
-        prefill: {
-          name: user.fullName,
-          email: user.email,
-        },
-        theme: {
-          color: "#2563eb",
-        },
-      });
-
-      paymentHandler.open();
-    } catch (error) {
-      toast({
-        title: "Payment initialization failed",
-        description: "Please try again or contact support",
-        variant: "destructive",
-      });
-    }
-  };
-
-  // Format price from cents to dollars
-  const formattedPrice = course
-    ? `${course.currency} ${course.price.toFixed(2)}`
-    : "";
-
   if (isLoadingCourse) {
     return (
       <div className="min-h-screen flex flex-col">
@@ -268,7 +127,7 @@ export default function CourseDetailPage() {
     );
   }
 
-  if (!course) {
+  if (!courseData) {
     return (
       <div className="min-h-screen flex flex-col">
         <Header />
@@ -290,7 +149,13 @@ export default function CourseDetailPage() {
     );
   }
 
-  // lessons is now loaded from the API response above
+  const course = courseData;
+  const lessons = courseData?.lessons || [];
+
+  // Format price from cents to dollars
+  const formattedPrice = course
+    ? `${course.currency} ${course.price.toFixed(2)}`
+    : "";
 
   return (
     <div className="min-h-screen flex flex-col">
