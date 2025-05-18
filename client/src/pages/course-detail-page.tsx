@@ -37,7 +37,8 @@ export default function CourseDetailPage() {
     queryKey: [`courses?courseId=${courseId}`],
     queryFn: async () => {
       try {
-        console.log("Fetching course details for ID:", courseId);
+        console.log("[Frontend] Initiating course fetch for ID:", courseId);
+        console.log("[Frontend] Current URL params:", window.location.pathname);
         const response = await //fetch(`/api/courses/${courseId}/`, {
           fetch(`/api/courses?courseId=${courseId}`, {
           method: 'GET',

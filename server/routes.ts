@@ -68,13 +68,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/courses/:id", async (req, res) => {
     try {
+      console.log("[API] GET /api/courses/:id - Request params:", req.params);
       const db = await mongoDb.getDb("learning_platform");
       const { ObjectId } = require('mongodb');
 
       let courseId;
       try {
         courseId = new ObjectId(req.params.id);
+        console.log("[API] Converted courseId to ObjectId:", courseId);
       } catch (error) {
+        console.error("[API] Failed to convert courseId to ObjectId:", error);
         return res.status(400).json({ message: "Invalid course ID format" });
       }
 
@@ -155,9 +158,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       res.setHeader('Content-Type', 'application/json');
       res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
-      return res.json({ ...course, lessons });
+      return console.log("[API] Successfully fetched course and lessons:", { 
+        courseId: course?._id,
+        lessonCount: lessons?.length 
+      });
+      res.json({ ...course, lessons });
     } catch (error) {
-      console.error('Course fetch error:', error);
+      console.error('[API] Course fetch error:', error);
+      console.error('[API] Stack trace:', (error as Error).stack);
       return res.status(500).json({ message: "Failed to fetch course", error: (error as Error).message });
     }
   });
