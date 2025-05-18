@@ -198,6 +198,30 @@ export default function CourseDetailPage() {
               <h1 className="text-4xl font-bold text-gray-900 mb-4">
                 {course.title}
               </h1>
+              <div className="flex flex-wrap gap-2 mb-4">
+                {["Web Development", "Programming", "JavaScript", "React"].map((tag) => (
+                  <Badge key={tag} variant="outline" className="bg-primary-50">
+                    {tag}
+                  </Badge>
+                ))}
+              </div>
+              <div className="flex items-center gap-4 mb-6">
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      className={`h-5 w-5 ${
+                        i < Math.floor(course.rating || 0)
+                          ? "text-yellow-400 fill-current"
+                          : "text-gray-300"
+                      }`}
+                    />
+                  ))}
+                </div>
+                <span className="text-lg text-gray-700">
+                  {course.rating} ({course.reviewCount} reviews)
+                </span>
+              </div>
               <p className="text-lg text-gray-600 mb-6">
                 {course.description}
               </p>
@@ -448,6 +472,67 @@ export default function CourseDetailPage() {
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
+
+            {/* This Course Includes Section */}
+            <div className="mt-12 bg-white rounded-lg shadow-sm p-8">
+              <h2 className="text-2xl font-semibold mb-6">This Course Includes</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div className="flex items-center gap-3">
+                  <FileText className="h-8 w-8 text-primary" />
+                  <div>
+                    <h3 className="font-medium">Course Materials</h3>
+                    <p className="text-sm text-gray-600">Downloadable resources</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Clock className="h-8 w-8 text-primary" />
+                  <div>
+                    <h3 className="font-medium">Lifetime Access</h3>
+                    <p className="text-sm text-gray-600">Learn at your own pace</p>
+                  </div>
+                </div>
+                <div className="flex items-center gap-3">
+                  <Globe className="h-8 w-8 text-primary" />
+                  <div>
+                    <h3 className="font-medium">Online Learning</h3>
+                    <p className="text-sm text-gray-600">Access anywhere</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Explore More Courses */}
+            <div className="mt-12 bg-white rounded-lg shadow-sm p-8">
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-semibold">Explore More Courses</h2>
+                <Link href="/courses">
+                  <Button variant="outline">View All Courses</Button>
+                </Link>
+              </div>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[1, 2, 3].map((_, i) => (
+                  <Card key={i} className="flex flex-col">
+                    <img
+                      src={`https://source.unsplash.com/random/800x600?education=${i}`}
+                      alt="Course thumbnail"
+                      className="h-48 w-full object-cover"
+                    />
+                    <CardContent className="flex-1 p-4">
+                      <Badge className="mb-2">{course.category}</Badge>
+                      <h3 className="font-semibold mb-2">Similar Course {i + 1}</h3>
+                      <div className="flex items-center text-sm text-yellow-500 mb-2">
+                        <Star className="h-4 w-4 fill-current" />
+                        <span className="ml-1">4.5</span>
+                        <span className="text-gray-500 ml-1">(120 reviews)</span>
+                      </div>
+                      <Button variant="outline" className="w-full mt-auto">
+                        Learn More
+                      </Button>
+                    </CardContent>
+                  </Card>
+                ))}
               </div>
             </div>
           </div>
