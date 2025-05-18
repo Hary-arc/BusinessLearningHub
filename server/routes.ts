@@ -71,7 +71,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     try {
       console.log("[API] GET /api/courses/:id - Request params:", req.params);
       const db = await mongoDb.getDb("learning_platform");
-      const { ObjectId } = require('mongodb');
+      const ObjectId = mongoDb.ObjectId;
 
       let courseId;
       try {
