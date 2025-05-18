@@ -1,0 +1,143 @@
+✅ FIXES & ISSUES
+1. Field name inconsistency: instructorId vs facultyId
+In some parts of your code you're using instructorId, and in others you're using facultyId.
+
+Example:
+
+/api/courses: $lookup joins on instructorId
+
+Course creation uses facultyId: user.id
+
+Fix suggestion: Ensure consistency across your schema. If your courses collection uses instructorId, then change:
+
+ts
+Copy
+Edit
+facultyId: user.id
+to:
+
+ts
+Copy
+Edit
+instructorId: user.id
+Also update:
+
+ts
+Copy
+Edit
+{ facultyId: user.id }
+to:
+
+ts
+Copy
+Edit
+{ instructorId: user.id }
+2. Course lookup in enrollments is mismatched
+In /api/enrollments, you do:
+
+ts
+Copy
+Edit
+.findOne({ id: validatedData.courseId })
+But MongoDB uses _id or another identifier; if your courseId is an ObjectId, you should cast it:
+
+ts
+Copy
+Edit
+.findOne({ _id: new ObjectId(validatedData.courseId) })
+Also, same issue with $lookup in /api/user/enrollments:
+
+ts
+Copy
+Edit
+foreignField: "id" // likely should be "_id"
+3. Lesson courseId reference is stored as string
+In:
+
+ts
+Copy
+Edit
+.find({ courseId: courseId.toString() })
+You're querying with a string; make sure your courseId field in the lessons collection is actually stored as a string, not as an ObjectId. If it is an ObjectId, change to:
+
+ts
+Copy
+Edit
+.find({ courseId: courseId })
+4. Review course ID parsing may break
+ts
+Copy
+Edit
+const courseId = parseInt(req.params.id);
+If course _id is an ObjectId, this will fail. You should parse it the same way:
+
+ts
+Copy
+Edit
+const { ObjectId } = require("mongodb");
+const courseId = new ObjectId(req.params.id);
+And change your $match to:
+
+ts
+Copy
+Edit
+{ courseId: courseId }
+Or if courseId is stored as a string in the reviews collection:
+
+ts
+Copy
+Edit
+{ courseId: courseId.toString() }
+5. Response sanitization of password field is incomplete
+ts
+Copy
+Edit
+const sanitizedUsers = users.map(({ password, ...user }) => user);
+If your users use passwordHash, you should also exclude passwordHash:
+
+ts
+Copy
+Edit
+const sanitizedUsers = users.map(({ password, passwordHash, ...user }) => user);
+6. Admin check uses incorrect userType
+ts
+Copy
+Edit
+if (!user || (user.userType !== "admin" && user.userType !== "faculty.admin"))
+You should normalize roles:
+
+"faculty.admin" is an odd hybrid role name.
+
+If you intended a role like "admin" and "faculty", stick to those.
+
+Otherwise, make sure your role-checking logic is aligned with real role values stored in DB.
+
+⚠️ RECOMMENDED IMPROVEMENTS
+1. Replace require("mongodb") with import
+If you're using ESM modules (type: module in package.json), change:
+
+ts
+Copy
+Edit
+const { ObjectId } = require('mongodb');
+to:
+
+ts
+Copy
+Edit
+import { ObjectId } from "mongodb";
+2. Avoid magic email strings
+You had this in the older code:
+
+ts
+Copy
+Edit
+const adminUser = await db.collection("users").findOne({ email: "guptaharshit279@gmail.com" });
+You removed this in the newer version — good. If this was seed logic, extract it to a dedicated seed script or development hook.
+
+3. Cache headers might be better set at CDN level
+ts
+Copy
+Edit
+res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate');
+You can keep this for now, but ideally such headers should be managed via middleware or external cache strategies (like with Cloudflare or Varnish) for scalability.
