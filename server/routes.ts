@@ -52,7 +52,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         }
       ]).toArray();
 
-      
+
 
       res.json(courses);
     } catch (error) {
@@ -382,7 +382,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      
+
       if (user.userType !== "faculty" && user.userType !== "admin") {
         return res.status(403).json({ message: "Only faculty and admins can access this" });
       }
@@ -403,7 +403,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (!user || (user.userType !== "admin" && user.userType !== "faculty.admin")) {
+      if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
@@ -424,7 +424,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (!user || (user.userType !== "admin" && user.userType !== "faculty.admin")) {
+      if (!user || user.userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
