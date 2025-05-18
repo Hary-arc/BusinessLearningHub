@@ -14,9 +14,17 @@ import { z } from "zod";
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
+  function requireAuth(req: any, res: any, next: any) {
+    if (!req.isAuthenticated?.()) {
+      return res.status(401).json({ message: 'Unauthorized' });
+    }
+    next();
+  }
+
   // Courses API
   app.get("/api/courses", async (req, res) => {
     try {
+      const { ObjectId } = require('mongodb');
       const db = await mongoDb.getDb('learning_platform');
       const courses = await db.collection('courses').aggregate([
         { $match: { isPublished: true } },
@@ -70,16 +78,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
       if (!courses.length) {
         // If no courses found, initialize with seed data
         const seedCourses = [{
-          id: 1,
+          _id: new ObjectId(),
           title: "Introduction to Web Development",
           description: "Learn the basics of web development",
           imageUrl: "https://images.unsplash.com/photo-1593720219276-0b1eacd0aef4",
           price: 9900,
-          facultyId: 1,
+          instructorId: new ObjectId(),
           category: "Web Development",
           rating: 0,
           reviewCount: 0,
-          published: true
+          isPublished: true
         }];
 
         await db.collection('courses').insertMany(seedCourses);
@@ -166,7 +174,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const lessons = await db.collection("lessons")
         .find({ 
-          courseId: courseId.toString(),
+          courseId: courseId,
           isActive: { $ne: false }
         })
         .sort({ order: 1 })
@@ -290,8 +298,15 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Reviews API
   app.get("/api/courses/:id/reviews", async (req, res) => {
     try {
-      const courseId = parseInt(req.params.id);
+      const { ObjectId } = require('mongodb');
+      let courseId;
+      try {
+        courseId = new ObjectId(req.params.id);
+      } catch (error) {
+        return res.status(400).json({ message: "Invalid course ID format" });
+      }
       const db = await mongoDb.getDb("learning_platform");
+      console.log("Looking for reviews for course with ID:", courseId);
       const reviews = await db.collection("reviews")
         .aggregate([
           { $match: { courseId } },
