@@ -32,7 +32,7 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const courseId = id;
-  const { data: course, isLoading: isLoadingCourse } = useQuery<Course>({
+  const { data: courseData, isLoading: isLoadingCourse } = useQuery<{course: Course, lessons: any[]}>({
     queryKey: [`/api/courses/${id}`],
     queryFn: async () => {
       const response = await fetch(`/api/courses/${id}`);
@@ -43,6 +43,9 @@ export default function CourseDetailPage() {
     },
     enabled: !!id,
   });
+
+  const course = courseData?.course;
+  const lessons = courseData?.lessons || [];
 
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<
     (Review & { user: any })[]
@@ -218,23 +221,7 @@ export default function CourseDetailPage() {
     );
   }
 
-  // Dummy data for lessons
-  const lessons = [
-    {
-      id: 1,
-      title: "Module 1: Introduction to Business Marketing",
-      content: "Understanding Your Target Market",
-      duration: 15,
-      videoUrl: "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-    },
-    {
-      id: 2,
-      title: "Module 2: Digital Marketing Essentials",
-      content: "Social Media Strategies for Local Businesses",
-      duration: 25,
-      videoUrl: null,
-    },
-  ];
+  // lessons is now loaded from the API response above
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -321,7 +308,7 @@ export default function CourseDetailPage() {
                     className="border rounded-md"
                   >
                     {lessons.map((lesson) => (
-                      <AccordionItem key={lesson.id} value={`lesson-${lesson.id}`}>
+                      <AccordionItem key={lesson._id} value={`lesson-${lesson._id}`}>
                         <AccordionTrigger className="px-4">
                           {lesson.title}
                         </AccordionTrigger>
@@ -338,7 +325,11 @@ export default function CourseDetailPage() {
                             </div>
                             {lesson.videoUrl && (
                               <div className="mt-2">
-                                <Button variant="outline" size="sm">
+                                <Button 
+                                  variant="outline" 
+                                  size="sm" 
+                                  onClick={() => window.open(lesson.videoUrl, '_blank')}
+                                >
                                   <Play className="h-4 w-4 mr-2" />
                                   Watch Video
                                 </Button>
