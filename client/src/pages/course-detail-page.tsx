@@ -5,6 +5,9 @@ import { Course, Review } from "@shared/schema";
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Link as WouterLink } from 'wouter';
+//import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import {
@@ -373,7 +376,7 @@ export default function CourseDetailPage() {
                             <AvatarFallback className="bg-primary/10 text-primary">
                               {review.user.fullName
                                 .split(" ")
-                                .map((n) => n[0])
+                                .map((n: string) => n[0])
                                 .join("")}
                             </AvatarFallback>
                           </Avatar>
@@ -507,9 +510,9 @@ export default function CourseDetailPage() {
             <div className="mt-12 bg-white rounded-lg shadow-sm p-8">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold">Explore More Courses</h2>
-                <Link href="/courses">
-                  <Button variant="outline">View All Courses</Button>
-                </Link>
+                 <WouterLink href="/courses">
+                   <Button variant="outline">View All Courses</Button>
+                 </WouterLink>
               </div>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[1, 2, 3].map((_, i) => (
