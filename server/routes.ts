@@ -117,9 +117,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         .sort({ order: 1 })
         .toArray();
 
-      res.json({ ...course, lessons });
+      res.setHeader('Content-Type', 'application/json');
+      return res.json({ ...course, lessons });
     } catch (error) {
-      res.status(500).json({ message: "Failed to fetch course" });
+      console.error('Course fetch error:', error);
+      return res.status(500).json({ message: "Failed to fetch course", error: error.message });
     }
   });
 

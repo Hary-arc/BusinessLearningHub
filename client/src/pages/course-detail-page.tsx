@@ -38,16 +38,29 @@ export default function CourseDetailPage() {
     queryFn: async () => {
       try {
         console.log("Fetching course details for ID:", courseId);
-        const response = await apiRequest("GET", `/api/courses/${courseId}`);
+        const response = await fetch(`/api/courses/${courseId}`, {
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
         const data = await response.json();
+        if (!data) {
+          throw new Error('No data received');
+        }
+        
         return data;
       } catch (err) {
         console.error("Error fetching course:", err);
-        throw err;
+        throw new Error(err instanceof Error ? err.message : 'Failed to fetch course');
       }
     },
     enabled: !!courseId,
-    retry: false,
     retry: 1,
     retryDelay: 1000
   });
