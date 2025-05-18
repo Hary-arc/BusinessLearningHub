@@ -32,17 +32,47 @@ export default function CourseDetailPage() {
   const { user } = useAuth();
   const { toast } = useToast();
   const courseId = id;
-  const { data: courseData, isLoading: isLoadingCourse } = useQuery<Course & { lessons: any[] }>({
+  const { data: courseData, isLoading: isLoadingCourse, isError, error } = useQuery<Course & { lessons: any[] }>({
     queryKey: [`/api/courses/${id}`],
     queryFn: async () => {
+      console.log("Fetching course details for ID:", id);
       const response = await fetch(`/api/courses/${id}`);
       if (!response.ok) {
+        console.error("API Error:", response.status, response.statusText);
         throw new Error("Failed to fetch course");
       }
-      return response.json();
+      const data = await response.json();
+      console.log("Course data received:", data);
+      return data;
     },
     enabled: !!id,
+    retry: 2,
+    onError: (err) => {
+      console.error("Error fetching course:", err);
+    }
   });
+
+  if (isError) {
+    return (
+      <div className="min-h-screen flex flex-col">
+        <Header />
+        <main className="flex-grow py-12 bg-gray-50">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h1 className="text-3xl font-extrabold text-gray-900">
+              Error Loading Course
+            </h1>
+            <p className="mt-4 text-gray-500">
+              {error instanceof Error ? error.message : "Failed to load course details"}
+            </p>
+            <Button className="mt-8" onClick={() => window.location.reload()}>
+              Try Again
+            </Button>
+          </div>
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   const course = courseData;
   const lessons = courseData?.lessons || [];
