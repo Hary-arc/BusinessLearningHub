@@ -60,25 +60,11 @@ export default function CourseDetailPage() {
   const { data: reviews, isLoading: isLoadingReviews } = useQuery<(Review & { user: any })[]>({
     queryKey: [`/api/courses/${courseId}/reviews`],
     enabled: !!courseId,
-    queryFn: async () => {
-      const res = await fetch(`/api/courses/${courseId}/reviews`);
-      if (!res.ok) return [];
-      return res.json();
-    }
   });
 
   const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
     queryKey: [`/api/user/enrollments/${courseId}`],
-    enabled: !!courseId && !!user,
-    queryFn: async () => {
-      try {
-        const res = await fetch(`/api/user/enrollments/${courseId}`);
-        if (!res.ok) return null;
-        return res.json();
-      } catch (error) {
-        return null;
-      }
-    }
+    enabled: !!courseId && !!user
   });
 
   if (isLoadingCourse) {
@@ -129,6 +115,19 @@ export default function CourseDetailPage() {
 
   const course = courseData;
   const lessons = courseData?.lessons || [];
+
+  const { data: reviews, isLoading: isLoadingReviews } = useQuery<
+    (Review & { user: any })[]
+  >({
+    queryKey: [`/api/courses/${courseId}/reviews`],
+    enabled: !!courseId,
+  });
+
+  const { data: enrollment, isLoading: isLoadingEnrollment } = useQuery({
+    queryKey: [`/api/user/enrollments/${courseId}`],
+    enabled: !!courseId && !!user,
+    // This API endpoint might not exist, but we're checking for enrollment status
+    queryFn: async () => {
       try {
         const res = await fetch(`/api/user/enrollments/${courseId}`);
         if (!res.ok) return null;
