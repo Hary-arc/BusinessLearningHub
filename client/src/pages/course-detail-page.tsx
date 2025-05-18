@@ -114,10 +114,10 @@ export default function CourseDetailPage() {
       // Initialize payment
       const paymentHandler = new window.Razorpay({
         key: keyId,
-        amount: course.price,
+        amount: course?.price,
         currency: "INR",
         name: "Business Learn",
-        description: `Enrollment for ${course.title}`,
+        description: `Enrollment for ${course?.title}`,
         order_id: orderId,
         handler: async function (response: any) {
           try {
@@ -251,7 +251,7 @@ export default function CourseDetailPage() {
                       <Star
                         key={i}
                         className={`h-5 w-5 ${
-                          i < Math.floor(course.rating)
+                          i < Math.floor(course.rating || 0)
                             ? "text-yellow-400 fill-current"
                             : "text-gray-300"
                         }`}
@@ -371,7 +371,7 @@ export default function CourseDetailPage() {
                               <AvatarFallback className="bg-primary-50 text-primary">
                                 {review.user.fullName
                                   .split(" ")
-                                  .map((n) => n[0])
+                                  .map((n: string) => n[0])
                                   .join("")}
                               </AvatarFallback>
                             </Avatar>
