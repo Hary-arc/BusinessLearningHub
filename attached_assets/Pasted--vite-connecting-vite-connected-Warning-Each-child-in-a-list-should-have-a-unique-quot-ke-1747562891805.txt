@@ -1,0 +1,31 @@
+[vite] connecting...
+[vite] connected.
+Warning: Each child in a list should have a unique &quot;key&quot; prop.
+
+Check the render method of `CoursesPage`. See https://reactjs.org/link/warning-keys for more information.
+    at CourseCard (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/course/course-card.tsx:22:30)
+    at CoursesPage (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/pages/courses-page.tsx?t=1747562775942:36:39)
+    at Route (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:323:16)
+    at Switch (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:379:17)
+    at Router
+    at AuthProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/hooks/use-auth.tsx:35:32)
+    at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+    at TooltipProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=3c8f4d55:62:5)
+    at QueryClientProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3c8f4d55:2805:3)
+    at App
+
+Check the render method of &#x60;CoursesPage&#x60;. See https://reactjs.org/link/warning-keys for more information.
+at CourseCard (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/course/course-card.tsx:22:30)
+at CoursesPage (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/pages/courses-page.tsx?t=1747562775942:36:39)
+at Route (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:323:16)
+at Switch (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=3c8f4d55:379:17)
+at Router
+at AuthProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/hooks/use-auth.tsx:35:32)
+at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=3c8f4d55:38:15)
+at TooltipProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=3c8f4d55:62:5)
+at QueryClientProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=3c8f4d55:2805:3)
+at App
+at t.value (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:17465)
+at new t (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:12630)
+at t.value (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:32766)
+at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/__replco/static/devtools/eruda/3.2.3/eruda.js:2:34400
