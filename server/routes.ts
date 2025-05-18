@@ -11,6 +11,11 @@ import {
 } from "@shared/schema";
 import { z } from "zod";
 
+interface User extends Express.User {
+  userType: string;
+  id: string;
+}
+
 export async function registerRoutes(app: Express): Promise<Server> {
   setupAuth(app);
 
@@ -134,7 +139,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const lessons = await db.collection("lessons")
         .find({ 
-          courseId: courseId.toString(),
+          courseId: courseId,
           isActive: { $ne: false }
         })
         .sort({ order: 1 })
@@ -153,7 +158,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       return res.json({ ...course, lessons });
     } catch (error) {
       console.error('Course fetch error:', error);
-      return res.status(500).json({ message: "Failed to fetch course", error: error.message });
+      return res.status(500).json({ message: "Failed to fetch course", error: (error as Error).message });
     }
   });
 
@@ -164,13 +169,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (user.userType !== "faculty" && user.userType !== "admin") {
+      if ((req.user as User).userType !== "faculty" && (req.user as User).userType !== "admin") {
+        console.log("User type:", (req.user as User).userType)
         return res.status(403).json({ message: "Only faculty and admins can create courses" });
       }
 
       const validatedData = insertCourseSchema.parse({
         ...req.body,
-        facultyId: user.id,
+        facultyId: (user as User).id,
       });
 
       const db = await mongoDb.getDb("learning_platform");
@@ -194,7 +200,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as Express.User;
       const validatedData = insertEnrollmentSchema.parse({
         ...req.body,
-        userId: user.id,
+        userId: (user as User).id,
       });
 
       const db = await mongoDb.getDb("learning_platform");
@@ -206,7 +212,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const subscription = await db.collection("subscriptions")
-        .findOne({ userId: user.id, active: true });
+        .findOne({ userId: (user as User).id, active: true });
 
       if (!subscription) {
         return res.status(402).json({ message: "Payment required" });
@@ -238,7 +244,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const db = await mongoDb.getDb("learning_platform");
       const enrollments = await db.collection("enrollments")
         .aggregate([
-          { $match: { userId: user.id } },
+          { $match: { userId: (user as User).id } },
           { $lookup: {
               from: "courses",
               localField: "courseId",
@@ -345,7 +351,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const user = req.user as Express.User;
       const validatedData = insertSubscriptionSchema.parse({
         ...req.body,
-        userId: user.id,
+        userId: (user as User).id,
       });
 
       const db = await mongoDb.getDb("learning_platform");
@@ -367,7 +373,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user as Express.User;
       const db = await mongoDb.getDb("learning_platform");
-      const subscription = await db.collection("subscriptions").findOne({ userId: user.id, active: true });
+      const subscription = await db.collection("subscriptions").findOne({ userId: (user as User).id, active: true });
       res.json(subscription || null);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch subscription" });
@@ -383,12 +389,12 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const user = req.user as Express.User;
 
-      if (user.userType !== "faculty" && user.userType !== "admin") {
+      if ((user as User).userType !== "faculty" && (user as User).userType !== "admin") {
         return res.status(403).json({ message: "Only faculty and admins can access this" });
       }
 
       const db = await mongoDb.getDb("learning_platform");
-      const courses = await db.collection("courses").find({ facultyId: user.id }).toArray();
+      const courses = await db.collection("courses").find({ facultyId: (user as User).id }).toArray();
       res.json(courses);
     } catch (error) {
       res.status(500).json({ message: "Failed to fetch faculty courses" });
@@ -403,7 +409,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (!user || user.userType !== "admin") {
+      if (!user || (user as User).userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
@@ -424,7 +430,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const user = req.user as Express.User;
-      if (!user || user.userType !== "admin") {
+      if (!user || (user as User).userType !== "admin") {
         return res.status(403).json({ message: "Only admins can access this" });
       }
 
