@@ -1,0 +1,30 @@
+[vite] connecting...
+[vite] connected.
+Warning: validateDOMNesting(...): <a> cannot appear as a descendant of &lt;a&gt;.
+    at a
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5dcfc572:337:18
+    at div
+    at _c9 (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:114:12)
+    at div
+    at _c (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/ui/card.tsx:20:11)
+    at a
+    at https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5dcfc572:337:18
+    at CourseCard (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/course/course-card.tsx:23:30)
+    at div
+    at MotionComponent (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5dcfc572:945:40)
+    at div
+    at MotionComponent (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/framer-motion.js?v=5dcfc572:945:40)
+    at div
+    at section
+    at FeaturedCourses (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/components/home/featured-courses.tsx:27:47)
+    at main
+    at div
+    at HomePage
+    at Route (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5dcfc572:323:16)
+    at Switch (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=5dcfc572:379:17)
+    at Router
+    at AuthProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/src/hooks/use-auth.tsx:35:32)
+    at Provider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/chunk-OXZDJRWN.js?v=5dcfc572:38:15)
+    at TooltipProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@radix-ui_react-tooltip.js?v=5dcfc572:62:5)
+    at QueryClientProvider (https://578f87f1-dec7-4dc3-b626-b8f1246cdd7c-00-bzhj6czwu8av.sisko.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=5dcfc572:2805:3)
+    at App

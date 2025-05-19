@@ -42,6 +42,7 @@ export function CourseCard({ course }: CourseCardProps) {
     .toUpperCase();
 
   return (
+    <Link href={`/courses/${course._id}`} className="group">
     <Card className="flex flex-col h-full overflow-hidden hover:shadow-lg transition-shadow duration-300">
       <div className="relative">
         <img 
@@ -125,5 +126,6 @@ export function CourseCard({ course }: CourseCardProps) {
         </div>
       </CardFooter>
     </Card>
+    </Link>
   );
 }
