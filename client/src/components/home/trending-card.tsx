@@ -11,32 +11,26 @@ interface TrendingCardProps {
 
 export function TrendingCard({ course }: TrendingCardProps) {
   return (
-    <Link href={`/courses/${course.id}`} >
-    <Card className="w-[300px] flex-none snap-center cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group">
-      
-      <div className="relative h-40">
-        <img
-          src={course.imageUrl}
-          alt={course.title}
-          className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
-        <Badge className="absolute top-1 right-2 bg-blue/90">
-          {course.level}
-        </Badge>
-      </div>
-      <div className="p-4">
-        
+    <Card className="w-[300px] flex-none snap-center hover:shadow-lg transition-all duration-300 overflow-hidden group">
+      <Link href={`/courses/${course.id}`} className="block">
+        <div className="relative h-40">
+          <img
+            src={course.imageUrl}
+            alt={course.title}
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+          <Badge className="absolute top-1 right-2 bg-blue/90">
+            {course.level}
+          </Badge>
+        </div>
+        <div className="p-4">
           <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
             {course.title}
           </h3>
-        <div className="overflow-x-auto whitespace-nowrap scroll-smooth snap-x scrollbar-hide">
-          <div className="inline-flex gap-6">
-        <p className="text-sm text-gray-600 line-clamp-2 overflow-hidden text-ellipsis break-words overflow-hidden mb-3">
-          {course.description}
-        </p>
-        </div>
-          </div>
+          <p className="text-sm text-gray-600 mb-3 min-h-[3em] line-clamp-3">
+            {course.description}
+          </p>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img
