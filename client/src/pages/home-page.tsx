@@ -4,6 +4,7 @@ import { HeroSection } from "@/components/home/hero-section";
 import { CompanyLogos } from "@/components/home/company-logos";
 import { CareerSkills } from "@/components/home/career-skills";
 import { FeaturedCourses } from "@/components/home/featured-courses";
+import { TrendingPrograms } from "@/components/home/trending-programs";
 import { SubscriptionPlans } from "@/components/home/subscription-plans";
 import { Testimonials } from "@/components/home/testimonials";
 import { UserTypes } from "@/components/home/user-types";
@@ -18,6 +19,7 @@ export default function HomePage() {
         <HeroSection />
         <CompanyLogos />
         <CareerSkills />
+        <TrendingPrograms />
         <FeaturedCourses />
         <SubscriptionPlans />
         <Testimonials />

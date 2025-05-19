@@ -1,4 +1,3 @@
-
 import { motion } from "framer-motion";
 import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
@@ -14,11 +13,18 @@ export function HeroSection() {
             transition={{ duration: 0.6 }}
           >
             <h1 className="text-4xl font-extrabold tracking-tight text-gray-900 sm:text-5xl md:text-6xl">
-              <span className="block">Transform Your</span>
-              <span className="block bg-gradient-to-r from-primary to-teal-500 text-transparent bg-clip-text">Future With CatterpiWeb</span>
+              <span className="block">Turn Potential Into Power</span>
+              <span className="block bg-gradient-to-r from-primary to-teal-500 text-transparent bg-clip-text">
+                Start With CatterpiWeb Learn
+              </span>
+              <span className="block mt-3 text-base text-gray-600 sm:mt-5 sm:text-lg md:mt-5 md:text-xl">
+                Igniting minds, shaping futures
+              </span>
             </h1>
             <p className="mt-3 text-base text-gray-600 sm:mt-5 sm:text-lg md:mt-5 md:text-xl">
-              77% of our learners report career benefits, including new jobs, promotions, and valuable skills. Join today and invest in your future success.
+              70% of our learners report career benefits, including new jobs,
+              promotions, and valuable skills. Join today and invest in your
+              future success.
             </p>
             <div className="mt-8 flex flex-col sm:flex-row gap-4">
               <Link href="/courses">
@@ -27,56 +33,94 @@ export function HeroSection() {
                 </Button>
               </Link>
               <Link href="/auth">
-                <Button variant="outline" className="w-full sm:w-auto text-base md:text-lg px-8 py-3 md:py-4 md:px-10">
+                <Button
+                  variant="outline"
+                  className="w-full sm:w-auto text-base md:text-lg px-8 py-3 md:py-4 md:px-10"
+                >
                   Get Started
                 </Button>
               </Link>
             </div>
             <div className="mt-8 grid grid-cols-3 gap-4">
               <div className="flex items-center">
-                <motion.div 
-                  className="p-2 rounded-full bg-primary/10" 
+                <motion.div
+                  className="p-2 rounded-full bg-primary/10"
                   whileHover={{ scale: 1.1 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
                   </svg>
                 </motion.div>
                 <span className="ml-2 text-sm font-medium">Learn Skills</span>
               </div>
               <div className="flex items-center">
-                <motion.div 
-                  className="p-2 rounded-full bg-primary/10" 
+                <motion.div
+                  className="p-2 rounded-full bg-primary/10"
                   whileHover={{ scale: 1.1 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 10V3L4 14h7v7l9-11h-7z"
+                    />
                   </svg>
                 </motion.div>
-                <span className="ml-2 text-sm font-medium">Get Experienced</span>
+                <span className="ml-2 text-sm font-medium">
+                  Get Experienced
+                </span>
               </div>
               <div className="flex items-center">
-                <motion.div 
-                  className="p-2 rounded-full bg-primary/10" 
+                <motion.div
+                  className="p-2 rounded-full bg-primary/10"
                   whileHover={{ scale: 1.1 }}
                 >
-                  <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6 text-primary"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                    />
                   </svg>
                 </motion.div>
                 <span className="ml-2 text-sm font-medium">Get Hired</span>
               </div>
             </div>
           </motion.div>
-          <motion.div 
+          <motion.div
             className="hidden lg:flex justify-end"
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.6, delay: 0.2 }}
           >
-            <img 
-              className="h-auto w-full max-w-xl rounded-lg shadow-2xl" 
-              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80" 
+            <img
+              className="h-auto w-full max-w-xl rounded-lg shadow-2xl"
+              src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1471&q=80"
               alt="Students collaborating"
             />
           </motion.div>
