@@ -26,7 +26,7 @@ export function TrendingPrograms() {
         }
       }
     };
-    const interval = setInterval(scroll, 25);
+    const interval = setInterval(scroll, 35);
     return () => clearInterval(interval);
   }, []);
 
@@ -59,7 +59,7 @@ export function TrendingPrograms() {
                 (course, index) => (
                   <motion.div
                     key={course?._id || `skeleton-${index}`}
-                    className="w-56 inline-block opacity-90 hover:opacity-90 pointer-events-none"
+                    className="w-66 inline-block opacity-90 hover:opacity-90 pointer-events-none"
                   >
                     {course ? (
                       <TrendingCard course={course} />
