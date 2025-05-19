@@ -52,9 +52,9 @@ export function Header() {
   ];
 
   return (
-    <header className="bg-white shadow">
+    <header className="bg-white shadow" role="banner">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center py-4">
+        <nav className="flex justify-between items-center py-4" role="navigation" aria-label="Main navigation">
           <div className="flex items-center">
             <Link href="/" className="flex items-center">
               <GraduationCap className="h-8 w-8 text-primary" />

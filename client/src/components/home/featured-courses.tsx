@@ -15,10 +15,11 @@ export function FeaturedCourses() {
   });
 
   return (
-    <section id="courses" className="py-16 bg-gradient-to-b from-white to-green-50">
+    <section id="courses" className="py-16 bg-gradient-to-b from-white to-green-50" aria-label="Featured Courses">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
+        <motion.header 
           className="text-center"
+          role="banner"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}

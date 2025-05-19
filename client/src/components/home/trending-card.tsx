@@ -10,8 +10,8 @@ interface TrendingCardProps {
 
 export function TrendingCard({ course }: TrendingCardProps) {
   return (
-    <Card className="min-w-[300px] snap-center shrink-0 cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group">
-      <div className="relative h-40">
+    <Card className="min-w-[300px] snap-center shrink-0 cursor-pointer hover:shadow-lg transition-all duration-300 overflow-hidden group" role="article">
+      <figure className="relative h-40">
         <img
           src={course.imageUrl}
           alt={course.title}
