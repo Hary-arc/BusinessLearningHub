@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link as WouterLink } from 'wouter';
+import { PricingSection } from "@/components/course/pricing-section";
 //import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -172,10 +173,15 @@ export default function CourseDetailPage() {
 
   const course = courseData;
   const lessons = courseData?.lessons || [];
-  const formattedPrice = course?.price != null
-    ? `${course.currency} ${(course.price / 100).toFixed(2)}`
-    : "Free";
-
+  const formattedPrice =
+    course?.price != null && course.price > 0
+      ? new Intl.NumberFormat("en-US", {
+          style: "currency",
+          currency: course.currency || "USD", // fallback to USD
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 2,
+        }).format(course.price)
+      : "Free";
   const handleEnroll = () => {
     if (!user) {
       toast({

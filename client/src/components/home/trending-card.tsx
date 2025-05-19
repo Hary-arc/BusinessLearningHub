@@ -12,7 +12,7 @@ interface TrendingCardProps {
 export function TrendingCard({ course }: TrendingCardProps) {
   return (
     <Card className="w-[300px] flex-none snap-center hover:shadow-lg transition-all duration-300 overflow-hidden group">
-      <Link href={`/courses/${course.id}`} className="block">
+      <Link href={`/courses/${course._id}`} className="block">
         <div className="relative h-40">
           <img
             src={course.imageUrl}
@@ -53,7 +53,8 @@ export function TrendingCard({ course }: TrendingCardProps) {
           </div>
         </div>
       </div>
+        </Link>
     </Card>
-      </Link>
+      
   );
 }

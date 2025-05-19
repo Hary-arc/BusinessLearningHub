@@ -1,0 +1,87 @@
+Here’s What We’ll Add
+We'll insert the following "Pricing + Discount + Referral" block right after the description and before the stats like enrollment count and duration.
+
+💡 Step-by-step Integration
+🛠 1. Replace this section in your snippet:
+Find this part:
+
+tsx
+Copy
+Edit
+<p className="text-lg text-gray-600 mb-6">
+  {course.description}
+</p>
+✨ And add the below updated block:
+tsx
+Copy
+Edit
+<p className="text-lg text-gray-600 mb-4">{course.description}</p>
+
+{/* 💰 Pricing Section */}
+<div className="mb-6">
+  <div className="flex items-center gap-4">
+    {course.originalPrice && course.originalPrice > course.price ? (
+      <>
+        <span className="text-2xl font-bold text-gray-900">
+          {new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: course.currency || "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }).format(course.price)}
+        </span>
+        <span className="line-through text-gray-500 text-lg">
+          {new Intl.NumberFormat("en-US", {
+            style: "currency",
+            currency: course.currency || "USD",
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 2,
+          }).format(course.originalPrice)}
+        </span>
+        <span className="text-sm text-green-600 font-medium bg-green-50 border border-green-200 px-2 py-0.5 rounded">
+          {Math.round(((course.originalPrice - course.price) / course.originalPrice) * 100)}% OFF
+        </span>
+      </>
+    ) : (
+      <span className="text-2xl font-bold text-gray-900">
+        {formattedPrice}
+      </span>
+    )}
+  </div>
+
+  {/* Referral Code Entry */}
+  <div className="mt-4">
+    <label htmlFor="referral" className="block text-sm font-medium text-gray-700 mb-1">
+      Have a referral code?
+    </label>
+    <input
+      type="text"
+      id="referral"
+      placeholder="Enter code"
+      className="border border-gray-300 rounded-md px-3 py-2 w-full max-w-xs text-sm focus:ring-primary focus:border-primary"
+    />
+  </div>
+</div>
+🖼️ Resulting UI
+This will show:
+
+✅ Discounted price with strikethrough original price
+
+✅ Percentage off badge
+
+✅ Optional referral code input
+
+📌 Optional Style Polish
+You can wrap this block with a Card or Box styled div to make it stand out. For example:
+
+tsx
+Copy
+Edit
+<div className="bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+  {/* Pricing block goes here */}
+</div>
+Would you like to:
+
+Add a "Limited-time offer countdown"?
+
+Hook the referral code input to your backend?

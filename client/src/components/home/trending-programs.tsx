@@ -59,7 +59,7 @@ export function TrendingPrograms() {
                 (course, index) => (
                   <motion.div
                     key={course?._id || `skeleton-${index}`}
-                    className="w-66 inline-block opacity-90 hover:opacity-90 pointer-events-none"
+                    className="w-66 inline-block opacity-90 hover:opacity-90 pointer-events-auto"
                   >
                     {course ? (
                       <TrendingCard course={course} />
