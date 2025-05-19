@@ -7,7 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Link as WouterLink } from 'wouter';
-import { PricingSection } from "@/components/course/pricing-section";
+import { PricingSection } from "@/components/course/disc-price";
 //import Link from 'next/link';
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -173,15 +173,32 @@ export default function CourseDetailPage() {
 
   const course = courseData;
   const lessons = courseData?.lessons || [];
+
+  // Example exchange rates (you can later replace this with an API call if needed)
+  const exchangeRates: Record<string, number> = {
+    INR: 0.012,
+    EUR: 1.08,
+    GBP: 1.25,
+    USD: 1,
+  };
+
+  const currency = course?.currency || "USD";
+  const exchangeRate = exchangeRates[currency] || 1;
+
+  // Convert to USD
+  const priceInUSD = course?.price ? course.price * exchangeRate : 0;
+
   const formattedPrice =
     course?.price != null && course.price > 0
       ? new Intl.NumberFormat("en-US", {
           style: "currency",
-          currency: course.currency || "USD", // fallback to USD
+          currency: "USD", // Always show in USD
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
-        }).format(course.price)
+        }).format(priceInUSD)
       : "Free";
+
+    // Handle Enrollment
   const handleEnroll = () => {
     if (!user) {
       toast({
@@ -420,7 +437,7 @@ export default function CourseDetailPage() {
                 <div className="text-3xl font-bold text-gray-900 mb-6">
                   {formattedPrice}
                 </div>
-
+                <PricingSection course={course} />
                 {enrollment || enrollMutation.isSuccess ? (
                   <Button className="w-full mb-6" variant="secondary" disabled>
                     <CheckCircle className="mr-2 h-4 w-4" />
@@ -484,7 +501,7 @@ export default function CourseDetailPage() {
               </div>
             </div>
 
-            {/* This Course Includes Section */}
+            {/* This Course Includes Section }
             <div className="mt-12 bg-white rounded-lg shadow-sm p-8">
               <h2 className="text-2xl font-semibold mb-6">This Course Includes</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -511,12 +528,13 @@ export default function CourseDetailPage() {
                 </div>
               </div>
             </div>
+            */}
 
             {/* Explore More Courses */}
-            <div className="mt-12 bg-white rounded-lg shadow-sm p-8">
+            <div className="mt-12 bg-white rounded-lg shadow-sm p-10">
               <div className="flex justify-between items-center mb-6">
                 <h2 className="text-2xl font-semibold">Explore More Courses</h2>
-                 <WouterLink href="/courses">
+                 <WouterLink href="/api/courses?category=${course?.category}">
                    <Button variant="outline">View All Courses</Button>
                  </WouterLink>
               </div>

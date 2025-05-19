@@ -33,7 +33,16 @@ interface CourseCardProps {
 }
 
 export function CourseCard({ course }: CourseCardProps) {
-  const formattedPrice = `${course.currency} ${course.price.toFixed(2)}`;
+  const formattedPrice =new Intl.NumberFormat("en-US", {
+      style: "currency",
+      currency: course.currency || "USD", // fallback
+      currencyDisplay: "symbol", // ensures it shows $ or ₹
+      minimumFractionDigits: 0,
+    }).format(course.price);
+  
+  const originalPrice = course.price * 2;
+  const discount = Math.round(((course.price) / originalPrice) * 100);
+
   const instructorName = course.instructorId?.name || "Instructor";
   const initials = instructorName
     .split(' ')
@@ -120,7 +129,31 @@ export function CourseCard({ course }: CourseCardProps) {
               <p className="text-xs text-gray-500">Instructor</p>
             </div>
           </div>
-          <span className="text-lg font-bold text-primary">{formattedPrice}</span>
+          
+          <div className="flex flex-col items-end space-y-1">
+            {/* Final Price */}
+            <span className=" sticky text-xl font-bold text-primary">
+              {formattedPrice}
+            </span>
+            
+            {/* Original Price and Discount */}
+            <div className="sticky flex items-end space-x-1">
+              <span className="text-gray-500 line-through text-base text-xs  sm:text-sm">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: course.currency || "USD",
+                  minimumFractionDigits: 0,
+                }).format(originalPrice)}
+              </span>
+
+              {discount > 0 && (
+                <span className="bg-green-100 text-green-800 text-xs sm:text-sm px-2 py-0.5 rounded-full font-semibold">
+                  Save {discount}%
+                </span>
+              )}
+            </div>
+
+        </div>
         </div>
       </CardFooter>
     </Card>

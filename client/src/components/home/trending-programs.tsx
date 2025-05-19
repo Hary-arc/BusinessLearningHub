@@ -4,6 +4,7 @@ import { TrendingCard } from "@/components/home/trending-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef } from "react";
 
 export function TrendingPrograms() {
@@ -14,6 +15,9 @@ export function TrendingPrograms() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
+  const scrollBy = (distance: number) => {
+    scrollRef.current?.scrollBy({ left: distance, behavior: "smooth" });
+  };
   useEffect(() => {
     const scroll = () => {
       if (scrollRef.current) {
@@ -32,10 +36,12 @@ export function TrendingPrograms() {
 
   return (
     <section id="courses" className="relative py-16 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-1 items-center relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-0 items-center relative z-10">
+        
         {/* Left Frame - Static Heading */}
         <motion.div
-          className="bg-white border border-gray-200 rounded-lg shadow-lg p-10 text-left h-full flex flex-col justify-center"
+          className="bg-cover bg-center border border-gray-400 rounded-lg shadow-lg p-10 text-left h-full flex flex-col justify-center"
+          style={{ backgroundImage: `url('https://st2.depositphotos.com/3643473/6404/i/450/depositphotos_64045661-stock-photo-success.jpg')` }}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
@@ -50,6 +56,28 @@ export function TrendingPrograms() {
 
         {/* Right Frame - Scrolling Cards */}
         <div className="relative w-full h-80 overflow-hidden rounded-lg">
+
+        {/* Left Fade */}
+        <div className="pointer-events-none absolute left-0 top-0 h-full w-3 z-10 bg-gradient-to-r from-white via-white/90 to-transparent" />
+
+        {/* Right Fade */}
+        <div className="pointer-events-none absolute right-0 top-0 h-full w-6 z-10 bg-gradient-to-l from-white via-white/90 to-transparent" />
+
+          {/* left Arrow */}
+          <button
+            onClick={() => scrollBy(-300)}
+            className="absolute left-0 top-1/2 -translate-y-1/2 z-20 p-2 backdrop-blur-sm bg-white/40 border border-white/60 rounded-full hover:bg-white/70 transition transition-transform duration-300 hover:scale-110"
+          >
+            <ChevronLeft className="h-6 w-6" />
+          </button>
+          {/* Right Arrow */}
+          <button
+            onClick={() => scrollBy(300)}
+            className="absolute right-1 top-1/2 -translate-y-1/2 z-20 p-2 backdrop-blur-sm bg-white/40 border border-white/60 rounded-full hover:bg-white/70 transition transition-transform duration-300 hover:scale-110"
+          >
+            <ChevronRight className="h-6 w-6" />
+          </button>
+          
           <div
             ref={scrollRef}
             className="overflow-x-auto whitespace-nowrap pointer-events-none h-full scrollbar-hide"

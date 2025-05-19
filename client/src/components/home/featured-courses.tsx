@@ -16,7 +16,7 @@ export function FeaturedCourses() {
 
   return (
     <section id="courses" className="py-16 bg-gradient-to-b from-white to-green-50" aria-label="Featured Courses">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-full mx-auto px-4 sm:px-6 lg:px-8">
         <motion.div 
           className="text-center"
           
@@ -25,7 +25,7 @@ export function FeaturedCourses() {
           transition={{ duration: 0.6 }}
         >
           <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Career Skills That Work
+            Our Trending Programs
           </h2>
           <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-4">
             Master the skills you need to advance your career with expert-led courses
@@ -40,7 +40,7 @@ export function FeaturedCourses() {
         </motion.div>
 
         <motion.div 
-          className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4"
+          className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full mx-auto"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, delay: 0.2, staggerChildren: 0.1 }}
@@ -49,12 +49,12 @@ export function FeaturedCourses() {
             Array(4).fill(0).map((_, i) => (
               <motion.div 
                 key={`skeleton-${i}`} 
-                className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white h-full"
+                className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white "
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: i * 0.1 }}
               >
-                <Skeleton className="h-48 w-full" />
+                <Skeleton className="h-48 h-auto w-full" />
                 <div className="p-6 flex-1 flex flex-col">
                   <div className="flex justify-between items-center mb-2">
                     <Skeleton className="h-6 w-24" />
