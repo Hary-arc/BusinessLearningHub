@@ -15,84 +15,91 @@ export function TrendingPrograms() {
   });
 
   return (
-    <section className="py-16 bg-slate-50">
+    <section id="courses" className="py-16 bg-gradient-to-b from-white to-green-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-start mb-12">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
-            Career skills that work
+        <motion.div 
+          className="text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
+            Our Trending Program
           </h2>
-          <Button variant="outline" className="bg-white hover:bg-gray-50">
-            Start 7-day Free Trial
-          </Button>
-        </div>
+          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-4">
+            "Join our renowned Programs; the knowledge provided will surely be invaluable to you!"
+          </p>
+          
+        </motion.div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <motion.div 
+          className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.6, delay: 0.2, staggerChildren: 0.1 }}
+        >
           {isLoading ? (
-            Array(3).fill(0).map((_, i) => (
+            Array(4).fill(0).map((_, i) => (
               <motion.div 
-                key={`skeleton-${i}`}
-                className="bg-white rounded-lg overflow-hidden shadow-sm border"
+                key={`skeleton-${i}`} 
+                className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white h-full"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3, delay: i * 0.1 }}
               >
                 <Skeleton className="h-48 w-full" />
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <Skeleton className="h-8 w-8 rounded-full" />
-                    <Skeleton className="h-4 w-32" />
+                <div className="p-6 flex-1 flex flex-col">
+                  <div className="flex justify-between items-center mb-2">
+                    <Skeleton className="h-6 w-24" />
+                    <Skeleton className="h-6 w-16" />
                   </div>
-                  <Skeleton className="h-6 w-48 mb-2" />
-                  <Skeleton className="h-4 w-32" />
+                  <Skeleton className="h-8 w-full mt-2" />
+                  <Skeleton className="h-24 w-full mt-3" />
+                  <div className="mt-6 pt-6 border-t border-gray-200">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center">
+                        <Skeleton className="h-10 w-10 rounded-full" />
+                        <div className="ml-3">
+                          <Skeleton className="h-4 w-32" />
+                          <Skeleton className="h-3 w-20 mt-1" />
+                        </div>
+                      </div>
+                      <Skeleton className="h-6 w-16" />
+                    </div>
+                  </div>
                 </div>
               </motion.div>
             ))
           ) : error ? (
-            <div className="col-span-3 text-center text-red-500">
+            <div className="col-span-4 text-center text-red-500">
               Failed to load courses. Please try again later.
             </div>
           ) : courses?.length ? (
-            courses.slice(0, 3).map((course, index) => (
+            courses.slice(0, 4).map((course, index) => (
               <motion.div
                 key={course._id}
-                className="bg-white rounded-lg overflow-hidden shadow-sm border hover:shadow-md transition-shadow"
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: index * 0.1 }}
+                whileHover={{ y: -5, transition: { duration: 0.2 } }}
               >
-                <img 
-                  src={course.imageUrl} 
-                  alt={course.title}
-                  className="w-full h-48 object-cover"
-                />
-                <div className="p-4">
-                  <div className="flex items-center gap-2 mb-3">
-                    <img 
-                      src={course.instructorId.avatarUrl || '/default-institution.png'} 
-                      alt={course.instructorId.name}
-                      className="w-8 h-8 rounded-full"
-                    />
-                    <span className="text-sm text-gray-600">{course.instructorId.name}</span>
-                  </div>
-                  <h3 className="text-lg font-semibold mb-2">{course.title}</h3>
-                  <p className="text-sm text-gray-500">
-                    {course.level || 'Beginner'} · {course.category}
-                  </p>
-                </div>
+                <CourseCard course={course} />
               </motion.div>
             ))
           ) : (
-            <div className="col-span-3 text-center text-gray-500">
+            <div className="col-span-4 text-center text-gray-500">
               No courses available at the moment.
             </div>
           )}
-        </div>
+        </motion.div>
 
-        <div className="mt-8 text-center">
-          <Button variant="outline" className="inline-flex items-center gap-2">
-            Show 8 more <ArrowRight className="w-4 h-4" />
-          </Button>
-        </div>
+        <motion.div 
+          className="mt-16 text-center"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+        </motion.div>
       </div>
     </section>
   );
