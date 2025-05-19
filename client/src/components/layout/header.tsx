@@ -147,7 +147,7 @@ export function Header() {
           </div>
         </div>
       </div>
-
+     
       {/* Mobile menu */}
       {mobileMenuOpen && (
         <div className="md:hidden">
