@@ -1,59 +1,68 @@
-
+// components/course/pricing-section.tsx
 import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Course } from "@shared/schema";
 
 export function PricingSection({ course }: { course: Course }) {
+  const [referralApplied, setReferralApplied] = useState(false);
   const [referralCode, setReferralCode] = useState("");
+
+  const originalPrice = course.originalPrice ?? course.price * 2;
+  const isDiscounted = course.price < originalPrice;
+  const discountPercentage = Math.round(
+    ((originalPrice - course.price) / originalPrice) * 100
+  );
 
   const formattedPrice = new Intl.NumberFormat("en-US", {
     style: "currency",
     currency: course.currency || "USD",
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 2,
   }).format(course.price);
 
-  const formattedOriginalPrice = course.originalPrice 
-    ? new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: course.currency || "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2,
-      }).format(course.originalPrice)
-    : null;
-
-  const discountPercentage = course.originalPrice
-    ? Math.round(((course.originalPrice - course.price) / course.originalPrice) * 100)
-    : 0;
+  const formattedOriginalPrice = new Intl.NumberFormat("en-US", {
+    style: "currency",
+    currency: course.currency || "USD",
+  }).format(originalPrice);
 
   return (
-    <div className="space-y-4 bg-white border border-gray-200 rounded-lg p-4 shadow-sm">
+    <div className="space-y-4">
       <div className="flex items-center gap-4">
-        <span className="text-2xl font-bold text-gray-900">{formattedPrice}</span>
-        {course.originalPrice && course.originalPrice > course.price && (
-          <>
-            <span className="line-through text-gray-500 text-lg">
-              {formattedOriginalPrice}
-            </span>
-            <Badge variant="secondary" className="bg-green-100 text-green-800">
-              Save {discountPercentage}%
-            </Badge>
-          </>
+        <div className="text-2xl font-bold text-primary">{formattedPrice}</div>
+        {isDiscounted && (
+          <div className="text-gray-500 line-through text-lg">
+            {formattedOriginalPrice}
+          </div>
+        )}
+        {isDiscounted && (
+          <Badge variant="secondary" className="bg-green-100 text-green-800">
+            Save {discountPercentage}%
+          </Badge>
         )}
       </div>
 
-      <div className="space-y-2">
-        <label htmlFor="referral" className="block text-sm font-medium text-gray-700">
-          Have a referral code?
-        </label>
+      <div className="flex items-center gap-2">
         <Input
-          id="referral"
-          placeholder="Enter code"
+          placeholder="Referral code"
           value={referralCode}
           onChange={(e) => setReferralCode(e.target.value)}
+          disabled={referralApplied}
           className="max-w-xs"
         />
+        <Button
+          onClick={() => setReferralApplied(true)}
+          disabled={referralApplied || referralCode.length < 3}
+        >
+          {referralApplied ? "Applied" : "Apply"}
+        </Button>
+      </div>
+
+      <div className="text-sm text-gray-500">
+        {referralApplied && (
+          <span>
+            🎉 Referral code <strong>{referralCode}</strong> applied successfully!
+          </span>
+        )}
       </div>
 
       <Badge className="bg-red-100 text-red-700">🔥 Limited time offer</Badge>

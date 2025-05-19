@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { useParams, useLocation } from "wouter";
 import { Course, Review } from "@shared/schema";
@@ -54,12 +55,12 @@ export default function CourseDetailPage() {
             'Cache-Control': 'no-cache'
           },
         });
-
+        
         if (!response.ok) {
           const errorData = await response.json().catch(() => ({ message: 'Network error' }));
           throw new Error(errorData.message || `HTTP error! status: ${response.status}`);
         }
-
+        
         const data = await response.json();
         return data;
       } catch (err) {
@@ -196,7 +197,7 @@ export default function CourseDetailPage() {
   return (
     <div className="min-h-screen flex flex-col">
       <Header />
-
+      
       {/* Hero Section */}
       <div className="bg-gradient-to-r from-primary/5 to-primary/10 border-b">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -230,11 +231,9 @@ export default function CourseDetailPage() {
                   {course.rating} ({course.reviewCount} reviews)
                 </span>
               </div>
-              <p className="text-lg text-gray-600 mb-4">
+              <p className="text-lg text-gray-600 mb-6">
                 {course.description}
               </p>
-
-              <PricingSection course={course} />
               <div className="flex items-center gap-6 text-sm text-gray-600">
                 <div className="flex items-center">
                   <Users className="h-5 w-5 text-primary mr-2" />
