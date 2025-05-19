@@ -31,8 +31,8 @@ export function TrendingPrograms() {
   }, []);
 
   return (
-    <section id="courses" className="relative py-16 bg-white overflow-hidden" aria-label="Trending Courses">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-1 items-center relative z-10" role="region">
+    <section id="courses" className="relative py-16 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-1 items-center relative z-10">
         {/* Left Frame - Static Heading */}
         <motion.div
           className="bg-white border border-gray-200 rounded-lg shadow-lg p-10 text-left h-full flex flex-col justify-center"
