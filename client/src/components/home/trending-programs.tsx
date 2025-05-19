@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { Course } from "@shared/schema";
-import { CourseCard } from "@/components/course/course-card";
+import { TrendingCard } from "@/components/home/trending-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
@@ -62,7 +62,7 @@ export function TrendingPrograms() {
                     className="w-56 inline-block opacity-90 hover:opacity-90 pointer-events-none"
                   >
                     {course ? (
-                      <CourseCard course={course} />
+                      <TrendingCard course={course} />
                     ) : (
                       <>
                         <Skeleton className="h-48 w-full" />
