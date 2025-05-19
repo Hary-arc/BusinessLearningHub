@@ -1,10 +1,13 @@
+
 import { useQuery } from "@tanstack/react-query";
 import { Course } from "@shared/schema";
-import { CourseCard } from "@/components/course/course-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Link } from "wouter";
 
 export function TrendingPrograms() {
   const { data: courses, isLoading, error } = useQuery<Course[]>({
@@ -14,25 +17,9 @@ export function TrendingPrograms() {
 
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
-    const scroll = () => {
-      if (scrollRef.current) {
-        scrollRef.current.scrollLeft += 1;
-        if (
-          scrollRef.current.scrollLeft + scrollRef.current.clientWidth >=
-          scrollRef.current.scrollWidth
-        ) {
-          scrollRef.current.scrollLeft = 0;
-        }
-      }
-    };
-    const interval = setInterval(scroll, 25);
-    return () => clearInterval(interval);
-  }, []);
-
   return (
     <section id="courses" className="relative py-16 bg-white overflow-hidden">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-1 items-center relative z-10">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-8 items-center relative z-10">
         {/* Left Frame - Static Heading */}
         <motion.div
           className="bg-white border border-gray-200 rounded-lg shadow-lg p-10 text-left h-full flex flex-col justify-center"
@@ -48,35 +35,49 @@ export function TrendingPrograms() {
           </Button>
         </motion.div>
 
-        {/* Right Frame - Scrolling Cards */}
-        <div className="relative w-full h-80 overflow-hidden rounded-lg">
-          <div
+        {/* Right Frame - Custom Scrolling Cards */}
+        <div className="relative">
+          <div 
             ref={scrollRef}
-            className="overflow-x-auto whitespace-nowrap pointer-events-none h-full scrollbar-hide"
+            className="flex gap-6 overflow-x-auto pb-4 scrollbar-hide snap-x snap-mandatory"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              WebkitOverflowScrolling: 'touch'
+            }}
           >
-            <div className="inline-flex space-x-6 h-full items-center">
-              {(isLoading ? Array(6).fill(null) : courses?.slice(0, 6) || []).map(
-                (course, index) => (
-                  <motion.div
-                    key={course?._id || `skeleton-${index}`}
-                    className="w-56 inline-block opacity-90 hover:opacity-90 pointer-events-none"
-                  >
-                    {course ? (
-                      <CourseCard course={course} />
-                    ) : (
-                      <>
-                        <Skeleton className="h-48 w-full" />
-                        <div className="p-6">
-                          <Skeleton className="h-6 w-32 mb-2" />
-                          <Skeleton className="h-6 w-48 mb-4" />
-                          <Skeleton className="h-4 w-24" />
-                        </div>
-                      </>
-                    )}
-                  </motion.div>
-                )
-              )}
-            </div>
+            {isLoading ? 
+              Array(3).fill(null).map((_, i) => (
+                <Card key={`skeleton-${i}`} className="min-w-[300px] snap-center shrink-0">
+                  <Skeleton className="h-40 rounded-t-lg" />
+                  <div className="p-4">
+                    <Skeleton className="h-4 w-3/4 mb-2" />
+                    <Skeleton className="h-4 w-1/2" />
+                  </div>
+                </Card>
+              ))
+              : courses?.map((course) => (
+                <Link key={course._id} href={`/courses/${course._id}`}>
+                  <Card className="min-w-[300px] snap-center shrink-0 cursor-pointer hover:shadow-lg transition-shadow">
+                    <div className="relative h-40">
+                      <img
+                        src={course.imageUrl}
+                        alt={course.title}
+                        className="w-full h-full object-cover rounded-t-lg"
+                      />
+                      <Badge className="absolute top-2 right-2 bg-white/90">
+                        {course.level}
+                      </Badge>
+                    </div>
+                    <div className="p-4">
+                      <h3 className="font-semibold text-lg mb-1">{course.title}</h3>
+                      <p className="text-sm text-gray-600 line-clamp-2">
+                        {course.description}
+                      </p>
+                    </div>
+                  </Card>
+                </Link>
+              ))}
           </div>
         </div>
       </div>
