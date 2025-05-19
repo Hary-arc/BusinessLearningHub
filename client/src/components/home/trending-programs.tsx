@@ -1,12 +1,10 @@
-
 import { useQuery } from "@tanstack/react-query";
 import { Course } from "@shared/schema";
-import { Link } from "wouter";
 import { CourseCard } from "@/components/course/course-card";
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { useEffect, useRef } from "react";
 
 export function TrendingPrograms() {
   const { data: courses, isLoading, error } = useQuery<Course[]>({
@@ -14,92 +12,73 @@ export function TrendingPrograms() {
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 
+  const scrollRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const scroll = () => {
+      if (scrollRef.current) {
+        scrollRef.current.scrollLeft += 1;
+        if (
+          scrollRef.current.scrollLeft + scrollRef.current.clientWidth >=
+          scrollRef.current.scrollWidth
+        ) {
+          scrollRef.current.scrollLeft = 0;
+        }
+      }
+    };
+    const interval = setInterval(scroll, 25);
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <section id="courses" className="py-16 bg-gradient-to-b from-white to-green-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div 
-          className="text-center"
+    <section id="courses" className="relative py-16 bg-white overflow-hidden">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-1 md:grid-cols-[1fr_1.6fr] gap-1 items-center relative z-10">
+        {/* Left Frame - Static Heading */}
+        <motion.div
+          className="bg-white border border-gray-200 rounded-lg shadow-lg p-10 text-left h-full flex flex-col justify-center"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6 }}
         >
-          <h2 className="text-3xl font-extrabold text-gray-900 sm:text-4xl">
-            Our Trending Program
+          <h2 className="text-3xl font-extrabold text-gray-900 mb-4">
+            Career skills that work
           </h2>
-          <p className="mt-3 max-w-2xl mx-auto text-xl text-gray-600 sm:mt-4">
-            "Join our renowned Programs; the knowledge provided will surely be invaluable to you!"
-          </p>
-          
+          <Button variant="outline" className="text-blue-600 border-blue-600 hover:bg-blue-50 w-fit">
+            Start 7-day Free Trial
+          </Button>
         </motion.div>
 
-        <motion.div 
-          className="mt-12 grid gap-8 md:grid-cols-2 lg:grid-cols-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 0.6, delay: 0.2, staggerChildren: 0.1 }}
-        >
-          {isLoading ? (
-            Array(4).fill(0).map((_, i) => (
-              <motion.div 
-                key={`skeleton-${i}`} 
-                className="flex flex-col rounded-lg shadow-lg overflow-hidden bg-white h-full"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: i * 0.1 }}
-              >
-                <Skeleton className="h-48 w-full" />
-                <div className="p-6 flex-1 flex flex-col">
-                  <div className="flex justify-between items-center mb-2">
-                    <Skeleton className="h-6 w-24" />
-                    <Skeleton className="h-6 w-16" />
-                  </div>
-                  <Skeleton className="h-8 w-full mt-2" />
-                  <Skeleton className="h-24 w-full mt-3" />
-                  <div className="mt-6 pt-6 border-t border-gray-200">
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center">
-                        <Skeleton className="h-10 w-10 rounded-full" />
-                        <div className="ml-3">
-                          <Skeleton className="h-4 w-32" />
-                          <Skeleton className="h-3 w-20 mt-1" />
+        {/* Right Frame - Scrolling Cards */}
+        <div className="relative w-full h-80 overflow-hidden rounded-lg">
+          <div
+            ref={scrollRef}
+            className="overflow-x-auto whitespace-nowrap pointer-events-none h-full scrollbar-hide"
+          >
+            <div className="inline-flex space-x-6 h-full items-center">
+              {(isLoading ? Array(6).fill(null) : courses?.slice(0, 6) || []).map(
+                (course, index) => (
+                  <motion.div
+                    key={course?._id || `skeleton-${index}`}
+                    className="w-56 inline-block opacity-90 hover:opacity-90 pointer-events-none"
+                  >
+                    {course ? (
+                      <CourseCard course={course} />
+                    ) : (
+                      <>
+                        <Skeleton className="h-48 w-full" />
+                        <div className="p-6">
+                          <Skeleton className="h-6 w-32 mb-2" />
+                          <Skeleton className="h-6 w-48 mb-4" />
+                          <Skeleton className="h-4 w-24" />
                         </div>
-                      </div>
-                      <Skeleton className="h-6 w-16" />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))
-          ) : error ? (
-            <div className="col-span-4 text-center text-red-500">
-              Failed to load courses. Please try again later.
+                      </>
+                    )}
+                  </motion.div>
+                )
+              )}
             </div>
-          ) : courses?.length ? (
-            courses.slice(0, 4).map((course, index) => (
-              <motion.div
-                key={course._id}
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: index * 0.1 }}
-                whileHover={{ y: -5, transition: { duration: 0.2 } }}
-              >
-                <CourseCard course={course} />
-              </motion.div>
-            ))
-          ) : (
-            <div className="col-span-4 text-center text-gray-500">
-              No courses available at the moment.
-            </div>
-          )}
-        </motion.div>
-
-        <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-        </motion.div>
+          </div>
+        </div>
       </div>
     </section>
   );
