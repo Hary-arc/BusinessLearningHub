@@ -30,11 +30,13 @@ export function TrendingCard({ course }: TrendingCardProps) {
           <h3 className="font-semibold text-lg mb-1 group-hover:text-primary transition-colors">
             {course.title}
           </h3>
-        
+        <div className="overflow-x-auto whitespace-nowrap scroll-smooth snap-x scrollbar-hide">
+          <div className="inline-flex gap-6">
         <p className="text-sm text-gray-600 line-clamp-2 overflow-hidden text-ellipsis break-words overflow-hidden mb-3">
           {course.description}
         </p>
-        
+        </div>
+          </div>
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <img

@@ -69,14 +69,12 @@ export function CourseCard({ course }: CourseCardProps) {
           </div>
         </div>
 
-        <Link href={`/courses/${course._id}`} className="group">
-          <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
+        <h3 className="text-xl font-semibold text-gray-900 group-hover:text-primary transition-colors">
             {course.title}
           </h3>
           <p className="mt-2 text-sm text-gray-600 line-clamp-2">
             {course.description}
           </p>
-        </Link>
 
         <div className="flex items-center gap-4 text-sm text-gray-500">
           <div className="flex items-center">
