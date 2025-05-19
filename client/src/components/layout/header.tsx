@@ -145,7 +145,7 @@ export function Header() {
               </Button>
             </div>
           </div>
-        </div>
+        </nav>
       </div>
      
       {/* Mobile menu */}
